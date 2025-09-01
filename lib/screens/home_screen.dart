@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:munshi/screens/transactions_screen.dart';
+import 'package:munshi/widgets/transaction_tile.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -24,51 +26,85 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   final int _transactionCount = 45;
   final double _biggestSpendAmount = 3200;
 
+  // Sample transaction data - replace with your actual data
   final List<Transaction> _recentTransactions = [
     Transaction(
-      merchant: "Zomato",
-      amount: 250,
-      date: "Today",
-      time: "2:30 PM",
-      icon: Icons.restaurant,
-      color: const Color(0xFFE23744),
-      category: "Food & Dining",
+      id: '1',
+      merchant: 'Starbucks Coffee',
+      category: 'Food',
+      amount: 12.50,
+      date: 'Today',
+      time: '2:30 PM',
+      icon: Icons.local_cafe,
+      color: Colors.brown,
+      description: 'Venti Caramel Macchiato',
+      paymentMethod: 'Credit Card',
+      status: 'Completed',
     ),
     Transaction(
-      merchant: "Amazon",
-      amount: 1200,
-      date: "Yesterday",
-      time: "11:45 AM",
+      id: '2',
+      merchant: 'Amazon',
+      category: 'Shopping',
+      amount: 89.99,
+      date: 'Yesterday',
+      time: '10:15 AM',
       icon: Icons.shopping_bag,
-      color: const Color(0xFFFF9900),
-      category: "Shopping",
+      color: Colors.orange,
+      description: 'Wireless Headphones',
+      paymentMethod: 'Debit Card',
+      status: 'Completed',
     ),
     Transaction(
-      merchant: "Electricity Bill",
-      amount: 1800,
-      date: "Aug 25",
-      time: "9:15 AM",
-      icon: Icons.flash_on,
-      color: const Color(0xFF4CAF50),
-      category: "Utilities",
+      id: '3',
+      merchant: 'Uber',
+      category: 'Transport',
+      amount: 25.30,
+      date: 'Yesterday',
+      time: '8:45 PM',
+      icon: Icons.local_taxi,
+      color: Colors.black,
+      description: 'Trip to Downtown',
+      paymentMethod: 'Credit Card',
+      status: 'Completed',
     ),
     Transaction(
-      merchant: "Uber",
-      amount: 400,
-      date: "Aug 25",
-      time: "7:30 PM",
-      icon: Icons.directions_car,
-      color: const Color(0xFF000000),
-      category: "Transportation",
+      id: '4',
+      merchant: 'Netflix',
+      category: 'Entertainment',
+      amount: 15.99,
+      date: 'Dec 28',
+      time: '12:00 AM',
+      icon: Icons.movie,
+      color: Colors.red,
+      description: 'Monthly Subscription',
+      paymentMethod: 'Credit Card',
+      status: 'Completed',
     ),
     Transaction(
-      merchant: "Burger King",
-      amount: 600,
-      date: "Aug 24",
-      time: "1:20 PM",
-      icon: Icons.fastfood,
-      color: const Color(0xFFD62300),
-      category: "Food & Dining",
+      id: '5',
+      merchant: 'Electricity Bill',
+      category: 'Bills',
+      amount: 120.00,
+      date: 'Dec 27',
+      time: '3:20 PM',
+      icon: Icons.bolt,
+      color: Colors.yellow.shade700,
+      description: 'Monthly Electricity',
+      paymentMethod: 'Bank Transfer',
+      status: 'Completed',
+    ),
+    Transaction(
+      id: '6',
+      merchant: 'Pharmacy Plus',
+      category: 'Health',
+      amount: 45.60,
+      date: 'Dec 26',
+      time: '11:30 AM',
+      icon: Icons.local_pharmacy,
+      color: Colors.green,
+      description: 'Prescription Medicine',
+      paymentMethod: 'Cash',
+      status: 'Completed',
     ),
   ];
 
@@ -274,7 +310,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                 scale: _summaryCardAnimation,
                 child: _buildSummaryCard(colorScheme),
               ),
-              const SizedBox(height: 24),
+              const SizedBox(height: 16),
 
               // Quick Stats Row
               _buildQuickStatsRow(colorScheme),
@@ -292,7 +328,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   Widget _buildSummaryCard(ColorScheme colorScheme) {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(28),
+      padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         color: colorScheme.surface,
         borderRadius: BorderRadius.circular(24),
@@ -308,7 +344,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             spreadRadius: 0,
           ),
           BoxShadow(
-            color: Colors.white.withValues(alpha: 0.05),
+            color: colorScheme.surface.withValues(alpha: 0.05),
             blurRadius: 1,
             offset: const Offset(0, 1),
             spreadRadius: 0,
@@ -323,7 +359,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             children: [
               Text(
                 'Total Spent',
-                style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                style: Theme.of(context).textTheme.titleSmall?.copyWith(
                   color: colorScheme.onSurface.withValues(alpha: 0.7),
                   fontWeight: FontWeight.w500,
                 ),
@@ -360,7 +396,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           ),
           Text(
             _formatCurrency(_totalSpent),
-            style: Theme.of(context).textTheme.displayMedium?.copyWith(
+            style: Theme.of(context).textTheme.displaySmall?.copyWith(
               color: colorScheme.onSurface,
               fontWeight: FontWeight.bold,
               height: 1.1,
@@ -368,12 +404,12 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           ),
           const SizedBox(height: 10),
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
             decoration: BoxDecoration(
               color: _percentageChange > 0
                   ? Colors.red.shade50
                   : Colors.green.shade50,
-              borderRadius: BorderRadius.circular(24),
+              borderRadius: BorderRadius.circular(12),
               border: Border.all(
                 color: _percentageChange > 0
                     ? Colors.red.withValues(alpha: 0.2)
@@ -394,13 +430,13 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                         ? Icons.arrow_upward
                         : Icons.arrow_downward,
                     color: Colors.white,
-                    size: 14,
+                    size: 12,
                   ),
                 ),
-                const SizedBox(width: 8),
+                const SizedBox(width: 5),
                 Text(
                   '${_percentageChange.abs()}% from last month',
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
                     color: _percentageChange > 0
                         ? Colors.red.shade700
                         : Colors.green.shade700,
@@ -469,7 +505,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
               color: accentColor.withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(8),
             ),
             child: Icon(icon, color: accentColor, size: 20),
           ),
@@ -538,7 +574,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               position: _transactionAnimations[index],
               child: FadeTransition(
                 opacity: _transactionAnimationController,
-                child: _buildTransactionItem(transaction, colorScheme, index),
+                child: TransactionTile(transaction: transaction, onTap: () {}),
               ),
             );
           },
@@ -546,120 +582,4 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       ],
     );
   }
-
-  Widget _buildTransactionItem(
-    Transaction transaction,
-    ColorScheme colorScheme,
-    int index,
-  ) {
-    return TweenAnimationBuilder<double>(
-      duration: Duration(milliseconds: 300 + (index * 100)),
-      tween: Tween<double>(begin: 0.0, end: 1.0),
-      builder: (context, value, child) {
-        return Transform.scale(
-          scale: 0.95 + (0.05 * value),
-          child: Container(
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              color: colorScheme.surface,
-              borderRadius: BorderRadius.circular(16),
-              border: Border.all(
-                color: colorScheme.outline.withValues(alpha: 0.08),
-              ),
-              boxShadow: [
-                BoxShadow(
-                  color: colorScheme.shadow.withValues(alpha: 0.06),
-                  blurRadius: 12,
-                  offset: const Offset(0, 2),
-                  spreadRadius: 0,
-                ),
-              ],
-            ),
-            child: Row(
-              children: [
-                Hero(
-                  tag: 'transaction_${transaction.merchant}_$index',
-                  child: Container(
-                    padding: const EdgeInsets.all(10),
-                    decoration: BoxDecoration(
-                      color: transaction.color.withValues(alpha: 0.12),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Icon(
-                      transaction.icon,
-                      color: transaction.color,
-                      size: 22,
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 16),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        transaction.merchant,
-                        style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                          fontWeight: FontWeight.w600,
-                          color: colorScheme.onSurface,
-                        ),
-                      ),
-                      const SizedBox(height: 2),
-                      Text(
-                        transaction.category,
-                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: colorScheme.onSurface.withValues(alpha: 0.6),
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                      const SizedBox(height: 2),
-                      Text(
-                        '${transaction.date} • ${transaction.time}',
-                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: colorScheme.onSurface.withValues(alpha: 0.5),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    Text(
-                      _formatCurrency(transaction.amount),
-                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.bold,
-                        color: Colors.red.shade600,
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        );
-      },
-    );
-  }
-
-}
-
-class Transaction {
-  final String merchant;
-  final double amount;
-  final String date;
-  final String time;
-  final String category;
-  final IconData icon;
-  final Color color;
-
-  Transaction({
-    required this.merchant,
-    required this.amount,
-    required this.date,
-    required this.time,
-    required this.category,
-    required this.icon,
-    required this.color,
-  });
 }

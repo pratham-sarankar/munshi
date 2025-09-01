@@ -340,37 +340,34 @@ class _SettingsScreenState extends State<SettingsScreen>
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Padding(
-          padding: const EdgeInsets.only(top: 8, bottom: 8),
-          child: Row(
-            children: [
-              Container(
-                padding: const EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                  color: colorScheme.primaryContainer.withValues(alpha: 0.6),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Icon(icon, color: colorScheme.primary, size: 20),
+        Row(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: colorScheme.primaryContainer.withValues(alpha: 0.6),
+                borderRadius: BorderRadius.circular(10),
               ),
-              const SizedBox(width: 12),
-              Text(
-                title,
-                style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                  fontWeight: FontWeight.bold,
-                  color: colorScheme.onSurface,
-                ),
+              child: Icon(icon, color: colorScheme.primary, size: 20),
+            ),
+            const SizedBox(width: 8),
+            Text(
+              title,
+              style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                fontWeight: FontWeight.bold,
+                color: colorScheme.onSurface,
               ),
-            ],
-          ),
+            ),
+          ],
         ),
         const SizedBox(height: 8),
         Card(
           clipBehavior: Clip.hardEdge,
           elevation: 0,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20),
+            borderRadius: BorderRadius.circular(15),
             side: BorderSide(
-              color: colorScheme.outline.withValues(alpha: 0.08),
+              color: colorScheme.outline.withValues(alpha: 0.2),
               width: 1,
             ),
           ),
@@ -457,49 +454,55 @@ class _SettingsTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-    final textTheme = Theme.of(context).textTheme;
-
     return Column(
       children: [
         InkWell(
           onTap: onTap,
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-            child: Row(
-              children: [
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        title,
-                        style: textTheme.bodyLarge?.copyWith(
-                          fontWeight: FontWeight.w500,
-                          color: colorScheme.onSurface,
-                        ),
-                      ),
-                      if (subtitle != null) ...[
-                        const SizedBox(height: 2),
-                        Text(
-                          subtitle!,
-                          style: textTheme.bodySmall?.copyWith(
-                            color: colorScheme.onSurface.withValues(alpha: 0.6),
-                          ),
-                        ),
-                      ],
-                    ],
-                  ),
-                ),
-                if (trailing != null) ...[const SizedBox(width: 12), trailing!],
-              ],
+            padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 0),
+            child: ListTile(
+              title: Text(title),
+              subtitle: subtitle == null ? null : Text(subtitle!),
+              trailing: trailing,
+              contentPadding: EdgeInsets.zero,
+              minVerticalPadding: 12,
+              visualDensity: VisualDensity.compact,
             ),
+            // child: Row(
+            //   children: [
+            //     Expanded(
+            //       child: Column(
+            //         crossAxisAlignment: CrossAxisAlignment.start,
+            //         children: [
+            //           Text(
+            //             title,
+            //             style: textTheme.bodyLarge?.copyWith(
+            //               fontWeight: FontWeight.w500,
+            //               color: colorScheme.onSurface,
+            //             ),
+            //           ),
+            //           if (subtitle != null) ...[
+            //             const SizedBox(height: 2),
+            //             Text(
+            //               subtitle!,
+            //               style: textTheme.bodySmall?.copyWith(
+            //                 color: colorScheme.onSurface.withValues(alpha: 0.6),
+            //               ),
+            //             ),
+            //           ],
+            //         ],
+            //       ),
+            //     ),
+            //     if (trailing != null) ...[const SizedBox(width: 12), trailing!],
+            //   ],
+            // ),
           ),
         ),
         if (hasDivider)
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20),
             child: Divider(
-              color: colorScheme.outline.withValues(alpha: 0.1),
+              color: colorScheme.outline.withValues(alpha: 0.2),
               height: 1,
             ),
           ),
