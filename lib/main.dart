@@ -13,7 +13,9 @@ class Munshi extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    final theme = MaterialTheme(GoogleFonts.manropeTextTheme());
+    final theme = MaterialTheme(
+      GoogleFonts.manropeTextTheme(Typography.material2021().englishLike),
+    );
     return MaterialApp(
       title: 'Munshi',
       debugShowCheckedModeBanner: false,
