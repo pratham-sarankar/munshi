@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:icons_plus/icons_plus.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -96,7 +97,7 @@ class _SettingsScreenState extends State<SettingsScreen>
                     child: _buildSettingsSection(
                       colorScheme: colorScheme,
                       title: 'Preferences',
-                      icon: Icons.tune,
+                      icon: Iconsax.setting_4_outline,
                       tiles: [
                         _SettingsTile(
                           title: 'Currency',
@@ -206,7 +207,7 @@ class _SettingsScreenState extends State<SettingsScreen>
                     child: _buildSettingsSection(
                       colorScheme: colorScheme,
                       title: 'Notifications',
-                      icon: Icons.notifications_outlined,
+                      icon: Iconsax.notification_outline,
                       tiles: [
                         _SettingsTile(
                           title: 'Expense Alerts',
@@ -246,7 +247,7 @@ class _SettingsScreenState extends State<SettingsScreen>
                     child: _buildSettingsSection(
                       colorScheme: colorScheme,
                       title: 'Security',
-                      icon: Icons.security_outlined,
+                      icon: Iconsax.security_user_outline,
                       tiles: [
                         _SettingsTile(
                           title: 'Privacy Policy & Terms',
@@ -274,7 +275,7 @@ class _SettingsScreenState extends State<SettingsScreen>
                     child: _buildSettingsSection(
                       colorScheme: colorScheme,
                       title: 'Support',
-                      icon: Icons.help_outline,
+                      icon: Iconsax.support_outline,
                       tiles: [
                         _SettingsTile(
                           title: 'Help & FAQ',
@@ -283,7 +284,7 @@ class _SettingsScreenState extends State<SettingsScreen>
                             HapticFeedback.lightImpact();
                           },
                           trailing: Icon(
-                            Icons.chevron_right,
+                            Icons.chevron_right_rounded,
                             color: colorScheme.onSurface.withValues(alpha: 0.4),
                           ),
                         ),
@@ -294,7 +295,7 @@ class _SettingsScreenState extends State<SettingsScreen>
                             HapticFeedback.lightImpact();
                           },
                           trailing: Icon(
-                            Icons.chevron_right,
+                            Icons.chevron_right_rounded,
                             color: colorScheme.onSurface.withValues(alpha: 0.4),
                           ),
                         ),
@@ -305,7 +306,7 @@ class _SettingsScreenState extends State<SettingsScreen>
                             HapticFeedback.lightImpact();
                           },
                           trailing: Icon(
-                            Icons.chevron_right,
+                            Icons.chevron_right_rounded,
                             color: colorScheme.onSurface.withValues(alpha: 0.4),
                           ),
                         ),
@@ -468,34 +469,6 @@ class _SettingsTile extends StatelessWidget {
               minVerticalPadding: 12,
               visualDensity: VisualDensity.compact,
             ),
-            // child: Row(
-            //   children: [
-            //     Expanded(
-            //       child: Column(
-            //         crossAxisAlignment: CrossAxisAlignment.start,
-            //         children: [
-            //           Text(
-            //             title,
-            //             style: textTheme.bodyLarge?.copyWith(
-            //               fontWeight: FontWeight.w500,
-            //               color: colorScheme.onSurface,
-            //             ),
-            //           ),
-            //           if (subtitle != null) ...[
-            //             const SizedBox(height: 2),
-            //             Text(
-            //               subtitle!,
-            //               style: textTheme.bodySmall?.copyWith(
-            //                 color: colorScheme.onSurface.withValues(alpha: 0.6),
-            //               ),
-            //             ),
-            //           ],
-            //         ],
-            //       ),
-            //     ),
-            //     if (trailing != null) ...[const SizedBox(width: 12), trailing!],
-            //   ],
-            // ),
           ),
         ),
         if (hasDivider)

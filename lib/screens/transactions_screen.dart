@@ -1,4 +1,7 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:icons_plus/icons_plus.dart';
+import 'package:munshi/screens/home_screen.dart';
 import 'package:munshi/widgets/transaction_tile.dart';
 
 class TransactionsScreen extends StatefulWidget {
@@ -42,85 +45,51 @@ class _TransactionsScreenState extends State<TransactionsScreen>
     'This Year',
   ];
 
-  // Sample transaction data - replace with your actual data
   final List<Transaction> _allTransactions = [
     Transaction(
-      id: '1',
-      merchant: 'Starbucks Coffee',
-      category: 'Food',
-      amount: 12.50,
-      date: 'Today',
-      time: '2:30 PM',
-      icon: Icons.local_cafe,
-      color: Colors.brown,
-      description: 'Venti Caramel Macchiato',
-      paymentMethod: 'Credit Card',
-      status: 'Completed',
+      merchant: "Zomato",
+      amount: 250,
+      date: "Today",
+      time: "2:30 PM",
+      icon: IonIcons.restaurant,
+      color: const Color(0xFFE23744),
+      category: "Food & Dining",
     ),
     Transaction(
-      id: '2',
-      merchant: 'Amazon',
-      category: 'Shopping',
-      amount: 89.99,
-      date: 'Yesterday',
-      time: '10:15 AM',
-      icon: Icons.shopping_bag,
-      color: Colors.orange,
-      description: 'Wireless Headphones',
-      paymentMethod: 'Debit Card',
-      status: 'Completed',
+      merchant: "Amazon",
+      amount: 1200,
+      date: "Yesterday",
+      time: "11:45 AM",
+      icon: IonIcons.bag_handle,
+      color: const Color(0xFFFF9900),
+      category: "Shopping",
     ),
     Transaction(
-      id: '3',
-      merchant: 'Uber',
-      category: 'Transport',
-      amount: 25.30,
-      date: 'Yesterday',
-      time: '8:45 PM',
-      icon: Icons.local_taxi,
-      color: Colors.black,
-      description: 'Trip to Downtown',
-      paymentMethod: 'Credit Card',
-      status: 'Completed',
+      merchant: "Electricity Bill",
+      amount: 1800,
+      date: "Aug 25",
+      time: "9:15 AM",
+      icon: IonIcons.flash,
+      color: const Color(0xFF4CAF50),
+      category: "Utilities",
     ),
     Transaction(
-      id: '4',
-      merchant: 'Netflix',
-      category: 'Entertainment',
-      amount: 15.99,
-      date: 'Dec 28',
-      time: '12:00 AM',
-      icon: Icons.movie,
-      color: Colors.red,
-      description: 'Monthly Subscription',
-      paymentMethod: 'Credit Card',
-      status: 'Completed',
+      merchant: "Uber",
+      amount: 400,
+      date: "Aug 25",
+      time: "7:30 PM",
+      icon: IonIcons.car,
+      color: const Color(0xFF000000),
+      category: "Transportation",
     ),
     Transaction(
-      id: '5',
-      merchant: 'Electricity Bill',
-      category: 'Bills',
-      amount: 120.00,
-      date: 'Dec 27',
-      time: '3:20 PM',
-      icon: Icons.bolt,
-      color: Colors.yellow.shade700,
-      description: 'Monthly Electricity',
-      paymentMethod: 'Bank Transfer',
-      status: 'Completed',
-    ),
-    Transaction(
-      id: '6',
-      merchant: 'Pharmacy Plus',
-      category: 'Health',
-      amount: 45.60,
-      date: 'Dec 26',
-      time: '11:30 AM',
-      icon: Icons.local_pharmacy,
-      color: Colors.green,
-      description: 'Prescription Medicine',
-      paymentMethod: 'Cash',
-      status: 'Completed',
+      merchant: "Burger King",
+      amount: 600,
+      date: "Aug 24",
+      time: "1:20 PM",
+      icon: IonIcons.fast_food,
+      color: const Color(0xFFD62300),
+      category: "Food & Dining",
     ),
   ];
 
@@ -223,13 +192,15 @@ class _TransactionsScreenState extends State<TransactionsScreen>
               }
             },
             icon: Icon(
-              _isSearchActive ? Icons.close : Icons.search,
+              _isSearchActive
+                  ? Iconsax.close_circle_outline
+                  : Iconsax.search_normal_1_outline,
               color: colorScheme.onSurface,
             ),
           ),
           IconButton(
             onPressed: () => _showFilterBottomSheet(colorScheme),
-            icon: Icon(Icons.tune, color: colorScheme.onSurface),
+            icon: Icon(Iconsax.filter_outline, color: colorScheme.onSurface),
           ),
         ],
       ),
@@ -369,7 +340,7 @@ class _TransactionsScreenState extends State<TransactionsScreen>
           scale: _fabAnimation,
           child: FloatingActionButton.extended(
             onPressed: () => _showAddTransactionSheet(colorScheme),
-            icon: const Icon(Icons.add),
+            icon: const Icon(Iconsax.add_outline),
             label: const Text(
               'Add Transaction',
               style: TextStyle(fontWeight: FontWeight.w600),
@@ -581,7 +552,7 @@ class _TransactionsScreenState extends State<TransactionsScreen>
                       Column(
                         children: [
                           Hero(
-                            tag: 'transaction_${transaction.id}',
+                            tag: 'transaction_${transaction.date}',
                             child: Container(
                               padding: const EdgeInsets.all(18),
                               decoration: BoxDecoration(
@@ -673,25 +644,6 @@ class _TransactionsScreenState extends State<TransactionsScreen>
                               '${transaction.date} at ${transaction.time}',
                               Icons.schedule,
                               colorScheme,
-                            ),
-                            _buildModernDetailRow(
-                              'Payment Method',
-                              transaction.paymentMethod,
-                              Icons.payment,
-                              colorScheme,
-                            ),
-                            _buildModernDetailRow(
-                              'Description',
-                              transaction.description,
-                              Icons.description,
-                              colorScheme,
-                            ),
-                            _buildModernDetailRow(
-                              'Status',
-                              transaction.status,
-                              Icons.check_circle,
-                              colorScheme,
-                              isLast: true,
                             ),
                           ],
                         ),
@@ -844,32 +796,4 @@ class _TransactionsScreenState extends State<TransactionsScreen>
       ),
     );
   }
-}
-
-class Transaction {
-  final String id;
-  final String merchant;
-  final String category;
-  final double amount;
-  final String date;
-  final String time;
-  final IconData icon;
-  final Color color;
-  final String description;
-  final String paymentMethod;
-  final String status;
-
-  Transaction({
-    required this.id,
-    required this.merchant,
-    required this.category,
-    required this.amount,
-    required this.date,
-    required this.time,
-    required this.icon,
-    required this.color,
-    required this.description,
-    required this.paymentMethod,
-    required this.status,
-  });
 }

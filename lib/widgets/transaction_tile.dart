@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:munshi/screens/transactions_screen.dart';
+import 'package:munshi/screens/home_screen.dart';
 
 class TransactionTile extends StatelessWidget {
   const TransactionTile({
@@ -34,7 +34,7 @@ class TransactionTile extends StatelessWidget {
         child: Row(
           children: [
             Hero(
-              tag: 'transaction_${transaction.id}',
+              tag: 'transaction_${transaction.date}',
               child: Container(
                 padding: const EdgeInsets.all(10),
                 decoration: BoxDecoration(

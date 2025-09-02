@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:icons_plus/icons_plus.dart';
 import 'package:munshi/screens/home_screen.dart';
 import 'package:munshi/screens/settings_screen.dart';
 import 'package:munshi/screens/transactions_screen.dart';
@@ -29,20 +30,21 @@ class _MainScreenState extends State<MainScreen> {
             _selectedIndex = value;
           });
         },
+        labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
         destinations: [
           NavigationDestination(
-            icon: Icon(Icons.home_outlined),
-            selectedIcon: Icon(Icons.home),
+            icon: Icon(Iconsax.home_outline),
+            selectedIcon: Icon(Iconsax.home_1_bold),
             label: "Home",
           ),
           NavigationDestination(
-            icon: Icon(Icons.receipt_long_outlined),
-            selectedIcon: Icon(Icons.receipt_long),
+            icon: Icon(Iconsax.receipt_item_outline),
+            selectedIcon: Icon(Iconsax.receipt_item_bold),
             label: "Transactions",
           ),
           NavigationDestination(
-            icon: Icon(Icons.settings_outlined),
-            selectedIcon: Icon(Icons.settings),
+            icon: Icon(Iconsax.setting_2_outline),
+            selectedIcon: Icon(Iconsax.setting_2_bold),
             label: "Settings",
           ),
         ],
