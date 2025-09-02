@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:icons_plus/icons_plus.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -13,6 +14,9 @@ class _SettingsScreenState extends State<SettingsScreen>
     with TickerProviderStateMixin {
   late AnimationController _animationController;
   late List<Animation<Offset>> _itemAnimations;
+
+  // App version
+  String _appVersion = '';
 
   // Settings state
   bool _expenseAlerts = true;
@@ -37,6 +41,7 @@ class _SettingsScreenState extends State<SettingsScreen>
   @override
   void initState() {
     super.initState();
+    _loadAppVersion();
     _animationController = AnimationController(
       duration: const Duration(milliseconds: 1200),
       vsync: this,
@@ -59,6 +64,13 @@ class _SettingsScreenState extends State<SettingsScreen>
     );
 
     _animationController.forward();
+  }
+
+  Future<void> _loadAppVersion() async {
+    final packageInfo = await PackageInfo.fromPlatform();
+    setState(() {
+      _appVersion = '${packageInfo.version}+${packageInfo.buildNumber}';
+    });
   }
 
   @override
@@ -405,7 +417,7 @@ class _SettingsScreenState extends State<SettingsScreen>
       child: Column(
         children: [
           Text(
-            'Munshi v1.0.0',
+            _appVersion.isNotEmpty ? 'Munshi v$_appVersion' : 'Munshi',
             style: Theme.of(context).textTheme.titleMedium?.copyWith(
               fontWeight: FontWeight.bold,
               color: colorScheme.onSurface,
