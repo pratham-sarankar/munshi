@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:icons_plus/icons_plus.dart';
 import 'package:munshi/widgets/rounded_dropdown.dart';
+import 'package:munshi/widgets/app_version_widget.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -384,8 +385,7 @@ class _SettingsScreenState extends State<SettingsScreen>
       ),
       child: Column(
         children: [
-          Text(
-            'Munshi v1.0.0',
+          AppVersionWidget(
             style: Theme.of(context).textTheme.titleMedium?.copyWith(
               fontWeight: FontWeight.bold,
               color: colorScheme.onSurface,
