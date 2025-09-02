@@ -1,7 +1,7 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:munshi/screens/transactions_screen.dart';
-import 'package:munshi/widgets/transaction_tile.dart';
+import 'package:icons_plus/icons_plus.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -26,85 +26,51 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   final int _transactionCount = 45;
   final double _biggestSpendAmount = 3200;
 
-  // Sample transaction data - replace with your actual data
   final List<Transaction> _recentTransactions = [
     Transaction(
-      id: '1',
-      merchant: 'Starbucks Coffee',
-      category: 'Food',
-      amount: 12.50,
-      date: 'Today',
-      time: '2:30 PM',
-      icon: Icons.local_cafe,
-      color: Colors.brown,
-      description: 'Venti Caramel Macchiato',
-      paymentMethod: 'Credit Card',
-      status: 'Completed',
+      merchant: "Zomato",
+      amount: 250,
+      date: "Today",
+      time: "2:30 PM",
+      icon: IonIcons.restaurant,
+      color: const Color(0xFFE23744),
+      category: "Food & Dining",
     ),
     Transaction(
-      id: '2',
-      merchant: 'Amazon',
-      category: 'Shopping',
-      amount: 89.99,
-      date: 'Yesterday',
-      time: '10:15 AM',
-      icon: Icons.shopping_bag,
-      color: Colors.orange,
-      description: 'Wireless Headphones',
-      paymentMethod: 'Debit Card',
-      status: 'Completed',
+      merchant: "Amazon",
+      amount: 1200,
+      date: "Yesterday",
+      time: "11:45 AM",
+      icon: IonIcons.bag_handle,
+      color: const Color(0xFFFF9900),
+      category: "Shopping",
     ),
     Transaction(
-      id: '3',
-      merchant: 'Uber',
-      category: 'Transport',
-      amount: 25.30,
-      date: 'Yesterday',
-      time: '8:45 PM',
-      icon: Icons.local_taxi,
-      color: Colors.black,
-      description: 'Trip to Downtown',
-      paymentMethod: 'Credit Card',
-      status: 'Completed',
+      merchant: "Electricity Bill",
+      amount: 1800,
+      date: "Aug 25",
+      time: "9:15 AM",
+      icon: IonIcons.flash,
+      color: const Color(0xFF4CAF50),
+      category: "Utilities",
     ),
     Transaction(
-      id: '4',
-      merchant: 'Netflix',
-      category: 'Entertainment',
-      amount: 15.99,
-      date: 'Dec 28',
-      time: '12:00 AM',
-      icon: Icons.movie,
-      color: Colors.red,
-      description: 'Monthly Subscription',
-      paymentMethod: 'Credit Card',
-      status: 'Completed',
+      merchant: "Uber",
+      amount: 400,
+      date: "Aug 25",
+      time: "7:30 PM",
+      icon: IonIcons.car,
+      color: const Color(0xFF000000),
+      category: "Transportation",
     ),
     Transaction(
-      id: '5',
-      merchant: 'Electricity Bill',
-      category: 'Bills',
-      amount: 120.00,
-      date: 'Dec 27',
-      time: '3:20 PM',
-      icon: Icons.bolt,
-      color: Colors.yellow.shade700,
-      description: 'Monthly Electricity',
-      paymentMethod: 'Bank Transfer',
-      status: 'Completed',
-    ),
-    Transaction(
-      id: '6',
-      merchant: 'Pharmacy Plus',
-      category: 'Health',
-      amount: 45.60,
-      date: 'Dec 26',
-      time: '11:30 AM',
-      icon: Icons.local_pharmacy,
-      color: Colors.green,
-      description: 'Prescription Medicine',
-      paymentMethod: 'Cash',
-      status: 'Completed',
+      merchant: "Burger King",
+      amount: 600,
+      date: "Aug 24",
+      time: "1:20 PM",
+      icon: IonIcons.fast_food,
+      color: const Color(0xFFD62300),
+      category: "Food & Dining",
     ),
   ];
 
@@ -242,7 +208,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                 IconButton(
                   onPressed: () => _changeMonth(-1),
                   icon: Icon(
-                    Icons.chevron_left,
+                    Icons.chevron_left_rounded,
                     color: colorScheme.onSurfaceVariant,
                   ),
                   iconSize: 20,
@@ -258,7 +224,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                 IconButton(
                   onPressed: () => _changeMonth(1),
                   icon: Icon(
-                    Icons.chevron_right,
+                    Icons.chevron_right_rounded,
                     color: colorScheme.onSurfaceVariant,
                   ),
                   iconSize: 20,
@@ -288,7 +254,11 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             child: CircleAvatar(
               radius: 18,
               backgroundColor: Colors.transparent,
-              child: Icon(Icons.person, size: 20, color: colorScheme.onPrimary),
+              child: Icon(
+                Iconsax.user_outline,
+                size: 18,
+                color: colorScheme.onPrimary,
+              ),
             ),
           ),
         ],
@@ -310,7 +280,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                 scale: _summaryCardAnimation,
                 child: _buildSummaryCard(colorScheme),
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 24),
 
               // Quick Stats Row
               _buildQuickStatsRow(colorScheme),
@@ -328,7 +298,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   Widget _buildSummaryCard(ColorScheme colorScheme) {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(28),
       decoration: BoxDecoration(
         color: colorScheme.surface,
         borderRadius: BorderRadius.circular(24),
@@ -344,7 +314,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             spreadRadius: 0,
           ),
           BoxShadow(
-            color: colorScheme.surface.withValues(alpha: 0.05),
+            color: Colors.white.withValues(alpha: 0.05),
             blurRadius: 1,
             offset: const Offset(0, 1),
             spreadRadius: 0,
@@ -359,7 +329,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             children: [
               Text(
                 'Total Spent',
-                style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(
                   color: colorScheme.onSurface.withValues(alpha: 0.7),
                   fontWeight: FontWeight.w500,
                 ),
@@ -377,7 +347,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Icon(
-                      Icons.trending_up,
+                      Icons.trending_up_rounded,
                       color: colorScheme.primary,
                       size: 16,
                     ),
@@ -396,7 +366,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           ),
           Text(
             _formatCurrency(_totalSpent),
-            style: Theme.of(context).textTheme.displaySmall?.copyWith(
+            style: Theme.of(context).textTheme.displayMedium?.copyWith(
               color: colorScheme.onSurface,
               fontWeight: FontWeight.bold,
               height: 1.1,
@@ -404,12 +374,12 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           ),
           const SizedBox(height: 10),
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
             decoration: BoxDecoration(
               color: _percentageChange > 0
                   ? Colors.red.shade50
                   : Colors.green.shade50,
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(24),
               border: Border.all(
                 color: _percentageChange > 0
                     ? Colors.red.withValues(alpha: 0.2)
@@ -430,13 +400,13 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                         ? Icons.arrow_upward
                         : Icons.arrow_downward,
                     color: Colors.white,
-                    size: 12,
+                    size: 14,
                   ),
                 ),
-                const SizedBox(width: 5),
+                const SizedBox(width: 8),
                 Text(
                   '${_percentageChange.abs()}% from last month',
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                     color: _percentageChange > 0
                         ? Colors.red.shade700
                         : Colors.green.shade700,
@@ -459,7 +429,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             colorScheme,
             'Transactions',
             _transactionCount.toString(),
-            Icons.receipt_long,
+            Iconsax.receipt_search_outline,
             Colors.blue,
           ),
         ),
@@ -469,7 +439,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             colorScheme,
             'Biggest Spend',
             _formatCurrency(_biggestSpendAmount),
-            Icons.credit_card,
+            Iconsax.card_pos_outline,
             Colors.orange,
           ),
         ),
@@ -505,7 +475,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
               color: accentColor.withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(8),
+              borderRadius: BorderRadius.circular(12),
             ),
             child: Icon(icon, color: accentColor, size: 20),
           ),
@@ -574,7 +544,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               position: _transactionAnimations[index],
               child: FadeTransition(
                 opacity: _transactionAnimationController,
-                child: TransactionTile(transaction: transaction, onTap: () {}),
+                child: _buildTransactionItem(transaction, colorScheme, index),
               ),
             );
           },
@@ -582,4 +552,119 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       ],
     );
   }
+
+  Widget _buildTransactionItem(
+    Transaction transaction,
+    ColorScheme colorScheme,
+    int index,
+  ) {
+    return TweenAnimationBuilder<double>(
+      duration: Duration(milliseconds: 300 + (index * 100)),
+      tween: Tween<double>(begin: 0.0, end: 1.0),
+      builder: (context, value, child) {
+        return Transform.scale(
+          scale: 0.95 + (0.05 * value),
+          child: Container(
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: colorScheme.surface,
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(
+                color: colorScheme.outline.withValues(alpha: 0.08),
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: colorScheme.shadow.withValues(alpha: 0.06),
+                  blurRadius: 12,
+                  offset: const Offset(0, 2),
+                  spreadRadius: 0,
+                ),
+              ],
+            ),
+            child: Row(
+              children: [
+                Hero(
+                  tag: 'transaction_${transaction.merchant}_$index',
+                  child: Container(
+                    padding: const EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      color: transaction.color.withValues(alpha: 0.12),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Icon(
+                      transaction.icon,
+                      color: transaction.color,
+                      size: 22,
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        transaction.merchant,
+                        style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                          fontWeight: FontWeight.w600,
+                          color: colorScheme.onSurface,
+                        ),
+                      ),
+                      const SizedBox(height: 2),
+                      Text(
+                        transaction.category,
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                          color: colorScheme.onSurface.withValues(alpha: 0.6),
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                      const SizedBox(height: 2),
+                      Text(
+                        '${transaction.date} • ${transaction.time}',
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                          color: colorScheme.onSurface.withValues(alpha: 0.5),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Text(
+                      _formatCurrency(transaction.amount),
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.red.shade600,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
+
+class Transaction {
+  final String merchant;
+  final double amount;
+  final String date;
+  final String time;
+  final String category;
+  final IconData icon;
+  final Color color;
+
+  Transaction({
+    required this.merchant,
+    required this.amount,
+    required this.date,
+    required this.time,
+    required this.category,
+    required this.icon,
+    required this.color,
+  });
 }
