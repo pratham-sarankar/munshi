@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:icons_plus/icons_plus.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:munshi/widgets/rounded_dropdown.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -113,17 +114,10 @@ class _SettingsScreenState extends State<SettingsScreen>
                       tiles: [
                         _SettingsTile(
                           title: 'Currency',
-                          trailing: DropdownButton<String>(
+                          trailing: RoundedDropdown<String>(
                             value: _selectedCurrency,
                             onChanged: (String? value) =>
                                 setState(() => _selectedCurrency = value!),
-                            underline: const SizedBox(),
-                            icon: Icon(
-                              Icons.keyboard_arrow_down,
-                              color: colorScheme.onSurface.withValues(
-                                alpha: 0.6,
-                              ),
-                            ),
                             items: _currencyOptions
                                 .map<DropdownMenuItem<String>>((String option) {
                                   return DropdownMenuItem<String>(
@@ -145,17 +139,10 @@ class _SettingsScreenState extends State<SettingsScreen>
                         ),
                         _SettingsTile(
                           title: 'Default Month View',
-                          trailing: DropdownButton<String>(
+                          trailing: RoundedDropdown<String>(
                             value: _defaultMonthView,
                             onChanged: (String? value) =>
                                 setState(() => _defaultMonthView = value!),
-                            underline: const SizedBox(),
-                            icon: Icon(
-                              Icons.keyboard_arrow_down,
-                              color: colorScheme.onSurface.withValues(
-                                alpha: 0.6,
-                              ),
-                            ),
                             items: _monthViewOptions
                                 .map<DropdownMenuItem<String>>((String option) {
                                   return DropdownMenuItem<String>(
@@ -177,17 +164,10 @@ class _SettingsScreenState extends State<SettingsScreen>
                         ),
                         _SettingsTile(
                           title: 'Theme',
-                          trailing: DropdownButton<String>(
+                          trailing: RoundedDropdown<String>(
                             value: _selectedTheme,
                             onChanged: (String? value) =>
                                 setState(() => _selectedTheme = value!),
-                            underline: const SizedBox(),
-                            icon: Icon(
-                              Icons.keyboard_arrow_down,
-                              color: colorScheme.onSurface.withValues(
-                                alpha: 0.6,
-                              ),
-                            ),
                             items: _themeOptions.map<DropdownMenuItem<String>>((
                               String option,
                             ) {
