@@ -3,11 +3,11 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class ThemeProvider extends ChangeNotifier {
   static const String _themeKey = 'theme_mode';
-  
+
   ThemeMode _themeMode = ThemeMode.light;
-  
+
   ThemeMode get themeMode => _themeMode;
-  
+
   String get themeModeString {
     switch (_themeMode) {
       case ThemeMode.light:
@@ -18,11 +18,11 @@ class ThemeProvider extends ChangeNotifier {
         return 'Auto';
     }
   }
-  
+
   ThemeProvider() {
     _loadThemeFromPrefs();
   }
-  
+
   void setThemeMode(String themeString) {
     ThemeMode newThemeMode;
     switch (themeString) {
@@ -38,21 +38,21 @@ class ThemeProvider extends ChangeNotifier {
       default:
         newThemeMode = ThemeMode.light;
     }
-    
+
     if (_themeMode != newThemeMode) {
       _themeMode = newThemeMode;
       _saveThemeToPrefs();
       notifyListeners();
     }
   }
-  
+
   void _loadThemeFromPrefs() async {
     final prefs = await SharedPreferences.getInstance();
     final themeModeIndex = prefs.getInt(_themeKey) ?? 0;
     _themeMode = ThemeMode.values[themeModeIndex];
     notifyListeners();
   }
-  
+
   void _saveThemeToPrefs() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setInt(_themeKey, _themeMode.index);

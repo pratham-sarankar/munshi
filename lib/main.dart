@@ -23,7 +23,7 @@ class Munshi extends StatelessWidget {
     final theme = MaterialTheme(
       GoogleFonts.manropeTextTheme(Typography.material2021().englishLike),
     );
-    
+
     return Consumer<ThemeProvider>(
       builder: (context, themeProvider, child) {
         return MaterialApp(

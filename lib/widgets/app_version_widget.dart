@@ -5,11 +5,7 @@ class AppVersionWidget extends StatefulWidget {
   final TextStyle? style;
   final String prefix;
 
-  const AppVersionWidget({
-    super.key,
-    this.style,
-    this.prefix = 'Munshi',
-  });
+  const AppVersionWidget({super.key, this.style, this.prefix = 'Munshi'});
 
   @override
   State<AppVersionWidget> createState() => _AppVersionWidgetState();

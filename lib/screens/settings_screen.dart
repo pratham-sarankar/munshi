@@ -170,21 +170,25 @@ class _SettingsScreenState extends State<SettingsScreen>
                                     alpha: 0.6,
                                   ),
                                 ),
-                                items: _themeOptions.map<DropdownMenuItem<String>>((
-                                  String option,
-                                ) {
-                                  return DropdownMenuItem<String>(
-                                    value: option,
-                                    child: Text(
-                                      option,
-                                      style: Theme.of(context).textTheme.bodyMedium
-                                          ?.copyWith(
-                                            color: colorScheme.primary,
-                                            fontWeight: FontWeight.w500,
-                                          ),
-                                    ),
-                                  );
-                                }).toList(),
+                                items: _themeOptions
+                                    .map<DropdownMenuItem<String>>((
+                                      String option,
+                                    ) {
+                                      return DropdownMenuItem<String>(
+                                        value: option,
+                                        child: Text(
+                                          option,
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .bodyMedium
+                                              ?.copyWith(
+                                                color: colorScheme.primary,
+                                                fontWeight: FontWeight.w500,
+                                              ),
+                                        ),
+                                      );
+                                    })
+                                    .toList(),
                               );
                             },
                           ),

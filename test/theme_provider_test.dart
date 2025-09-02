@@ -32,26 +32,29 @@ void main() {
     test('ThemeProvider should notify listeners when theme changes', () {
       final themeProvider = ThemeProvider();
       bool notified = false;
-      
+
       themeProvider.addListener(() {
         notified = true;
       });
-      
+
       themeProvider.setThemeMode('Dark');
       expect(notified, true);
     });
 
-    test('ThemeProvider should not notify listeners when setting same theme', () {
-      final themeProvider = ThemeProvider();
-      themeProvider.setThemeMode('Light'); // Set to same theme
-      
-      bool notified = false;
-      themeProvider.addListener(() {
-        notified = true;
-      });
-      
-      themeProvider.setThemeMode('Light'); // Set to same theme again
-      expect(notified, false);
-    });
+    test(
+      'ThemeProvider should not notify listeners when setting same theme',
+      () {
+        final themeProvider = ThemeProvider();
+        themeProvider.setThemeMode('Light'); // Set to same theme
+
+        bool notified = false;
+        themeProvider.addListener(() {
+          notified = true;
+        });
+
+        themeProvider.setThemeMode('Light'); // Set to same theme again
+        expect(notified, false);
+      },
+    );
   });
 }
