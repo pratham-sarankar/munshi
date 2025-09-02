@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 /// A custom dropdown widget with rounded corners for enhanced UI design.
-/// 
+///
 /// This widget wraps Flutter's standard [DropdownButton] with a rounded
 /// container that provides modern styling while maintaining full functionality.
 class RoundedDropdown<T> extends StatelessWidget {
@@ -45,10 +45,12 @@ class RoundedDropdown<T> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-    
+
     return Container(
       decoration: BoxDecoration(
-        color: backgroundColor ?? colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
+        color:
+            backgroundColor ??
+            colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
         borderRadius: BorderRadius.circular(borderRadius),
         border: Border.all(
           color: borderColor ?? colorScheme.outline.withValues(alpha: 0.15),
@@ -60,19 +62,20 @@ class RoundedDropdown<T> extends StatelessWidget {
           value: value,
           items: items,
           onChanged: onChanged,
-          icon: icon ?? Icon(
-            Icons.keyboard_arrow_down_rounded,
-            color: colorScheme.onSurface.withValues(alpha: 0.6),
-            size: 18,
-          ),
+          icon:
+              icon ??
+              Icon(
+                Icons.keyboard_arrow_down_rounded,
+                color: colorScheme.onSurface.withValues(alpha: 0.6),
+                size: 18,
+              ),
           iconSize: 18,
           elevation: 12,
           borderRadius: BorderRadius.circular(borderRadius),
           dropdownColor: colorScheme.surface,
-          padding: contentPadding ?? const EdgeInsets.symmetric(
-            horizontal: 14,
-            vertical: 10,
-          ),
+          padding:
+              contentPadding ??
+              const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
           menuMaxHeight: 250,
           style: Theme.of(context).textTheme.bodyMedium?.copyWith(
             color: colorScheme.primary,
