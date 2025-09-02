@@ -15,10 +15,10 @@ void main() {
   testWidgets('App launches without errors', (WidgetTester tester) async {
     // Initialize shared preferences mock
     SharedPreferences.setMockInitialValues({});
-    
+
     // Build our app and trigger a frame.
     await tester.pumpWidget(const Munshi());
-    
+
     // Wait for async operations to complete
     await tester.pumpAndSettle();
 
@@ -28,10 +28,12 @@ void main() {
     expect(find.text('Settings'), findsOneWidget);
   });
 
-  testWidgets('Settings screen shows theme option', (WidgetTester tester) async {
+  testWidgets('Settings screen shows theme option', (
+    WidgetTester tester,
+  ) async {
     // Initialize shared preferences mock
     SharedPreferences.setMockInitialValues({});
-    
+
     // Build our app and trigger a frame.
     await tester.pumpWidget(const Munshi());
     await tester.pumpAndSettle();

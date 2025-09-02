@@ -3,6 +3,8 @@ import 'package:flutter/services.dart';
 import 'package:icons_plus/icons_plus.dart';
 import 'package:munshi/providers/theme_provider.dart';
 import 'package:provider/provider.dart';
+import 'package:munshi/widgets/rounded_dropdown.dart';
+import 'package:munshi/widgets/app_version_widget.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -102,17 +104,10 @@ class _SettingsScreenState extends State<SettingsScreen>
                       tiles: [
                         _SettingsTile(
                           title: 'Currency',
-                          trailing: DropdownButton<String>(
+                          trailing: RoundedDropdown<String>(
                             value: _selectedCurrency,
                             onChanged: (String? value) =>
                                 setState(() => _selectedCurrency = value!),
-                            underline: const SizedBox(),
-                            icon: Icon(
-                              Icons.keyboard_arrow_down,
-                              color: colorScheme.onSurface.withValues(
-                                alpha: 0.6,
-                              ),
-                            ),
                             items: _currencyOptions
                                 .map<DropdownMenuItem<String>>((String option) {
                                   return DropdownMenuItem<String>(
@@ -134,17 +129,10 @@ class _SettingsScreenState extends State<SettingsScreen>
                         ),
                         _SettingsTile(
                           title: 'Default Month View',
-                          trailing: DropdownButton<String>(
+                          trailing: RoundedDropdown<String>(
                             value: _defaultMonthView,
                             onChanged: (String? value) =>
                                 setState(() => _defaultMonthView = value!),
-                            underline: const SizedBox(),
-                            icon: Icon(
-                              Icons.keyboard_arrow_down,
-                              color: colorScheme.onSurface.withValues(
-                                alpha: 0.6,
-                              ),
-                            ),
                             items: _monthViewOptions
                                 .map<DropdownMenuItem<String>>((String option) {
                                   return DropdownMenuItem<String>(
@@ -168,7 +156,7 @@ class _SettingsScreenState extends State<SettingsScreen>
                           title: 'Theme',
                           trailing: Consumer<ThemeProvider>(
                             builder: (context, themeProvider, child) {
-                              return DropdownButton<String>(
+                              return RoundedDropdown<String>(
                                 value: themeProvider.themeModeString,
                                 onChanged: (String? value) {
                                   if (value != null) {
@@ -176,7 +164,6 @@ class _SettingsScreenState extends State<SettingsScreen>
                                     HapticFeedback.lightImpact();
                                   }
                                 },
-                                underline: const SizedBox(),
                                 icon: Icon(
                                   Icons.keyboard_arrow_down,
                                   color: colorScheme.onSurface.withValues(
@@ -413,8 +400,7 @@ class _SettingsScreenState extends State<SettingsScreen>
       ),
       child: Column(
         children: [
-          Text(
-            'Munshi v1.0.0',
+          AppVersionWidget(
             style: Theme.of(context).textTheme.titleMedium?.copyWith(
               fontWeight: FontWeight.bold,
               color: colorScheme.onSurface,
