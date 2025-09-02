@@ -4,7 +4,9 @@ import 'package:munshi/widgets/rounded_dropdown.dart';
 
 void main() {
   group('RoundedDropdown Widget Tests', () {
-    testWidgets('RoundedDropdown displays correctly with basic properties', (WidgetTester tester) async {
+    testWidgets('RoundedDropdown displays correctly with basic properties', (
+      WidgetTester tester,
+    ) async {
       const testOptions = ['Option 1', 'Option 2', 'Option 3'];
       String? selectedValue = testOptions[0];
 
@@ -33,7 +35,9 @@ void main() {
       expect(find.byIcon(Icons.keyboard_arrow_down_rounded), findsOneWidget);
     });
 
-    testWidgets('RoundedDropdown can be tapped to show options', (WidgetTester tester) async {
+    testWidgets('RoundedDropdown can be tapped to show options', (
+      WidgetTester tester,
+    ) async {
       const testOptions = ['Currency 1', 'Currency 2', 'Currency 3'];
       String? selectedValue = testOptions[0];
 

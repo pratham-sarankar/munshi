@@ -225,7 +225,7 @@ class _TransactionsScreenState extends State<TransactionsScreen>
                         decoration: InputDecoration(
                           hintText: 'Search transactions...',
                           prefixIcon: Icon(
-                            Icons.search,
+                            Iconsax.search_normal_1_outline,
                             color: colorScheme.onSurfaceVariant,
                           ),
                           filled: true,

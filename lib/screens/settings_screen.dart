@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:icons_plus/icons_plus.dart';
+import 'package:munshi/providers/theme_provider.dart';
+import 'package:provider/provider.dart';
 import 'package:munshi/widgets/rounded_dropdown.dart';
 import 'package:munshi/widgets/app_version_widget.dart';
 
@@ -19,7 +21,6 @@ class _SettingsScreenState extends State<SettingsScreen>
   // Settings state
   bool _expenseAlerts = true;
   bool _monthlySummary = false;
-  String _selectedTheme = 'Auto';
   String _selectedCurrency = '₹ (INR)';
   String _defaultMonthView = 'This Month';
 
@@ -153,25 +154,43 @@ class _SettingsScreenState extends State<SettingsScreen>
                         ),
                         _SettingsTile(
                           title: 'Theme',
-                          trailing: RoundedDropdown<String>(
-                            value: _selectedTheme,
-                            onChanged: (String? value) =>
-                                setState(() => _selectedTheme = value!),
-                            items: _themeOptions.map<DropdownMenuItem<String>>((
-                              String option,
-                            ) {
-                              return DropdownMenuItem<String>(
-                                value: option,
-                                child: Text(
-                                  option,
-                                  style: Theme.of(context).textTheme.bodyMedium
-                                      ?.copyWith(
-                                        color: colorScheme.primary,
-                                        fontWeight: FontWeight.w500,
-                                      ),
+                          trailing: Consumer<ThemeProvider>(
+                            builder: (context, themeProvider, child) {
+                              return RoundedDropdown<String>(
+                                value: themeProvider.themeModeString,
+                                onChanged: (String? value) {
+                                  if (value != null) {
+                                    themeProvider.setThemeMode(value);
+                                    HapticFeedback.lightImpact();
+                                  }
+                                },
+                                icon: Icon(
+                                  Icons.keyboard_arrow_down,
+                                  color: colorScheme.onSurface.withValues(
+                                    alpha: 0.6,
+                                  ),
                                 ),
+                                items: _themeOptions
+                                    .map<DropdownMenuItem<String>>((
+                                      String option,
+                                    ) {
+                                      return DropdownMenuItem<String>(
+                                        value: option,
+                                        child: Text(
+                                          option,
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .bodyMedium
+                                              ?.copyWith(
+                                                color: colorScheme.primary,
+                                                fontWeight: FontWeight.w500,
+                                              ),
+                                        ),
+                                      );
+                                    })
+                                    .toList(),
                               );
-                            }).toList(),
+                            },
                           ),
                         ),
                       ],
