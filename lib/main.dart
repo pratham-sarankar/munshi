@@ -22,13 +22,11 @@ void main() async {
   // Preserve the native splash screen until initialization is complete.
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
 
-  // Register all app-wide singletons/services using get_it.
-  setupLocator();
+  // Register all app-wide singletons/services using get_it, including SharedPreferences and ThemeProvider.
+  // This ensures SharedPreferences is ready before ThemeProvider is created, allowing synchronous theme loading.
+  await setupLocator();
 
-  // Asynchronously initialize the ThemeProvider (loads theme from SharedPreferences).
-  await locator<ThemeProvider>().init();
-
-  // Remove the splash screen after initialization is complete.
+  // Remove the splash screen after all dependencies are initialized.
   FlutterNativeSplash.remove();
 
   // Inject ThemeProvider into the widget tree using Provider, then launch the app.

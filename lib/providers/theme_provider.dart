@@ -19,10 +19,11 @@ class ThemeProvider extends ChangeNotifier {
     }
   }
 
-  ThemeProvider();
+  final SharedPreferences prefs;
 
-  Future<void> init() async {
-    await _loadThemeFromPrefs();
+  /// Creates a ThemeProvider and loads the theme synchronously from SharedPreferences.
+  ThemeProvider(this.prefs) {
+    _loadThemeFromPrefs();
   }
 
   void setThemeMode(String themeString) {
@@ -48,15 +49,13 @@ class ThemeProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> _loadThemeFromPrefs() async {
-    final prefs = await SharedPreferences.getInstance();
+  void _loadThemeFromPrefs() {
     final themeModeIndex = prefs.getInt(_themeKey) ?? 0;
     _themeMode = ThemeMode.values[themeModeIndex];
     notifyListeners();
   }
 
-  void _saveThemeToPrefs() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setInt(_themeKey, _themeMode.index);
+  void _saveThemeToPrefs() {
+    prefs.setInt(_themeKey, _themeMode.index);
   }
 }
