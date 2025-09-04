@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:icons_plus/icons_plus.dart';
@@ -521,7 +520,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                 size: 14,
                 color: colorScheme.primary,
               ),
-              iconAlignment: IconAlignment.start,
+              iconAlignment: IconAlignment.end,
               label: Text(
                 'View All',
                 style: TextStyle(

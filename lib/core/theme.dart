@@ -8,7 +8,7 @@ class MaterialTheme {
   static ColorScheme lightScheme() {
     return const ColorScheme(
       brightness: Brightness.light,
-      primary: Color(0xff575992),
+      primary: Color(0xff24265c),
       surfaceTint: Color(0xff575992),
       onPrimary: Color(0xffffffff),
       primaryContainer: Color(0xffe1e0ff),
@@ -343,7 +343,7 @@ class MaterialTheme {
       bodyColor: colorScheme.onSurface,
       displayColor: colorScheme.onSurface,
     ),
-    scaffoldBackgroundColor: colorScheme.background,
+    scaffoldBackgroundColor: colorScheme.surface,
     canvasColor: colorScheme.surface,
   );
 
