@@ -39,7 +39,7 @@ dependencies:
   provider: ^6.1.2
   shared_preferences: ^2.3.2
   package_info_plus: ^8.0.2
-  get_it: ^7.6.0
+  get_it: ^8.2.0
   flutter_native_splash: ^2.4.6
 
 dev_dependencies:
