@@ -218,7 +218,7 @@ class _SettingsScreenState extends State<SettingsScreen>
                               setState(() => _expenseAlerts = value);
                               HapticFeedback.lightImpact();
                             },
-                            activeColor: colorScheme.primary,
+                            activeThumbColor: colorScheme.primary,
                           ),
                         ),
                         _SettingsTile(
@@ -230,7 +230,7 @@ class _SettingsScreenState extends State<SettingsScreen>
                               setState(() => _monthlySummary = value);
                               HapticFeedback.lightImpact();
                             },
-                            activeColor: colorScheme.primary,
+                            activeThumbColor: colorScheme.primary,
                           ),
                         ),
                       ],

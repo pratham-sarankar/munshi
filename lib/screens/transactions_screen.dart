@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:icons_plus/icons_plus.dart';
-import 'package:munshi/screens/home_screen.dart';
+import 'package:munshi/features/dashboard/screens/home_screen.dart';
 import 'package:munshi/widgets/transaction_tile.dart';
 
 class TransactionsScreen extends StatefulWidget {
