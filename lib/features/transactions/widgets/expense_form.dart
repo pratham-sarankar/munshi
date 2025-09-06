@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
@@ -51,12 +52,13 @@ class _ExpenseFormState extends State<ExpenseForm> {
           backgroundColor: Colors.green,
         ),
       );
-
       // Process the form data
-      print('Form Data: $formData');
-      print('Amount: ${formData['amount']}');
-      print('Category: ${formData['category']}');
-      print('DateTime: ${formData['datetime']}');
+      if (kDebugMode) {
+        print('Form Data: $formData');
+        print('Amount: ${formData['amount']}');
+        print('Category: ${formData['category']}');
+        print('DateTime: ${formData['datetime']}');
+      }
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(

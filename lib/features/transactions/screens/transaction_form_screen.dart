@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:icons_plus/icons_plus.dart';
 import 'package:munshi/features/transactions/widgets/expense_form.dart';
@@ -14,7 +13,6 @@ class TransactionFormScreen extends StatefulWidget {
 class _TransactionFormScreenState extends State<TransactionFormScreen> {
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
     return DefaultTabController(
       length: 2,
       initialIndex: 0,

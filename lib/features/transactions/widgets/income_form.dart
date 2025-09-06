@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
@@ -26,14 +27,6 @@ class _IncomeFormState extends State<IncomeForm> {
     {'value': 'other', 'label': 'Other', 'icon': Iconsax.more_outline},
   ];
 
-  final List<Map<String, dynamic>> _frequencies = [
-    {'value': 'one_time', 'label': 'One Time'},
-    {'value': 'daily', 'label': 'Daily'},
-    {'value': 'weekly', 'label': 'Weekly'},
-    {'value': 'monthly', 'label': 'Monthly'},
-    {'value': 'yearly', 'label': 'Yearly'},
-  ];
-
   void _submitForm() {
     if (_formKey.currentState?.saveAndValidate() ?? false) {
       // Form is valid, get the values
@@ -45,15 +38,16 @@ class _IncomeFormState extends State<IncomeForm> {
           backgroundColor: Colors.green,
         ),
       );
-
       // Process the form data
-      print('Form Data: $formData');
-      print('Amount: ${formData['amount']}');
-      print('Category: ${formData['category']}');
-      print('Frequency: ${formData['frequency']}');
-      print('DateTime: ${formData['datetime']}');
-      print('Description: ${formData['description']}');
-      print('Is Taxable: ${formData['is_taxable']}');
+      if (kDebugMode) {
+        print('Form Data: $formData');
+        print('Amount: ${formData['amount']}');
+        print('Category: ${formData['category']}');
+        print('Frequency: ${formData['frequency']}');
+        print('DateTime: ${formData['datetime']}');
+        print('Description: ${formData['description']}');
+        print('Is Taxable: ${formData['is_taxable']}');
+      }
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
