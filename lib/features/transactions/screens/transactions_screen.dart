@@ -1,9 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:icons_plus/icons_plus.dart';
+import 'package:munshi/core/service_locator.dart';
 import 'package:munshi/features/transactions/models/transaction.dart';
 import 'package:munshi/features/transactions/screens/transaction_form_screen.dart';
+import 'package:munshi/features/transactions/services/transaction_service.dart';
 import 'package:munshi/widgets/transaction_tile.dart';
 
+/// Screen for displaying and managing all transactions.
+/// 
+/// This screen provides a comprehensive view of all user transactions
+/// with features including search, filtering by category and timeframe,
+/// and the ability to add new transactions. It displays real-time data
+/// from the database and automatically updates when transactions change.
 class TransactionsScreen extends StatefulWidget {
   const TransactionsScreen({super.key});
 
@@ -21,83 +29,47 @@ class _TransactionsScreenState extends State<TransactionsScreen>
 
   final TextEditingController _searchController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
+  
+  /// Transaction service for database operations
+  late final TransactionService _transactionService;
 
   String _selectedFilter = 'All';
   String _selectedTimeframe = 'This Month';
   bool _isSearchActive = false;
   bool _showFab = true;
 
+  /// Available filter options for categories
   final List<String> _filterOptions = [
     'All',
-    'Food',
+    'Food & Dining',
     'Shopping',
-    'Transport',
+    'Transportation',
     'Entertainment',
-    'Bills',
-    'Health',
+    'Bills & Utilities',
+    'Healthcare',
+    'Education',
+    'Salary',
+    'Business',
+    'Investment',
   ];
 
+  /// Available timeframe options for filtering transactions
   final List<String> _timeframeOptions = [
     'Today',
     'This Week',
     'This Month',
     'Last Month',
     'This Year',
+    'All Time',
   ];
-
-  final List<Transaction> _allTransactions = [
-    Transaction(
-      merchant: "Zomato",
-      amount: 250,
-      date: "Today",
-      time: "2:30 PM",
-      icon: IonIcons.restaurant,
-      color: const Color(0xFFE23744),
-      category: "Food & Dining",
-    ),
-    Transaction(
-      merchant: "Amazon",
-      amount: 1200,
-      date: "Yesterday",
-      time: "11:45 AM",
-      icon: IonIcons.bag_handle,
-      color: const Color(0xFFFF9900),
-      category: "Shopping",
-    ),
-    Transaction(
-      merchant: "Electricity Bill",
-      amount: 1800,
-      date: "Aug 25",
-      time: "9:15 AM",
-      icon: IonIcons.flash,
-      color: const Color(0xFF4CAF50),
-      category: "Utilities",
-    ),
-    Transaction(
-      merchant: "Uber",
-      amount: 400,
-      date: "Aug 25",
-      time: "7:30 PM",
-      icon: IonIcons.car,
-      color: const Color(0xFF000000),
-      category: "Transportation",
-    ),
-    Transaction(
-      merchant: "Burger King",
-      amount: 600,
-      date: "Aug 24",
-      time: "1:20 PM",
-      icon: IonIcons.fast_food,
-      color: const Color(0xFFD62300),
-      category: "Food & Dining",
-    ),
-  ];
-
-  List<Transaction> _filteredTransactions = [];
 
   @override
   void initState() {
     super.initState();
+    
+    // Get the transaction service from dependency injection
+    _transactionService = locator<TransactionService>();
+    
     _animationController = AnimationController(
       duration: const Duration(milliseconds: 800),
       vsync: this,

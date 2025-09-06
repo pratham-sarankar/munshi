@@ -3,65 +3,185 @@ import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:icons_plus/icons_plus.dart';
+import 'package:munshi/core/service_locator.dart';
+import 'package:munshi/features/transactions/services/transaction_service.dart';
+import 'package:munshi/features/transactions/models/transaction.dart';
+import 'package:intl/intl.dart';
 
+/// Form widget for adding expense transactions.
+/// 
+/// This widget provides a user-friendly interface for entering expense
+/// transaction details including amount, merchant, category, date/time,
+/// and optional description. It validates input and saves the transaction
+/// to the database using the TransactionService.
 class ExpenseForm extends StatefulWidget {
   const ExpenseForm({super.key});
+  
   @override
   State<ExpenseForm> createState() => _ExpenseFormState();
 }
 
 class _ExpenseFormState extends State<ExpenseForm> {
   final _formKey = GlobalKey<FormBuilderState>();
+  
+  /// Transaction service for database operations
+  late final TransactionService _transactionService;
+  
+  /// Flag to track form submission state
+  bool _isSubmitting = false;
 
+  /// Available expense categories with their display information
   final List<Map<String, dynamic>> _categories = [
     {
-      'value': 'food_dining',
+      'value': 'Food & Dining',
       'label': 'Food & Dining',
       'icon': Iconsax.reserve_outline,
     },
     {
-      'value': 'transportation',
+      'value': 'Transportation',
       'label': 'Transportation',
       'icon': Iconsax.car_outline,
     },
     {
-      'value': 'shopping',
+      'value': 'Shopping',
       'label': 'Shopping',
       'icon': Iconsax.shopping_bag_outline,
     },
     {
-      'value': 'entertainment',
+      'value': 'Entertainment',
       'label': 'Entertainment',
       'icon': Iconsax.music_outline,
     },
     {
-      'value': 'healthcare',
+      'value': 'Healthcare',
       'label': 'Healthcare',
       'icon': Iconsax.health_outline,
     },
+    {
+      'value': 'Bills & Utilities',
+      'label': 'Bills & Utilities',
+      'icon': Iconsax.receipt_outline,
+    },
+    {
+      'value': 'Education',
+      'label': 'Education',
+      'icon': Iconsax.book_outline,
+    },
+    {
+      'value': 'Insurance',
+      'label': 'Insurance',
+      'icon': Iconsax.shield_tick_outline,
+    },
+    {
+      'value': 'Other',
+      'label': 'Other',
+      'icon': Iconsax.more_outline,
+    },
   ];
 
-  void _submitForm() {
-    if (_formKey.currentState?.saveAndValidate() ?? false) {
-      // Form is valid, get the values
-      final formData = _formKey.currentState!.value;
+  @override
+  void initState() {
+    super.initState();
+    _transactionService = locator<TransactionService>();
+  }
 
+  /// Submits the expense form and saves the transaction to the database.
+  /// 
+  /// Validates the form data, creates a new expense transaction,
+  /// and saves it using the TransactionService. Shows appropriate
+  /// feedback to the user on success or error.
+  Future<void> _submitForm() async {
+    if (!(_formKey.currentState?.saveAndValidate() ?? false)) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Expense submitted successfully!'),
-          backgroundColor: Colors.green,
+          content: Text('Please correct the errors in the form'),
+          backgroundColor: Colors.red,
         ),
       );
-      // Process the form data
-      if (kDebugMode) {
-        print('Form Data: $formData');
-        print('Amount: ${formData['amount']}');
-        print('Category: ${formData['category']}');
-        print('DateTime: ${formData['datetime']}');
+      return;
+    }
+
+    setState(() {
+      _isSubmitting = true;
+    });
+
+    try {
+      // Get the form values
+      final formData = _formKey.currentState!.value;
+      
+      // Extract and validate form data
+      final amount = double.tryParse(formData['amount']?.toString() ?? '0') ?? 0.0;
+      final merchant = formData['merchant']?.toString() ?? '';
+      final category = formData['category']?.toString() ?? '';
+      final dateTime = formData['datetime'] as DateTime? ?? DateTime.now();
+      final description = formData['description']?.toString();
+
+      // Validate required fields
+      if (amount <= 0) {
+        throw Exception('Amount must be greater than 0');
       }
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
+      if (merchant.isEmpty) {
+        throw Exception('Merchant name is required');
+      }
+      if (category.isEmpty) {
+        throw Exception('Category is required');
+      }
+
+      // Format time for storage
+      final timeString = DateFormat('h:mm a').format(dateTime);
+
+      // Create the expense transaction (amount is stored as negative for expenses)
+      await _transactionService.addTransaction(
+        merchant: merchant,
+        amount: -amount, // Negative amount for expenses
+        date: dateTime,
+        time: timeString,
+        category: category,
+        isIncome: false,
+        description: description?.isNotEmpty == true ? description : null,
+      );
+
+      // Show success message
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Expense added successfully!'),
+            backgroundColor: Colors.green,
+          ),
+        );
+
+        // Reset the form
+        _formKey.currentState?.reset();
+        
+        // Navigate back to the previous screen
+        Navigator.of(context).pop();
+      }
+
+      if (kDebugMode) {
+        print('Expense saved: $merchant - ₹$amount in $category on ${DateFormat('yyyy-MM-dd').format(dateTime)}');
+      }
+
+    } catch (error) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Failed to add expense: ${error.toString()}'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+      
+      if (kDebugMode) {
+        print('Error saving expense: $error');
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isSubmitting = false;
+        });
+      }
+    }
+  }
           content: Text('Please fix the errors in the form'),
           backgroundColor: Colors.red,
         ),
@@ -96,6 +216,23 @@ class _ExpenseFormState extends State<ExpenseForm> {
                 FormBuilderValidators.min(
                   0.01,
                   errorText: 'Amount must be greater than zero',
+                ),
+              ]),
+            ),
+            const SizedBox(height: 20),
+            const Text('Merchant'),
+            const SizedBox(height: 5),
+            FormBuilderTextField(
+              name: 'merchant',
+              decoration: const InputDecoration(
+                prefixIcon: Icon(Iconsax.shop_outline),
+                hintText: 'Enter merchant name (e.g., Amazon, Zomato)',
+              ),
+              validator: FormBuilderValidators.compose([
+                FormBuilderValidators.required(errorText: 'Merchant name is required'),
+                FormBuilderValidators.maxLength(
+                  100,
+                  errorText: 'Merchant name cannot exceed 100 characters',
                 ),
               ]),
             ),
@@ -148,8 +285,23 @@ class _ExpenseFormState extends State<ExpenseForm> {
               lastDate: DateTime.now(),
             ),
             const SizedBox(height: 20),
+            const Text('Description (Optional)'),
+            const SizedBox(height: 5),
+            FormBuilderTextField(
+              name: 'description',
+              maxLines: 3,
+              decoration: const InputDecoration(
+                prefixIcon: Icon(Iconsax.note_outline),
+                hintText: 'Add a note about this expense (optional)',
+              ),
+              validator: FormBuilderValidators.maxLength(
+                500,
+                errorText: 'Description cannot exceed 500 characters',
+              ),
+            ),
+            const SizedBox(height: 20),
             FilledButton(
-              onPressed: _submitForm,
+              onPressed: _isSubmitting ? null : _submitForm,
               style: ButtonStyle(
                 minimumSize: WidgetStatePropertyAll(Size(double.infinity, 50)),
                 shape: WidgetStatePropertyAll(
@@ -158,7 +310,23 @@ class _ExpenseFormState extends State<ExpenseForm> {
                   ),
                 ),
               ),
-              child: const Text("Submit"),
+              child: _isSubmitting
+                  ? const Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        SizedBox(
+                          width: 20,
+                          height: 20,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                          ),
+                        ),
+                        SizedBox(width: 8),
+                        Text("Adding Expense..."),
+                      ],
+                    )
+                  : const Text("Submit"),
             ),
           ],
         ),
