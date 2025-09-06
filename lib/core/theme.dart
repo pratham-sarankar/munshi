@@ -345,6 +345,12 @@ class MaterialTheme {
     ),
     scaffoldBackgroundColor: colorScheme.surface,
     canvasColor: colorScheme.surface,
+    inputDecorationTheme: InputDecorationThemeData(
+      filled: true,
+      floatingLabelBehavior: FloatingLabelBehavior.auto,
+      border: UnderlineInputBorder(borderRadius: BorderRadius.circular(10)),
+      contentPadding: EdgeInsets.symmetric(horizontal: 15, vertical: 15),
+    ),
   );
 
   List<ExtendedColor> get extendedColors => [];

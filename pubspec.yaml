@@ -41,6 +41,9 @@ dependencies:
   package_info_plus: ^8.0.2
   get_it: ^8.2.0
   flutter_native_splash: ^2.4.6
+  flutter_form_builder: ^10.2.0
+  form_builder_validators: ^11.2.0
+  intl: ^0.20.2
 
 dev_dependencies:
   flutter_test:

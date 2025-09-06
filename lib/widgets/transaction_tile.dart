@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:munshi/features/dashboard/screens/home_screen.dart';
+import 'package:munshi/features/transactions/models/transaction.dart';
 
 class TransactionTile extends StatelessWidget {
   const TransactionTile({
@@ -38,19 +38,16 @@ class TransactionTile extends StatelessWidget {
             ),
             child: Row(
               children: [
-                Hero(
-                  tag: 'transaction_${transaction.date}',
-                  child: Container(
-                    padding: const EdgeInsets.all(10),
-                    decoration: BoxDecoration(
-                      color: transaction.color.withValues(alpha: 0.12),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Icon(
-                      transaction.icon,
-                      color: transaction.color,
-                      size: 22,
-                    ),
+                Container(
+                  padding: const EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                    color: transaction.color.withValues(alpha: 0.12),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Icon(
+                    transaction.icon,
+                    color: transaction.color,
+                    size: 22,
                   ),
                 ),
                 const SizedBox(width: 16),

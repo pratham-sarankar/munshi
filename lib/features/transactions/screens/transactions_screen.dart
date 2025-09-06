@@ -1,6 +1,8 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:icons_plus/icons_plus.dart';
-import 'package:munshi/features/dashboard/screens/home_screen.dart';
+import 'package:munshi/features/transactions/models/transaction.dart';
+import 'package:munshi/features/transactions/screens/transaction_form_screen.dart';
 import 'package:munshi/widgets/transaction_tile.dart';
 
 class TransactionsScreen extends StatefulWidget {
@@ -338,7 +340,15 @@ class _TransactionsScreenState extends State<TransactionsScreen>
         child: ScaleTransition(
           scale: _fabAnimation,
           child: FloatingActionButton.extended(
-            onPressed: () => _showAddTransactionSheet(colorScheme),
+            onPressed: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) {
+                    return TransactionFormScreen();
+                  },
+                ),
+              );
+            },
             icon: const Icon(Iconsax.add_outline),
             label: const Text(
               'Add Transaction',
@@ -459,51 +469,6 @@ class _TransactionsScreenState extends State<TransactionsScreen>
     );
   }
 
-  void _showAddTransactionSheet(ColorScheme colorScheme) {
-    // Implementation for add transaction bottom sheet
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: colorScheme.surface,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-      ),
-      builder: (context) => Container(
-        padding: EdgeInsets.fromLTRB(
-          24,
-          24,
-          24,
-          MediaQuery.of(context).viewInsets.bottom + 24,
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              'Add New Transaction',
-              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                fontWeight: FontWeight.bold,
-                color: colorScheme.onSurface,
-              ),
-            ),
-            const SizedBox(height: 24),
-            // Add form fields here
-            Text(
-              'Transaction form coming soon...',
-              style: TextStyle(
-                color: colorScheme.onSurface.withValues(alpha: 0.6),
-              ),
-            ),
-            const SizedBox(height: 24),
-            FilledButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text('Close'),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
   void _showTransactionDetails(
     Transaction transaction,
     ColorScheme colorScheme,
@@ -550,27 +515,20 @@ class _TransactionsScreenState extends State<TransactionsScreen>
                       // Header Section
                       Column(
                         children: [
-                          Hero(
-                            tag: 'transaction_${transaction.date}',
-                            child: Container(
-                              padding: const EdgeInsets.all(18),
-                              decoration: BoxDecoration(
-                                color: transaction.color.withValues(
-                                  alpha: 0.12,
-                                ),
-                                borderRadius: BorderRadius.circular(20),
-                                border: Border.all(
-                                  color: transaction.color.withValues(
-                                    alpha: 0.2,
-                                  ),
-                                  width: 1,
-                                ),
+                          Container(
+                            padding: const EdgeInsets.all(18),
+                            decoration: BoxDecoration(
+                              color: transaction.color.withValues(alpha: 0.12),
+                              borderRadius: BorderRadius.circular(20),
+                              border: Border.all(
+                                color: transaction.color.withValues(alpha: 0.2),
+                                width: 1,
                               ),
-                              child: Icon(
-                                transaction.icon,
-                                color: transaction.color,
-                                size: 36,
-                              ),
+                            ),
+                            child: Icon(
+                              transaction.icon,
+                              color: transaction.color,
+                              size: 36,
                             ),
                           ),
                           const SizedBox(height: 20),

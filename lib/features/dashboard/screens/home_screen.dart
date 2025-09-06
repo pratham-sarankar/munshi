@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:icons_plus/icons_plus.dart';
 import 'package:munshi/features/dashboard/widgets/dashboard_stats_widget.dart';
 import 'package:munshi/features/dashboard/widgets/dashboard_summary_card.dart';
+import 'package:munshi/features/transactions/models/transaction.dart';
 import 'package:munshi/widgets/transaction_tile.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -389,24 +390,4 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       },
     );
   }
-}
-
-class Transaction {
-  final String merchant;
-  final double amount;
-  final String date;
-  final String time;
-  final String category;
-  final IconData icon;
-  final Color color;
-
-  Transaction({
-    required this.merchant,
-    required this.amount,
-    required this.date,
-    required this.time,
-    required this.category,
-    required this.icon,
-    required this.color,
-  });
 }

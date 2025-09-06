@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:icons_plus/icons_plus.dart';
 import 'package:munshi/features/dashboard/screens/home_screen.dart';
-import 'package:munshi/screens/settings_screen.dart';
-import 'package:munshi/screens/transactions_screen.dart';
+import 'package:munshi/features/settings/screens/settings_screen.dart';
+import 'package:munshi/features/transactions/screens/transactions_screen.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});

@@ -4,7 +4,7 @@ import 'package:icons_plus/icons_plus.dart';
 import 'package:munshi/providers/theme_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:munshi/widgets/rounded_dropdown.dart';
-import 'package:munshi/widgets/app_version_widget.dart';
+import 'package:munshi/features/settings/widgets/app_version_widget.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
