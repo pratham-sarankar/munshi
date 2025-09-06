@@ -94,7 +94,6 @@ class _TransactionsScreenState extends State<TransactionsScreen>
       ),
     );
 
-    _filteredTransactions = _allTransactions;
     _animationController.forward();
     _fabAnimationController.forward();
 
@@ -116,24 +115,6 @@ class _TransactionsScreenState extends State<TransactionsScreen>
     _searchController.dispose();
     _scrollController.dispose();
     super.dispose();
-  }
-
-  void _filterTransactions() {
-    setState(() {
-      _filteredTransactions = _allTransactions.where((transaction) {
-        bool matchesFilter =
-            _selectedFilter == 'All' || transaction.category == _selectedFilter;
-        bool matchesSearch =
-            _searchController.text.isEmpty ||
-            transaction.merchant.toLowerCase().contains(
-              _searchController.text.toLowerCase(),
-            ) ||
-            transaction.category.toLowerCase().contains(
-              _searchController.text.toLowerCase(),
-            );
-        return matchesFilter && matchesSearch;
-      }).toList();
-    });
   }
 
   String _formatCurrency(double amount) {
@@ -160,7 +141,7 @@ class _TransactionsScreenState extends State<TransactionsScreen>
               setState(() => _isSearchActive = !_isSearchActive);
               if (!_isSearchActive) {
                 _searchController.clear();
-                _filterTransactions();
+                setState(() {}); // Trigger rebuild to update filter
               }
             },
             icon: Icon(
@@ -192,7 +173,7 @@ class _TransactionsScreenState extends State<TransactionsScreen>
                       ),
                       child: TextField(
                         controller: _searchController,
-                        onChanged: (_) => _filterTransactions(),
+                        onChanged: (_) => setState(() {}), // Trigger rebuild for search
                         autofocus: true,
                         decoration: InputDecoration(
                           hintText: 'Search transactions...',
@@ -241,7 +222,6 @@ class _TransactionsScreenState extends State<TransactionsScreen>
                     selected: isSelected,
                     onSelected: (selected) {
                       setState(() => _selectedFilter = filter);
-                      _filterTransactions();
                     },
                     backgroundColor: colorScheme.surface,
                     selectedColor: colorScheme.primary,
@@ -263,41 +243,11 @@ class _TransactionsScreenState extends State<TransactionsScreen>
                 builder: (context, child) {
                   return Transform.translate(
                     offset: Offset(0, _slideAnimation.value),
-                    child: _filteredTransactions.isEmpty
-                        ? _buildEmptyState(colorScheme)
-                        : ListView.separated(
-                            controller: _scrollController,
-                            padding: const EdgeInsets.fromLTRB(20, 10, 20, 100),
-                            itemCount: _filteredTransactions.length,
-                            separatorBuilder: (context, index) =>
-                                const SizedBox(height: 12),
-                            itemBuilder: (context, index) {
-                              final transaction = _filteredTransactions[index];
-                              return TweenAnimationBuilder<double>(
-                                duration: Duration(
-                                  milliseconds: 300 + (index * 50),
-                                ),
-                                tween: Tween<double>(begin: 0.0, end: 1.0),
-                                builder: (context, value, child) {
-                                  return Transform.translate(
-                                    offset: Offset(50 * (1 - value), 0),
-                                    child: Opacity(
-                                      opacity: value,
-                                      child: TransactionTile(
-                                        transaction: transaction,
-                                        onTap: () {
-                                          _showTransactionDetails(
-                                            transaction,
-                                            colorScheme,
-                                          );
-                                        },
-                                      ),
-                                    ),
-                                  );
-                                },
-                              );
-                            },
-                          ),
+                    child: _buildTransactionsList(colorScheme),
+                  );
+                },
+              ),
+            ),
                   );
                 },
               ),
@@ -328,6 +278,242 @@ class _TransactionsScreenState extends State<TransactionsScreen>
             backgroundColor: colorScheme.primary,
             foregroundColor: colorScheme.onPrimary,
           ),
+        ),
+      ),
+    );
+  }
+
+  /// Builds the transactions list with real-time data from the database.
+  /// 
+  /// Uses StreamBuilder to display transactions with filtering, search,
+  /// and proper loading/error states. Applies category and timeframe filters
+  /// and search functionality to the database stream.
+  Widget _buildTransactionsList(ColorScheme colorScheme) {
+    return StreamBuilder<List<Transaction>>(
+      stream: _getFilteredTransactionsStream(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return _buildLoadingState();
+        }
+
+        if (snapshot.hasError) {
+          return _buildErrorState(snapshot.error.toString(), colorScheme);
+        }
+
+        final transactions = snapshot.data ?? [];
+
+        if (transactions.isEmpty) {
+          return _buildEmptyState(colorScheme);
+        }
+
+        return ListView.separated(
+          controller: _scrollController,
+          padding: const EdgeInsets.fromLTRB(20, 10, 20, 100),
+          itemCount: transactions.length,
+          separatorBuilder: (context, index) => const SizedBox(height: 12),
+          itemBuilder: (context, index) {
+            final transaction = transactions[index];
+            return TweenAnimationBuilder<double>(
+              duration: Duration(
+                milliseconds: 300 + (index * 50),
+              ),
+              tween: Tween<double>(begin: 0.0, end: 1.0),
+              builder: (context, value, child) {
+                return Transform.translate(
+                  offset: Offset(50 * (1 - value), 0),
+                  child: Opacity(
+                    opacity: value,
+                    child: TransactionTile(
+                      transaction: transaction,
+                      onTap: () {
+                        _showTransactionDetails(
+                          transaction,
+                          colorScheme,
+                        );
+                      },
+                    ),
+                  ),
+                );
+              },
+            );
+          },
+        );
+      },
+    );
+  }
+
+  /// Gets a filtered stream of transactions based on current filter criteria.
+  /// 
+  /// Applies category filtering, timeframe filtering, and search functionality
+  /// to the database stream. Returns transactions that match all criteria.
+  Stream<List<Transaction>> _getFilteredTransactionsStream() {
+    // Get the base stream with timeframe filtering
+    Stream<List<Transaction>> baseStream;
+    
+    final now = DateTime.now();
+    
+    switch (_selectedTimeframe) {
+      case 'Today':
+        final startOfDay = DateTime(now.year, now.month, now.day);
+        final endOfDay = DateTime(now.year, now.month, now.day, 23, 59, 59);
+        baseStream = _transactionService.watchTransactionsByDateRange(startOfDay, endOfDay);
+        break;
+      case 'This Week':
+        final startOfWeek = now.subtract(Duration(days: now.weekday - 1));
+        final startOfWeekDay = DateTime(startOfWeek.year, startOfWeek.month, startOfWeek.day);
+        final endOfWeek = startOfWeekDay.add(const Duration(days: 6, hours: 23, minutes: 59, seconds: 59));
+        baseStream = _transactionService.watchTransactionsByDateRange(startOfWeekDay, endOfWeek);
+        break;
+      case 'This Month':
+        final startOfMonth = DateTime(now.year, now.month, 1);
+        final endOfMonth = DateTime(now.year, now.month + 1, 0, 23, 59, 59);
+        baseStream = _transactionService.watchTransactionsByDateRange(startOfMonth, endOfMonth);
+        break;
+      case 'Last Month':
+        final startOfLastMonth = DateTime(now.year, now.month - 1, 1);
+        final endOfLastMonth = DateTime(now.year, now.month, 0, 23, 59, 59);
+        baseStream = _transactionService.watchTransactionsByDateRange(startOfLastMonth, endOfLastMonth);
+        break;
+      case 'This Year':
+        final startOfYear = DateTime(now.year, 1, 1);
+        final endOfYear = DateTime(now.year, 12, 31, 23, 59, 59);
+        baseStream = _transactionService.watchTransactionsByDateRange(startOfYear, endOfYear);
+        break;
+      case 'All Time':
+      default:
+        baseStream = _transactionService.watchAllTransactions();
+        break;
+    }
+
+    // Apply additional filtering
+    return baseStream.map((transactions) {
+      var filteredTransactions = transactions;
+
+      // Apply category filter
+      if (_selectedFilter != 'All') {
+        filteredTransactions = filteredTransactions
+            .where((transaction) => transaction.category == _selectedFilter)
+            .toList();
+      }
+
+      // Apply search filter
+      if (_isSearchActive && _searchController.text.isNotEmpty) {
+        final searchQuery = _searchController.text.toLowerCase();
+        filteredTransactions = filteredTransactions
+            .where((transaction) =>
+                transaction.merchant.toLowerCase().contains(searchQuery) ||
+                transaction.category.toLowerCase().contains(searchQuery) ||
+                (transaction.description?.toLowerCase().contains(searchQuery) ?? false))
+            .toList();
+      }
+
+      return filteredTransactions;
+    });
+  }
+
+  /// Builds a loading state widget with shimmer effect.
+  Widget _buildLoadingState() {
+    return ListView.separated(
+      padding: const EdgeInsets.fromLTRB(20, 10, 20, 100),
+      itemCount: 8, // Show 8 shimmer items
+      separatorBuilder: (context, index) => const SizedBox(height: 12),
+      itemBuilder: (context, index) {
+        return Container(
+          height: 72,
+          decoration: BoxDecoration(
+            color: Theme.of(context).colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
+            borderRadius: BorderRadius.circular(16),
+          ),
+          child: Row(
+            children: [
+              const SizedBox(width: 16),
+              Container(
+                width: 40,
+                height: 40,
+                decoration: BoxDecoration(
+                  color: Theme.of(context).colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      width: double.infinity,
+                      height: 14,
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
+                        borderRadius: BorderRadius.circular(4),
+                      ),
+                    ),
+                    const SizedBox(height: 6),
+                    Container(
+                      width: 120,
+                      height: 12,
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
+                        borderRadius: BorderRadius.circular(4),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(width: 12),
+              Container(
+                width: 60,
+                height: 14,
+                decoration: BoxDecoration(
+                  color: Theme.of(context).colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
+                  borderRadius: BorderRadius.circular(4),
+                ),
+              ),
+              const SizedBox(width: 16),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  /// Builds an error state widget when data loading fails.
+  Widget _buildErrorState(String error, ColorScheme colorScheme) {
+    return Center(
+      child: Container(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.error_outline,
+              size: 64,
+              color: colorScheme.error,
+            ),
+            const SizedBox(height: 16),
+            Text(
+              'Failed to load transactions',
+              style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                color: colorScheme.onSurface,
+              ),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              error,
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                color: colorScheme.onSurfaceVariant,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 24),
+            FilledButton(
+              onPressed: () {
+                setState(() {}); // Trigger rebuild to retry
+              },
+              child: const Text('Retry'),
+            ),
+          ],
         ),
       ),
     );
@@ -426,7 +612,7 @@ class _TransactionsScreenState extends State<TransactionsScreen>
                 Expanded(
                   child: FilledButton(
                     onPressed: () {
-                      _filterTransactions();
+                      setState(() {}); // Trigger rebuild to apply filters
                       Navigator.pop(context);
                     },
                     child: const Text('Apply'),
