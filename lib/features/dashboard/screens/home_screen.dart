@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:icons_plus/icons_plus.dart';
+import 'package:munshi/core/database/app_database.dart';
 import 'package:munshi/features/dashboard/widgets/dashboard_stats_widget.dart';
 import 'package:munshi/features/dashboard/widgets/dashboard_summary_card.dart';
-import 'package:munshi/features/transactions/models/transaction.dart';
-import 'package:munshi/widgets/transaction_tile.dart';
+import 'package:munshi/features/transactions/widgets/transaction_tile.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -28,53 +28,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   final int _transactionCount = 45;
   final double _biggestSpendAmount = 3200;
 
-  final List<Transaction> _recentTransactions = [
-    Transaction(
-      merchant: "Zomato",
-      amount: 250,
-      date: "Today",
-      time: "2:30 PM",
-      icon: IonIcons.restaurant,
-      color: const Color(0xFFE23744),
-      category: "Food & Dining",
-    ),
-    Transaction(
-      merchant: "Amazon",
-      amount: 1200,
-      date: "Yesterday",
-      time: "11:45 AM",
-      icon: IonIcons.bag_handle,
-      color: const Color(0xFFFF9900),
-      category: "Shopping",
-    ),
-    Transaction(
-      merchant: "Electricity Bill",
-      amount: 1800,
-      date: "Aug 25",
-      time: "9:15 AM",
-      icon: IonIcons.flash,
-      color: const Color(0xFF4CAF50),
-      category: "Utilities",
-    ),
-    Transaction(
-      merchant: "Uber",
-      amount: 400,
-      date: "Aug 25",
-      time: "7:30 PM",
-      icon: IonIcons.car,
-      color: const Color(0xFF000000),
-      category: "Transportation",
-    ),
-    Transaction(
-      merchant: "Burger King",
-      amount: 600,
-      date: "Aug 24",
-      time: "1:20 PM",
-      icon: IonIcons.fast_food,
-      color: const Color(0xFFD62300),
-      category: "Food & Dining",
-    ),
-  ];
+  final List<Transaction> _recentTransactions = [];
 
   @override
   void initState() {

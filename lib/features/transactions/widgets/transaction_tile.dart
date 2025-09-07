@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:munshi/features/transactions/models/transaction.dart';
+import 'package:munshi/core/database/app_database.dart';
 
 class TransactionTile extends StatelessWidget {
   const TransactionTile({
@@ -41,12 +41,12 @@ class TransactionTile extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.all(10),
                   decoration: BoxDecoration(
-                    color: transaction.color.withValues(alpha: 0.12),
+                    color: transaction.category.color.withValues(alpha: 0.12),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Icon(
-                    transaction.icon,
-                    color: transaction.color,
+                    transaction.category.icon,
+                    color: transaction.category.color,
                     size: 22,
                   ),
                 ),
@@ -56,7 +56,7 @@ class TransactionTile extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        transaction.merchant,
+                        'Zomato',
                         style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                           fontWeight: FontWeight.w600,
                           color: colorScheme.onSurface,
@@ -64,7 +64,7 @@ class TransactionTile extends StatelessWidget {
                       ),
                       const SizedBox(height: 2),
                       Text(
-                        transaction.category,
+                        transaction.category.name,
                         style: Theme.of(context).textTheme.bodySmall?.copyWith(
                           color: colorScheme.onSurface.withValues(alpha: 0.6),
                           fontWeight: FontWeight.w500,
@@ -72,7 +72,7 @@ class TransactionTile extends StatelessWidget {
                       ),
                       const SizedBox(height: 2),
                       Text(
-                        '${transaction.date} • ${transaction.time}',
+                        '${transaction.date} • 1:20 PM',
                         style: Theme.of(context).textTheme.bodySmall?.copyWith(
                           color: colorScheme.onSurface.withValues(alpha: 0.5),
                         ),

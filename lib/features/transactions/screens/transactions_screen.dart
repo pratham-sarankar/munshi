@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:icons_plus/icons_plus.dart';
-import 'package:munshi/features/transactions/models/transaction.dart';
+import 'package:munshi/core/database/app_database.dart';
 import 'package:munshi/features/transactions/screens/transaction_form_screen.dart';
-import 'package:munshi/widgets/transaction_tile.dart';
+import 'package:munshi/features/transactions/widgets/transaction_tile.dart';
 
 class TransactionsScreen extends StatefulWidget {
   const TransactionsScreen({super.key});
@@ -45,53 +45,7 @@ class _TransactionsScreenState extends State<TransactionsScreen>
     'This Year',
   ];
 
-  final List<Transaction> _allTransactions = [
-    Transaction(
-      merchant: "Zomato",
-      amount: 250,
-      date: "Today",
-      time: "2:30 PM",
-      icon: IonIcons.restaurant,
-      color: const Color(0xFFE23744),
-      category: "Food & Dining",
-    ),
-    Transaction(
-      merchant: "Amazon",
-      amount: 1200,
-      date: "Yesterday",
-      time: "11:45 AM",
-      icon: IonIcons.bag_handle,
-      color: const Color(0xFFFF9900),
-      category: "Shopping",
-    ),
-    Transaction(
-      merchant: "Electricity Bill",
-      amount: 1800,
-      date: "Aug 25",
-      time: "9:15 AM",
-      icon: IonIcons.flash,
-      color: const Color(0xFF4CAF50),
-      category: "Utilities",
-    ),
-    Transaction(
-      merchant: "Uber",
-      amount: 400,
-      date: "Aug 25",
-      time: "7:30 PM",
-      icon: IonIcons.car,
-      color: const Color(0xFF000000),
-      category: "Transportation",
-    ),
-    Transaction(
-      merchant: "Burger King",
-      amount: 600,
-      date: "Aug 24",
-      time: "1:20 PM",
-      icon: IonIcons.fast_food,
-      color: const Color(0xFFD62300),
-      category: "Food & Dining",
-    ),
-  ];
+  final List<Transaction> _allTransactions = [];
 
   List<Transaction> _filteredTransactions = [];
 
@@ -148,19 +102,7 @@ class _TransactionsScreenState extends State<TransactionsScreen>
 
   void _filterTransactions() {
     setState(() {
-      _filteredTransactions = _allTransactions.where((transaction) {
-        bool matchesFilter =
-            _selectedFilter == 'All' || transaction.category == _selectedFilter;
-        bool matchesSearch =
-            _searchController.text.isEmpty ||
-            transaction.merchant.toLowerCase().contains(
-              _searchController.text.toLowerCase(),
-            ) ||
-            transaction.category.toLowerCase().contains(
-              _searchController.text.toLowerCase(),
-            );
-        return matchesFilter && matchesSearch;
-      }).toList();
+      _filteredTransactions = _allTransactions;
     });
   }
 
@@ -517,30 +459,25 @@ class _TransactionsScreenState extends State<TransactionsScreen>
                           Container(
                             padding: const EdgeInsets.all(18),
                             decoration: BoxDecoration(
-                              color: transaction.color.withValues(alpha: 0.12),
+                              color: transaction.category.color.withValues(
+                                alpha: 0.12,
+                              ),
                               borderRadius: BorderRadius.circular(20),
                               border: Border.all(
-                                color: transaction.color.withValues(alpha: 0.2),
+                                color: transaction.category.color.withValues(
+                                  alpha: 0.2,
+                                ),
                                 width: 1,
                               ),
                             ),
                             child: Icon(
-                              transaction.icon,
-                              color: transaction.color,
+                              transaction.category.icon,
+                              color: transaction.category.color,
                               size: 36,
                             ),
                           ),
                           const SizedBox(height: 20),
-                          Text(
-                            transaction.merchant,
-                            style: Theme.of(context).textTheme.headlineMedium
-                                ?.copyWith(
-                                  fontWeight: FontWeight.bold,
-                                  color: colorScheme.onSurface,
-                                ),
-                            textAlign: TextAlign.center,
-                          ),
-                          const SizedBox(height: 12),
+
                           Container(
                             padding: const EdgeInsets.symmetric(
                               horizontal: 16,
@@ -591,13 +528,13 @@ class _TransactionsScreenState extends State<TransactionsScreen>
                             const SizedBox(height: 20),
                             _buildModernDetailRow(
                               'Category',
-                              transaction.category,
+                              transaction.category.name,
                               Icons.category,
                               colorScheme,
                             ),
                             _buildModernDetailRow(
                               'Date & Time',
-                              '${transaction.date} at ${transaction.time}',
+                              '${transaction.date} at 1:20 AM',
                               Icons.schedule,
                               colorScheme,
                             ),
