@@ -1,72 +1,29 @@
+import 'package:drift/drift.dart' show Insertable, Value;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:icons_plus/icons_plus.dart';
+import 'package:munshi/core/database/app_database.dart';
+import 'package:munshi/features/transactions/models/transaction_category.dart';
+import 'package:munshi/features/transactions/models/transaction_type.dart';
 
 class ExpenseForm extends StatefulWidget {
-  const ExpenseForm({super.key});
+  const ExpenseForm({super.key, required this.onSubmit, this.transaction});
+  final Function(Insertable<Transaction> transaction) onSubmit;
+  final Transaction? transaction;
   @override
   State<ExpenseForm> createState() => _ExpenseFormState();
 }
 
 class _ExpenseFormState extends State<ExpenseForm> {
-  final _formKey = GlobalKey<FormBuilderState>();
+  late final GlobalKey<FormBuilderState> _formKey;
 
-  final List<Map<String, dynamic>> _categories = [
-    {
-      'value': 'food_dining',
-      'label': 'Food & Dining',
-      'icon': Iconsax.reserve_outline,
-    },
-    {
-      'value': 'transportation',
-      'label': 'Transportation',
-      'icon': Iconsax.car_outline,
-    },
-    {
-      'value': 'shopping',
-      'label': 'Shopping',
-      'icon': Iconsax.shopping_bag_outline,
-    },
-    {
-      'value': 'entertainment',
-      'label': 'Entertainment',
-      'icon': Iconsax.music_outline,
-    },
-    {
-      'value': 'healthcare',
-      'label': 'Healthcare',
-      'icon': Iconsax.health_outline,
-    },
-  ];
+  @override
+  void initState() {
+    _formKey = GlobalKey<FormBuilderState>();
 
-  void _submitForm() {
-    if (_formKey.currentState?.saveAndValidate() ?? false) {
-      // Form is valid, get the values
-      final formData = _formKey.currentState!.value;
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Expense submitted successfully!'),
-          backgroundColor: Colors.green,
-        ),
-      );
-      // Process the form data
-      if (kDebugMode) {
-        print('Form Data: $formData');
-        print('Amount: ${formData['amount']}');
-        print('Category: ${formData['category']}');
-        print('DateTime: ${formData['datetime']}');
-      }
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Please fix the errors in the form'),
-          backgroundColor: Colors.red,
-        ),
-      );
-    }
+    super.initState();
   }
 
   @override
@@ -81,6 +38,9 @@ class _ExpenseFormState extends State<ExpenseForm> {
             const SizedBox(height: 5),
             FormBuilderTextField(
               name: 'amount',
+              valueTransformer: (value) {
+                return double.parse(value!);
+              },
               keyboardType: const TextInputType.numberWithOptions(
                 decimal: true,
               ),
@@ -102,7 +62,7 @@ class _ExpenseFormState extends State<ExpenseForm> {
             const SizedBox(height: 20),
             const Text('Category'),
             const SizedBox(height: 5),
-            FormBuilderChoiceChips<String>(
+            FormBuilderChoiceChips<TransactionCategory>(
               name: 'category',
               spacing: 5,
               runSpacing: 5,
@@ -114,16 +74,16 @@ class _ExpenseFormState extends State<ExpenseForm> {
                 border: InputBorder.none,
                 contentPadding: EdgeInsets.zero,
               ),
-              options: _categories
+              options: expenseCategories
                   .map(
-                    (category) => FormBuilderChipOption<String>(
-                      value: category['value'],
+                    (category) => FormBuilderChipOption<TransactionCategory>(
+                      value: category,
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Icon(category['icon'], size: 16),
+                          Icon(category.icon, size: 16),
                           const SizedBox(width: 4),
-                          Text(category['label']),
+                          Text(category.name),
                         ],
                       ),
                     ),
@@ -164,5 +124,50 @@ class _ExpenseFormState extends State<ExpenseForm> {
         ),
       ),
     );
+  }
+
+  void _submitForm() async {
+    try {
+      if (_formKey.currentState?.saveAndValidate() ?? false) {
+        // Form is valid, get the values
+        final formData = _formKey.currentState!.value;
+
+        // Submit the form data
+        await widget.onSubmit(
+          TransactionsCompanion(
+            amount: Value(formData['amount']),
+            category: Value(formData['category']),
+            date: Value(formData['datetime']),
+            type: Value(TransactionType.expense),
+          ),
+        );
+        if (mounted) {
+          Navigator.of(context).pop();
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Expense submitted successfully!'),
+              backgroundColor: Colors.green,
+            ),
+          );
+        }
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Please fix the errors in the form'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('An error occurred. Please try again later.'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+      rethrow;
+    }
   }
 }

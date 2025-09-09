@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:icons_plus/icons_plus.dart';
 import 'package:munshi/core/database/app_database.dart';
+import 'package:munshi/features/transactions/widgets/animated_transaction_list.dart';
+import 'package:munshi/features/transactions/widgets/transaction_filter_bottom_sheet.dart';
+import 'package:provider/provider.dart';
+import 'package:munshi/features/transactions/providers/transaction_provider.dart';
 import 'package:munshi/features/transactions/screens/transaction_form_screen.dart';
-import 'package:munshi/features/transactions/widgets/transaction_tile.dart';
 
 class TransactionsScreen extends StatefulWidget {
   const TransactionsScreen({super.key});
@@ -16,14 +19,12 @@ class _TransactionsScreenState extends State<TransactionsScreen>
   late AnimationController _animationController;
   late AnimationController _fabAnimationController;
   late Animation<double> _fadeAnimation;
-  late Animation<double> _slideAnimation;
   late Animation<double> _fabAnimation;
 
   final TextEditingController _searchController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
 
-  String _selectedFilter = 'All';
-  String _selectedTimeframe = 'This Month';
+  final String _selectedFilter = 'All';
   bool _isSearchActive = false;
   bool _showFab = true;
 
@@ -36,18 +37,6 @@ class _TransactionsScreenState extends State<TransactionsScreen>
     'Bills',
     'Health',
   ];
-
-  final List<String> _timeframeOptions = [
-    'Today',
-    'This Week',
-    'This Month',
-    'Last Month',
-    'This Year',
-  ];
-
-  final List<Transaction> _allTransactions = [];
-
-  List<Transaction> _filteredTransactions = [];
 
   @override
   void initState() {
@@ -65,10 +54,6 @@ class _TransactionsScreenState extends State<TransactionsScreen>
       CurvedAnimation(parent: _animationController, curve: Curves.easeOut),
     );
 
-    _slideAnimation = Tween<double>(begin: 30.0, end: 0.0).animate(
-      CurvedAnimation(parent: _animationController, curve: Curves.easeOut),
-    );
-
     _fabAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
       CurvedAnimation(
         parent: _fabAnimationController,
@@ -76,7 +61,6 @@ class _TransactionsScreenState extends State<TransactionsScreen>
       ),
     );
 
-    _filteredTransactions = _allTransactions;
     _animationController.forward();
     _fabAnimationController.forward();
 
@@ -100,12 +84,6 @@ class _TransactionsScreenState extends State<TransactionsScreen>
     super.dispose();
   }
 
-  void _filterTransactions() {
-    setState(() {
-      _filteredTransactions = _allTransactions;
-    });
-  }
-
   String _formatCurrency(double amount) {
     return '-\$${amount.toStringAsFixed(2)}';
   }
@@ -113,231 +91,165 @@ class _TransactionsScreenState extends State<TransactionsScreen>
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-
-    return Scaffold(
-      backgroundColor: colorScheme.surface,
-      appBar: AppBar(
-        title: Text(
-          'Transactions',
-          style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-            fontWeight: FontWeight.bold,
-            color: colorScheme.onSurface,
-          ),
-        ),
-        actions: [
-          IconButton(
-            onPressed: () {
-              setState(() => _isSearchActive = !_isSearchActive);
-              if (!_isSearchActive) {
-                _searchController.clear();
-                _filterTransactions();
-              }
-            },
-            icon: Icon(
-              _isSearchActive
-                  ? Iconsax.close_circle_outline
-                  : Iconsax.search_normal_1_outline,
-              color: colorScheme.onSurface,
+    final transactionProvider = Provider.of<TransactionProvider>(context);
+    return StreamBuilder<List<Transaction>>(
+      stream: transactionProvider.watchTransactions,
+      builder: (context, snapshot) {
+        final transactions = snapshot.data ?? [];
+        return Scaffold(
+          backgroundColor: colorScheme.surface,
+          appBar: AppBar(
+            title: Text(
+              'Transactions',
+              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                fontWeight: FontWeight.bold,
+                color: colorScheme.onSurface,
+              ),
             ),
+            actions: [
+              IconButton(
+                onPressed: () {
+                  setState(() {
+                    _isSearchActive = !_isSearchActive;
+                  });
+                },
+                icon: Icon(
+                  _isSearchActive
+                      ? Iconsax.close_circle_outline
+                      : Iconsax.search_normal_1_outline,
+                  color: colorScheme.onSurface,
+                ),
+              ),
+              IconButton(
+                onPressed: () => _showFilterBottomSheet(colorScheme),
+                icon: Icon(
+                  Iconsax.filter_outline,
+                  color: colorScheme.onSurface,
+                ),
+              ),
+            ],
           ),
-          IconButton(
-            onPressed: () => _showFilterBottomSheet(colorScheme),
-            icon: Icon(Iconsax.filter_outline, color: colorScheme.onSurface),
-          ),
-        ],
-      ),
-      body: FadeTransition(
-        opacity: _fadeAnimation,
-        child: Column(
-          children: [
-            // Search Bar (animated)
-            AnimatedContainer(
-              duration: const Duration(milliseconds: 300),
-              height: _isSearchActive ? 70 : 0,
-              child: _isSearchActive
-                  ? Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 20,
-                        vertical: 10,
-                      ),
-                      child: TextField(
-                        controller: _searchController,
-                        onChanged: (_) => _filterTransactions(),
-                        autofocus: true,
-                        decoration: InputDecoration(
-                          hintText: 'Search transactions...',
-                          prefixIcon: Icon(
-                            Iconsax.search_normal_1_outline,
-                            color: colorScheme.onSurfaceVariant,
+          body: FadeTransition(
+            opacity: _fadeAnimation,
+            child: Column(
+              children: [
+                // Search Bar (animated)
+                AnimatedContainer(
+                  duration: const Duration(milliseconds: 300),
+                  height: _isSearchActive ? 70 : 0,
+                  child: _isSearchActive
+                      ? Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 20,
+                            vertical: 10,
                           ),
-                          filled: true,
-                          fillColor: colorScheme.surfaceContainerHighest,
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(16),
-                            borderSide: BorderSide.none,
+                          child: TextField(
+                            controller: _searchController,
+                            onChanged: (_) {},
+                            // Filtering is disabled; do not update list
+                            autofocus: true,
+                            decoration: InputDecoration(
+                              hintText: 'Search transactions...',
+                              prefixIcon: Icon(
+                                Iconsax.search_normal_1_outline,
+                                color: colorScheme.onSurfaceVariant,
+                              ),
+                              filled: true,
+                              fillColor: colorScheme.surfaceContainerHighest,
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(16),
+                                borderSide: BorderSide.none,
+                              ),
+                              contentPadding: const EdgeInsets.symmetric(
+                                vertical: 12,
+                              ),
+                            ),
                           ),
-                          contentPadding: const EdgeInsets.symmetric(
-                            vertical: 12,
+                        )
+                      : null,
+                ),
+
+                // Filter Chips Row
+                Container(
+                  height: 60,
+                  padding: const EdgeInsets.symmetric(vertical: 10),
+                  child: ListView.separated(
+                    scrollDirection: Axis.horizontal,
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    itemCount: _filterOptions.length,
+                    separatorBuilder: (context, index) =>
+                        const SizedBox(width: 12),
+                    itemBuilder: (context, index) {
+                      final filter = _filterOptions[index];
+                      final isSelected = _selectedFilter == filter;
+
+                      return FilterChip(
+                        label: Text(
+                          filter,
+                          style: TextStyle(
+                            color: isSelected
+                                ? colorScheme.onPrimary
+                                : colorScheme.onSurfaceVariant,
+                            fontWeight: FontWeight.w600,
                           ),
                         ),
-                      ),
-                    )
-                  : null,
-            ),
-
-            // Filter Chips Row
-            Container(
-              height: 60,
-              padding: const EdgeInsets.symmetric(vertical: 10),
-              child: ListView.separated(
-                scrollDirection: Axis.horizontal,
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                itemCount: _filterOptions.length,
-                separatorBuilder: (context, index) => const SizedBox(width: 12),
-                itemBuilder: (context, index) {
-                  final filter = _filterOptions[index];
-                  final isSelected = _selectedFilter == filter;
-
-                  return FilterChip(
-                    label: Text(
-                      filter,
-                      style: TextStyle(
-                        color: isSelected
-                            ? colorScheme.onPrimary
-                            : colorScheme.onSurfaceVariant,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                    selected: isSelected,
-                    onSelected: (selected) {
-                      setState(() => _selectedFilter = filter);
-                      _filterTransactions();
+                        selected: isSelected,
+                        onSelected: (selected) {},
+                        backgroundColor: colorScheme.surface,
+                        selectedColor: colorScheme.primary,
+                        side: BorderSide(
+                          color: isSelected
+                              ? colorScheme.primary
+                              : colorScheme.outline.withValues(alpha: 0.3),
+                        ),
+                        showCheckmark: false,
+                      );
                     },
-                    backgroundColor: colorScheme.surface,
-                    selectedColor: colorScheme.primary,
-                    side: BorderSide(
-                      color: isSelected
-                          ? colorScheme.primary
-                          : colorScheme.outline.withValues(alpha: 0.3),
-                    ),
-                    showCheckmark: false,
-                  );
-                },
-              ),
-            ),
-
-            // Transactions List
-            Expanded(
-              child: AnimatedBuilder(
-                animation: _slideAnimation,
-                builder: (context, child) {
-                  return Transform.translate(
-                    offset: Offset(0, _slideAnimation.value),
-                    child: _filteredTransactions.isEmpty
-                        ? _buildEmptyState(colorScheme)
-                        : ListView.separated(
-                            controller: _scrollController,
-                            padding: const EdgeInsets.fromLTRB(20, 10, 20, 100),
-                            itemCount: _filteredTransactions.length,
-                            separatorBuilder: (context, index) =>
-                                const SizedBox(height: 12),
-                            itemBuilder: (context, index) {
-                              final transaction = _filteredTransactions[index];
-                              return TweenAnimationBuilder<double>(
-                                duration: Duration(
-                                  milliseconds: 300 + (index * 50),
-                                ),
-                                tween: Tween<double>(begin: 0.0, end: 1.0),
-                                builder: (context, value, child) {
-                                  return Transform.translate(
-                                    offset: Offset(50 * (1 - value), 0),
-                                    child: Opacity(
-                                      opacity: value,
-                                      child: TransactionTile(
-                                        transaction: transaction,
-                                        onTap: () {
-                                          _showTransactionDetails(
-                                            transaction,
-                                            colorScheme,
-                                          );
-                                        },
-                                      ),
-                                    ),
-                                  );
-                                },
-                              );
-                            },
-                          ),
-                  );
-                },
-              ),
-            ),
-          ],
-        ),
-      ),
-      floatingActionButton: AnimatedScale(
-        scale: _showFab ? 1.0 : 0.0,
-        duration: const Duration(milliseconds: 200),
-        child: ScaleTransition(
-          scale: _fabAnimation,
-          child: FloatingActionButton.extended(
-            onPressed: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (context) {
-                    return TransactionFormScreen();
-                  },
+                  ),
                 ),
-              );
-            },
-            icon: const Icon(Iconsax.add_outline),
-            label: const Text(
-              'Add Transaction',
-              style: TextStyle(fontWeight: FontWeight.w600),
-            ),
-            backgroundColor: colorScheme.primary,
-            foregroundColor: colorScheme.onPrimary,
-          ),
-        ),
-      ),
-    );
-  }
 
-  Widget _buildEmptyState(ColorScheme colorScheme) {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Container(
-            padding: const EdgeInsets.all(24),
-            decoration: BoxDecoration(
-              color: colorScheme.surfaceContainerHighest,
-              borderRadius: BorderRadius.circular(24),
-            ),
-            child: Icon(
-              Icons.receipt_long_outlined,
-              size: 48,
-              color: colorScheme.onSurfaceVariant,
+                // Transactions List
+                Expanded(
+                  child: AnimatedTransactionList(
+                    onTap: (transaction) {
+                      _showTransactionDetails(transaction, colorScheme);
+                    },
+                    transactions: transactions,
+                  ),
+                ),
+              ],
             ),
           ),
-          const SizedBox(height: 24),
-          Text(
-            'No transactions found',
-            style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-              color: colorScheme.onSurface,
-              fontWeight: FontWeight.w600,
+          floatingActionButton: AnimatedScale(
+            scale: _showFab ? 1.0 : 0.0,
+            duration: const Duration(milliseconds: 200),
+            child: ScaleTransition(
+              scale: _fabAnimation,
+              child: FloatingActionButton.extended(
+                onPressed: () {
+                  Navigator.of(context).push<Transaction?>(
+                    MaterialPageRoute(
+                      builder: (context) {
+                        return TransactionFormScreen(
+                          onSubmit: (transaction) =>
+                              transactionProvider.addTransaction(transaction),
+                        );
+                      },
+                    ),
+                  );
+                },
+                icon: const Icon(Iconsax.add_outline),
+                label: const Text(
+                  'Add Transaction',
+                  style: TextStyle(fontWeight: FontWeight.w600),
+                ),
+                backgroundColor: colorScheme.primary,
+                foregroundColor: colorScheme.onPrimary,
+              ),
             ),
           ),
-          const SizedBox(height: 8),
-          Text(
-            'Try adjusting your filters or search terms',
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: colorScheme.onSurface.withValues(alpha: 0.6),
-            ),
-            textAlign: TextAlign.center,
-          ),
-        ],
-      ),
+        );
+      },
     );
   }
 
@@ -348,65 +260,7 @@ class _TransactionsScreenState extends State<TransactionsScreen>
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
-      builder: (context) => Container(
-        padding: const EdgeInsets.all(24),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Filter & Sort',
-              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                fontWeight: FontWeight.bold,
-                color: colorScheme.onSurface,
-              ),
-            ),
-            const SizedBox(height: 24),
-            Text(
-              'Time Period',
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                fontWeight: FontWeight.w600,
-                color: colorScheme.onSurface,
-              ),
-            ),
-            const SizedBox(height: 12),
-            Wrap(
-              spacing: 8,
-              children: _timeframeOptions.map((timeframe) {
-                final isSelected = _selectedTimeframe == timeframe;
-                return FilterChip(
-                  label: Text(timeframe),
-                  selected: isSelected,
-                  onSelected: (selected) {
-                    setState(() => _selectedTimeframe = timeframe);
-                  },
-                );
-              }).toList(),
-            ),
-            const SizedBox(height: 24),
-            Row(
-              children: [
-                Expanded(
-                  child: OutlinedButton(
-                    onPressed: () => Navigator.pop(context),
-                    child: const Text('Cancel'),
-                  ),
-                ),
-                const SizedBox(width: 16),
-                Expanded(
-                  child: FilledButton(
-                    onPressed: () {
-                      _filterTransactions();
-                      Navigator.pop(context);
-                    },
-                    child: const Text('Apply'),
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
+      builder: (context) => TransactionFilterBottomSheet(),
     );
   }
 

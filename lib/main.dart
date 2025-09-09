@@ -4,6 +4,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:munshi/core/theme.dart';
 import 'package:munshi/screens/main_screen.dart';
 import 'package:munshi/providers/theme_provider.dart';
+import 'package:munshi/features/transactions/providers/transaction_provider.dart';
+import 'package:munshi/core/database/daos/transaction_dao.dart';
 import 'package:provider/provider.dart';
 import 'package:munshi/core/service_locator.dart';
 
@@ -31,8 +33,13 @@ void main() async {
 
   // Inject ThemeProvider into the widget tree using Provider, then launch the app.
   runApp(
-    ChangeNotifierProvider.value(
-      value: locator<ThemeProvider>(),
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider.value(value: locator<ThemeProvider>()),
+        ChangeNotifierProvider(
+          create: (_) => TransactionProvider(locator<TransactionsDao>()),
+        ),
+      ],
       child: const Munshi(),
     ),
   );

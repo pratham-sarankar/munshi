@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:munshi/core/database/app_database.dart';
 
 class TransactionTile extends StatelessWidget {
@@ -18,8 +19,8 @@ class TransactionTile extends StatelessWidget {
           onTap: onTap,
           child: Container(
             padding: EdgeInsets.symmetric(
-              horizontal: constraints.maxWidth * 0.05,
-              vertical: constraints.maxWidth * 0.02,
+              horizontal: constraints.maxWidth * 0.03,
+              vertical: constraints.maxWidth * 0.03,
             ),
             decoration: BoxDecoration(
               color: colorScheme.surface,
@@ -30,7 +31,7 @@ class TransactionTile extends StatelessWidget {
               boxShadow: [
                 BoxShadow(
                   color: colorScheme.shadow.withValues(alpha: 0.06),
-                  blurRadius: 12,
+                  blurRadius: 10,
                   offset: const Offset(0, 2),
                   spreadRadius: 0,
                 ),
@@ -56,23 +57,14 @@ class TransactionTile extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Zomato',
+                        transaction.category.name,
                         style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                           fontWeight: FontWeight.w600,
                           color: colorScheme.onSurface,
                         ),
                       ),
-                      const SizedBox(height: 2),
                       Text(
-                        transaction.category.name,
-                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: colorScheme.onSurface.withValues(alpha: 0.6),
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                      const SizedBox(height: 2),
-                      Text(
-                        '${transaction.date} • 1:20 PM',
+                        DateFormat('d MMM • h:mm a').format(transaction.date),
                         style: Theme.of(context).textTheme.bodySmall?.copyWith(
                           color: colorScheme.onSurface.withValues(alpha: 0.5),
                         ),

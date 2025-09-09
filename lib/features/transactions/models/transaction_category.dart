@@ -1,5 +1,7 @@
 // Model
+import 'package:flutter/material.dart' show Colors;
 import 'package:flutter/widgets.dart';
+import 'package:icons_plus/icons_plus.dart' show Iconsax;
 
 class TransactionCategory {
   final String name;
@@ -29,3 +31,23 @@ class TransactionCategory {
         Color(json['color']),
       );
 }
+
+final List<TransactionCategory> expenseCategories = [
+  TransactionCategory(
+    'Food & Dining',
+    Iconsax.reserve_outline,
+    Colors.redAccent,
+  ),
+  TransactionCategory('Transportation', Iconsax.car_outline, Colors.blueAccent),
+  TransactionCategory(
+    'Shopping',
+    Iconsax.shopping_bag_outline,
+    Colors.purpleAccent,
+  ),
+  TransactionCategory(
+    'Entertainment',
+    Iconsax.music_outline,
+    Colors.orangeAccent,
+  ),
+  TransactionCategory('Healthcare', Iconsax.health_outline, Colors.greenAccent),
+];
