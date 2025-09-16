@@ -1,60 +1,73 @@
+import 'package:drift/drift.dart' show Insertable, Value;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:icons_plus/icons_plus.dart';
+import 'package:munshi/core/database/app_database.dart';
+import 'package:munshi/features/transactions/models/transaction_category.dart';
+import 'package:munshi/features/transactions/models/transaction_type.dart';
 
 class IncomeForm extends StatefulWidget {
-  const IncomeForm({super.key});
+  const IncomeForm({super.key, required this.onSubmit, this.transaction});
+  final Function(Insertable<Transaction> transaction) onSubmit;
+  final Transaction? transaction;
   @override
   State<IncomeForm> createState() => _IncomeFormState();
 }
 
 class _IncomeFormState extends State<IncomeForm> {
-  final _formKey = GlobalKey<FormBuilderState>();
+  late final GlobalKey<FormBuilderState> _formKey;
 
-  final List<Map<String, dynamic>> _incomeCategories = [
-    {'value': 'salary', 'label': 'Salary', 'icon': Iconsax.briefcase_outline},
-    {'value': 'freelance', 'label': 'Freelance', 'icon': Iconsax.code_outline},
-    {'value': 'business', 'label': 'Business', 'icon': Iconsax.shop_outline},
-    {
-      'value': 'investment',
-      'label': 'Investment',
-      'icon': Iconsax.chart_outline,
-    },
-    {'value': 'rental', 'label': 'Rental', 'icon': Iconsax.home_outline},
-    {'value': 'bonus', 'label': 'Bonus', 'icon': Iconsax.gift_outline},
-    {'value': 'other', 'label': 'Other', 'icon': Iconsax.more_outline},
-  ];
+  @override
+  void initState() {
+    _formKey = GlobalKey<FormBuilderState>();
+    super.initState();
+  }
 
-  void _submitForm() {
-    if (_formKey.currentState?.saveAndValidate() ?? false) {
-      // Form is valid, get the values
-      final formData = _formKey.currentState!.value;
+  void _submitForm() async {
+    try {
+      if (_formKey.currentState?.saveAndValidate() ?? false) {
+        // Form is valid, get the values
+        final formData = _formKey.currentState!.value;
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Income submitted successfully!'),
-          backgroundColor: Colors.green,
-        ),
-      );
-      // Process the form data
-      if (kDebugMode) {
-        print('Form Data: $formData');
-        print('Amount: ${formData['amount']}');
-        print('Category: ${formData['category']}');
-        print('Frequency: ${formData['frequency']}');
-        print('DateTime: ${formData['datetime']}');
-        print('Description: ${formData['description']}');
-        print('Is Taxable: ${formData['is_taxable']}');
+        // Submit the form data
+        await widget.onSubmit(
+          TransactionsCompanion(
+            amount: Value(formData['amount']),
+            category: Value(formData['category']),
+            date: Value(formData['datetime']),
+            type: Value(TransactionType.income),
+            note: Value(formData['description']),
+          ),
+        );
+        if (mounted) {
+          Navigator.of(context).pop();
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Income submitted successfully!'),
+              backgroundColor: Colors.green,
+            ),
+          );
+        }
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Please fix the errors in the form'),
+            backgroundColor: Colors.red,
+          ),
+        );
       }
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Please fix the errors in the form'),
-          backgroundColor: Colors.red,
-        ),
-      );
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('An error occurred. Please try again later.'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+      rethrow;
     }
   }
 
@@ -70,6 +83,9 @@ class _IncomeFormState extends State<IncomeForm> {
             const SizedBox(height: 5),
             FormBuilderTextField(
               name: 'amount',
+              valueTransformer: (value) {
+                return double.parse(value!);
+              },
               keyboardType: const TextInputType.numberWithOptions(
                 decimal: true,
               ),
@@ -89,30 +105,30 @@ class _IncomeFormState extends State<IncomeForm> {
               ]),
             ),
             const SizedBox(height: 20),
-            const Text('Income Category'),
+            const Text('Category'),
             const SizedBox(height: 5),
-            FormBuilderChoiceChips<String>(
+            FormBuilderChoiceChips<TransactionCategory>(
               name: 'category',
               spacing: 5,
               runSpacing: 5,
+              validator: FormBuilderValidators.required(
+                errorText: 'Please select a category',
+              ),
               decoration: InputDecoration(
                 filled: false,
                 border: InputBorder.none,
                 contentPadding: EdgeInsets.zero,
               ),
-              validator: FormBuilderValidators.required(
-                errorText: 'Please select a category',
-              ),
-              options: _incomeCategories
+              options: incomeCategories
                   .map(
-                    (category) => FormBuilderChipOption<String>(
-                      value: category['value'],
+                    (category) => FormBuilderChipOption<TransactionCategory>(
+                      value: category,
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Icon(category['icon'], size: 16),
+                          Icon(category.icon, size: 16),
                           const SizedBox(width: 4),
-                          Text(category['label']),
+                          Text(category.name),
                         ],
                       ),
                     ),
