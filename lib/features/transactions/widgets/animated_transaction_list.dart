@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:munshi/core/database/app_database.dart';
 import 'package:munshi/features/transactions/widgets/transaction_tile.dart';
 
@@ -37,6 +38,12 @@ class _AnimatedTransactionListState extends State<AnimatedTransactionList>
   }
 
   @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     return AnimatedBuilder(
@@ -46,34 +53,35 @@ class _AnimatedTransactionListState extends State<AnimatedTransactionList>
           offset: Offset(0, _slideAnimation.value),
           child: widget.transactions.isEmpty
               ? _buildEmptyState(colorScheme)
-              : ListView.separated(
-                  controller: widget.controller,
-                  shrinkWrap: true,
-                  padding: const EdgeInsets.fromLTRB(20, 10, 20, 100),
-                  itemCount: widget.transactions.length,
-                  separatorBuilder: (context, index) =>
-                      const SizedBox(height: 10),
-                  itemBuilder: (context, index) {
-                    final transaction = widget.transactions[index];
-                    return TweenAnimationBuilder<double>(
-                      duration: Duration(milliseconds: 300 + (index * 50)),
-                      tween: Tween<double>(begin: 0.0, end: 1.0),
-                      builder: (context, value, child) {
-                        return Transform.translate(
-                          offset: Offset(50 * (1 - value), 0),
-                          child: Opacity(
-                            opacity: value,
-                            child: TransactionTile(
-                              transaction: transaction,
-                              onTap: () {
-                                widget.onTap(widget.transactions[index]);
-                              },
+              : SlidableAutoCloseBehavior(
+                  child: ListView.separated(
+                    controller: widget.controller,
+                    shrinkWrap: false,
+                    itemCount: widget.transactions.length,
+                    separatorBuilder: (context, index) =>
+                        const Divider(height: 1, thickness: 1),
+                    itemBuilder: (context, index) {
+                      final transaction = widget.transactions[index];
+                      return TweenAnimationBuilder<double>(
+                        duration: Duration(milliseconds: 300 + (index * 50)),
+                        tween: Tween<double>(begin: 0.0, end: 1.0),
+                        builder: (context, value, child) {
+                          return Transform.translate(
+                            offset: Offset(50 * (1 - value), 0),
+                            child: Opacity(
+                              opacity: value,
+                              child: TransactionTile(
+                                transaction: transaction,
+                                onTap: () {
+                                  widget.onTap(widget.transactions[index]);
+                                },
+                              ),
                             ),
-                          ),
-                        );
-                      },
-                    );
-                  },
+                          );
+                        },
+                      );
+                    },
+                  ),
                 ),
         );
       },

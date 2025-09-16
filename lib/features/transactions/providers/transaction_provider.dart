@@ -1,7 +1,6 @@
 import 'package:drift/drift.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
-import 'package:munshi/core/database/tables/transactions.dart';
 import '../../../core/database/daos/transaction_dao.dart';
 import '../../../core/database/app_database.dart';
 

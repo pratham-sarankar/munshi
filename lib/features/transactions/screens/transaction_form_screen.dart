@@ -41,6 +41,7 @@ class _TransactionFormScreenState extends State<TransactionFormScreen> {
           ),
         ),
         body: TabBarView(
+          physics: NeverScrollableScrollPhysics(),
           children: [
             Padding(
               padding: EdgeInsets.only(right: 20, left: 20, top: 20),
