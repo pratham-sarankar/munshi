@@ -214,6 +214,9 @@ class _TransactionsScreenState extends State<TransactionsScreen>
                     onTap: (transaction) {
                       _showTransactionDetails(transaction, colorScheme);
                     },
+                    onDelete: (transaction) async {
+                      await _deleteTransaction(transaction, transactionProvider);
+                    },
                     transactions: transactions,
                   ),
                 ),
@@ -542,5 +545,46 @@ class _TransactionsScreenState extends State<TransactionsScreen>
         ],
       ),
     );
+  }
+
+  Future<void> _deleteTransaction(
+    Transaction transaction,
+    TransactionProvider transactionProvider,
+  ) async {
+    try {
+      await transactionProvider.deleteTransaction(transaction);
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              'Transaction "${transaction.category.name}" deleted successfully',
+            ),
+            backgroundColor: Theme.of(context).colorScheme.primary,
+            behavior: SnackBarBehavior.floating,
+            duration: const Duration(seconds: 2),
+            action: SnackBarAction(
+              label: 'Dismiss',
+              textColor: Theme.of(context).colorScheme.onPrimary,
+              onPressed: () {
+                ScaffoldMessenger.of(context).hideCurrentSnackBar();
+              },
+            ),
+          ),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: const Text(
+              'Failed to delete transaction. Please try again.',
+            ),
+            backgroundColor: Theme.of(context).colorScheme.error,
+            behavior: SnackBarBehavior.floating,
+            duration: const Duration(seconds: 3),
+          ),
+        );
+      }
+    }
   }
 }
