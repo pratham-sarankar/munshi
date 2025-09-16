@@ -51,3 +51,13 @@ final List<TransactionCategory> expenseCategories = [
   ),
   TransactionCategory('Healthcare', Iconsax.health_outline, Colors.greenAccent),
 ];
+
+final List<TransactionCategory> incomeCategories = [
+  TransactionCategory('Salary', Iconsax.briefcase_outline, Colors.green),
+  TransactionCategory('Freelance', Iconsax.code_outline, Colors.blue),
+  TransactionCategory('Business', Iconsax.shop_outline, Colors.purple),
+  TransactionCategory('Investment', Iconsax.chart_outline, Colors.orange),
+  TransactionCategory('Rental', Iconsax.home_outline, Colors.teal),
+  TransactionCategory('Bonus', Iconsax.gift_outline, Colors.pink),
+  TransactionCategory('Other', Iconsax.more_outline, Colors.grey),
+];

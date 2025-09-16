@@ -51,7 +51,10 @@ class _TransactionFormScreenState extends State<TransactionFormScreen> {
             ),
             Padding(
               padding: EdgeInsets.only(right: 20, left: 20, top: 20),
-              child: IncomeForm(),
+              child: IncomeForm(
+                transaction: widget.transaction,
+                onSubmit: widget.onSubmit,
+              ),
             ),
           ],
         ),
