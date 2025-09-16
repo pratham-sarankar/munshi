@@ -49,5 +49,5 @@ final List<TransactionCategory> expenseCategories = [
     Iconsax.music_outline,
     Colors.orangeAccent,
   ),
-  TransactionCategory('Healthcare', Iconsax.health_outline, Colors.greenAccent),
+  TransactionCategory('Healthcare', Iconsax.health_outline, Colors.green),
 ];

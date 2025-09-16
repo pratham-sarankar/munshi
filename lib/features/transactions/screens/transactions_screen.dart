@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:icons_plus/icons_plus.dart';
 import 'package:munshi/core/database/app_database.dart';
 import 'package:munshi/features/transactions/widgets/animated_transaction_list.dart';
-import 'package:munshi/features/transactions/widgets/transaction_filter_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 import 'package:munshi/features/transactions/providers/transaction_provider.dart';
 import 'package:munshi/features/transactions/screens/transaction_form_screen.dart';
@@ -16,74 +15,6 @@ class TransactionsScreen extends StatefulWidget {
 
 class _TransactionsScreenState extends State<TransactionsScreen>
     with TickerProviderStateMixin {
-  late AnimationController _animationController;
-  late AnimationController _fabAnimationController;
-  late Animation<double> _fadeAnimation;
-  late Animation<double> _fabAnimation;
-
-  final TextEditingController _searchController = TextEditingController();
-  final ScrollController _scrollController = ScrollController();
-
-  final String _selectedFilter = 'All';
-  bool _isSearchActive = false;
-  bool _showFab = true;
-
-  final List<String> _filterOptions = [
-    'All',
-    'Food',
-    'Shopping',
-    'Transport',
-    'Entertainment',
-    'Bills',
-    'Health',
-  ];
-
-  @override
-  void initState() {
-    super.initState();
-    _animationController = AnimationController(
-      duration: const Duration(milliseconds: 800),
-      vsync: this,
-    );
-    _fabAnimationController = AnimationController(
-      duration: const Duration(milliseconds: 300),
-      vsync: this,
-    );
-
-    _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(parent: _animationController, curve: Curves.easeOut),
-    );
-
-    _fabAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(
-        parent: _fabAnimationController,
-        curve: Curves.elasticOut,
-      ),
-    );
-
-    _animationController.forward();
-    _fabAnimationController.forward();
-
-    _scrollController.addListener(_scrollListener);
-  }
-
-  void _scrollListener() {
-    if (_scrollController.offset > 100 && _showFab) {
-      setState(() => _showFab = false);
-    } else if (_scrollController.offset <= 100 && !_showFab) {
-      setState(() => _showFab = true);
-    }
-  }
-
-  @override
-  void dispose() {
-    _animationController.dispose();
-    _fabAnimationController.dispose();
-    _searchController.dispose();
-    _scrollController.dispose();
-    super.dispose();
-  }
-
   String _formatCurrency(double amount) {
     return '-\$${amount.toStringAsFixed(2)}';
   }
@@ -106,126 +37,9 @@ class _TransactionsScreenState extends State<TransactionsScreen>
                 color: colorScheme.onSurface,
               ),
             ),
+            centerTitle: false,
             actions: [
               IconButton(
-                onPressed: () {
-                  setState(() {
-                    _isSearchActive = !_isSearchActive;
-                  });
-                },
-                icon: Icon(
-                  _isSearchActive
-                      ? Iconsax.close_circle_outline
-                      : Iconsax.search_normal_1_outline,
-                  color: colorScheme.onSurface,
-                ),
-              ),
-              IconButton(
-                onPressed: () => _showFilterBottomSheet(colorScheme),
-                icon: Icon(
-                  Iconsax.filter_outline,
-                  color: colorScheme.onSurface,
-                ),
-              ),
-            ],
-          ),
-          body: FadeTransition(
-            opacity: _fadeAnimation,
-            child: Column(
-              children: [
-                // Search Bar (animated)
-                AnimatedContainer(
-                  duration: const Duration(milliseconds: 300),
-                  height: _isSearchActive ? 70 : 0,
-                  child: _isSearchActive
-                      ? Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 20,
-                            vertical: 10,
-                          ),
-                          child: TextField(
-                            controller: _searchController,
-                            onChanged: (_) {},
-                            // Filtering is disabled; do not update list
-                            autofocus: true,
-                            decoration: InputDecoration(
-                              hintText: 'Search transactions...',
-                              prefixIcon: Icon(
-                                Iconsax.search_normal_1_outline,
-                                color: colorScheme.onSurfaceVariant,
-                              ),
-                              filled: true,
-                              fillColor: colorScheme.surfaceContainerHighest,
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(16),
-                                borderSide: BorderSide.none,
-                              ),
-                              contentPadding: const EdgeInsets.symmetric(
-                                vertical: 12,
-                              ),
-                            ),
-                          ),
-                        )
-                      : null,
-                ),
-
-                // Filter Chips Row
-                Container(
-                  height: 60,
-                  padding: const EdgeInsets.symmetric(vertical: 10),
-                  child: ListView.separated(
-                    scrollDirection: Axis.horizontal,
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    itemCount: _filterOptions.length,
-                    separatorBuilder: (context, index) =>
-                        const SizedBox(width: 12),
-                    itemBuilder: (context, index) {
-                      final filter = _filterOptions[index];
-                      final isSelected = _selectedFilter == filter;
-
-                      return FilterChip(
-                        label: Text(
-                          filter,
-                          style: TextStyle(
-                            color: isSelected
-                                ? colorScheme.onPrimary
-                                : colorScheme.onSurfaceVariant,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                        selected: isSelected,
-                        onSelected: (selected) {},
-                        backgroundColor: colorScheme.surface,
-                        selectedColor: colorScheme.primary,
-                        side: BorderSide(
-                          color: isSelected
-                              ? colorScheme.primary
-                              : colorScheme.outline.withValues(alpha: 0.3),
-                        ),
-                        showCheckmark: false,
-                      );
-                    },
-                  ),
-                ),
-
-                // Transactions List
-                Expanded(
-                  child: AnimatedTransactionList(
-                    onTap: (transaction) {
-                      _showTransactionDetails(transaction, colorScheme);
-                    },
-                    transactions: transactions,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          floatingActionButton: AnimatedScale(
-            scale: _showFab ? 1.0 : 0.0,
-            duration: const Duration(milliseconds: 200),
-            child: ScaleTransition(
-              scale: _fabAnimation,
-              child: FloatingActionButton.extended(
                 onPressed: () {
                   Navigator.of(context).push<Transaction?>(
                     MaterialPageRoute(
@@ -238,29 +52,18 @@ class _TransactionsScreenState extends State<TransactionsScreen>
                     ),
                   );
                 },
-                icon: const Icon(Iconsax.add_outline),
-                label: const Text(
-                  'Add Transaction',
-                  style: TextStyle(fontWeight: FontWeight.w600),
-                ),
-                backgroundColor: colorScheme.primary,
-                foregroundColor: colorScheme.onPrimary,
+                icon: Icon(Iconsax.add_outline, color: colorScheme.onSurface),
               ),
-            ),
+            ],
+          ),
+          body: AnimatedTransactionList(
+            onTap: (transaction) {
+              _showTransactionDetails(transaction, colorScheme);
+            },
+            transactions: transactions,
           ),
         );
       },
-    );
-  }
-
-  void _showFilterBottomSheet(ColorScheme colorScheme) {
-    showModalBottomSheet(
-      context: context,
-      backgroundColor: colorScheme.surface,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-      ),
-      builder: (context) => TransactionFilterBottomSheet(),
     );
   }
 

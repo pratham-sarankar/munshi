@@ -5,6 +5,7 @@ import 'package:munshi/core/database/app_database.dart';
 import 'package:munshi/features/dashboard/widgets/dashboard_stats_widget.dart';
 import 'package:munshi/features/dashboard/widgets/dashboard_summary_card.dart';
 import 'package:munshi/features/transactions/widgets/transaction_tile.dart';
+import 'package:munshi/widgets/rounded_dropdown.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -148,7 +149,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           ],
         ),
         actions: [
-          // Month Selector
           Container(
             margin: const EdgeInsets.only(right: 8, top: 8, bottom: 8),
             decoration: BoxDecoration(
@@ -189,6 +189,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               ],
             ),
           ),
+
           // Profile Avatar
           Container(
             margin: const EdgeInsets.only(right: 16, top: 8, bottom: 8),
