@@ -4,6 +4,7 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:icons_plus/icons_plus.dart';
 import 'package:intl/intl.dart';
 import 'package:munshi/core/database/app_database.dart';
+import 'package:munshi/features/transactions/models/transaction_type.dart';
 
 class TransactionTile extends StatefulWidget {
   const TransactionTile({
@@ -115,17 +116,17 @@ class _TransactionTileState extends State<TransactionTile>
           DateFormat('d MMM • h:mm a').format(widget.transaction.date),
         ),
         trailing: Text(
-          _formatCurrency(widget.transaction.amount),
+          widget.transaction.type == TransactionType.expense
+              ? '- ₹${widget.transaction.amount.toStringAsFixed(2)}'
+              : '+ ₹${widget.transaction.amount.toStringAsFixed(2)}',
           style: Theme.of(context).textTheme.bodyMedium?.copyWith(
             fontWeight: FontWeight.bold,
-            color: colorScheme.error,
+            color: widget.transaction.type == TransactionType.expense
+                ? colorScheme.error
+                : colorScheme.primary,
           ),
         ),
       ),
     );
-  }
-
-  String _formatCurrency(double amount) {
-    return '-\$${amount.toStringAsFixed(2)}';
   }
 }
