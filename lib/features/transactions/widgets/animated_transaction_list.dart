@@ -20,8 +20,8 @@ class AnimatedTransactionList extends StatefulWidget {
 
 class _AnimatedTransactionListState extends State<AnimatedTransactionList>
     with SingleTickerProviderStateMixin {
+  late Animation<double> _fadeAnimation;
   late AnimationController _animationController;
-
   late Animation<double> _slideAnimation;
 
   @override
@@ -32,6 +32,9 @@ class _AnimatedTransactionListState extends State<AnimatedTransactionList>
     );
     _slideAnimation = Tween<double>(begin: 30.0, end: 0.0).animate(
       CurvedAnimation(parent: _animationController, curve: Curves.easeOut),
+    );
+    _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: _animationController, curve: Curves.easeIn),
     );
     _animationController.forward();
     super.initState();
@@ -49,40 +52,43 @@ class _AnimatedTransactionListState extends State<AnimatedTransactionList>
     return AnimatedBuilder(
       animation: _slideAnimation,
       builder: (context, child) {
-        return Transform.translate(
-          offset: Offset(0, _slideAnimation.value),
-          child: widget.transactions.isEmpty
-              ? _buildEmptyState(colorScheme)
-              : SlidableAutoCloseBehavior(
-                  child: ListView.separated(
-                    controller: widget.controller,
-                    shrinkWrap: false,
-                    itemCount: widget.transactions.length,
-                    separatorBuilder: (context, index) =>
-                        const Divider(height: 1, thickness: 1),
-                    itemBuilder: (context, index) {
-                      final transaction = widget.transactions[index];
-                      return TweenAnimationBuilder<double>(
-                        duration: Duration(milliseconds: 300 + (index * 50)),
-                        tween: Tween<double>(begin: 0.0, end: 1.0),
-                        builder: (context, value, child) {
-                          return Transform.translate(
-                            offset: Offset(50 * (1 - value), 0),
-                            child: Opacity(
-                              opacity: value,
-                              child: TransactionTile(
-                                transaction: transaction,
-                                onTap: () {
-                                  widget.onTap(widget.transactions[index]);
-                                },
+        return FadeTransition(
+          opacity: _fadeAnimation,
+          child: Transform.translate(
+            offset: Offset(0, _slideAnimation.value),
+            child: widget.transactions.isEmpty
+                ? _buildEmptyState(colorScheme)
+                : SlidableAutoCloseBehavior(
+                    child: ListView.separated(
+                      controller: widget.controller,
+                      shrinkWrap: false,
+                      itemCount: widget.transactions.length,
+                      separatorBuilder: (context, index) =>
+                          const Divider(height: 1, thickness: 1),
+                      itemBuilder: (context, index) {
+                        final transaction = widget.transactions[index];
+                        return TweenAnimationBuilder<double>(
+                          duration: Duration(milliseconds: 300 + (index * 50)),
+                          tween: Tween<double>(begin: 0.0, end: 1.0),
+                          builder: (context, value, child) {
+                            return Transform.translate(
+                              offset: Offset(50 * (1 - value), 0),
+                              child: Opacity(
+                                opacity: value,
+                                child: TransactionTile(
+                                  transaction: transaction,
+                                  onTap: () {
+                                    widget.onTap(widget.transactions[index]);
+                                  },
+                                ),
                               ),
-                            ),
-                          );
-                        },
-                      );
-                    },
+                            );
+                          },
+                        );
+                      },
+                    ),
                   ),
-                ),
+          ),
         );
       },
     );
