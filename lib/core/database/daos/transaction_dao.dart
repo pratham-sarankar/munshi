@@ -13,8 +13,11 @@ class TransactionsDao extends DatabaseAccessor<AppDatabase>
 
   Future<List<Transaction>> getAllTransactions() => select(transactions).get();
 
-  Stream<List<Transaction>> watchAllTransactions() =>
-      select(transactions).watch();
+  Stream<List<Transaction>> watchAllTransactions() {
+    final query = select(transactions)
+      ..orderBy([(t) => OrderingTerm.desc(t.date)]);
+    return query.watch();
+  }
 
   Future<int> insertTransaction(Insertable<Transaction> transaction) =>
       into(transactions).insert(transaction);
