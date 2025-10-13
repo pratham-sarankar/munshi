@@ -27,14 +27,24 @@ class _AnimatedTransactionListState extends State<AnimatedTransactionList>
   @override
   void initState() {
     _animationController = AnimationController(
-      duration: const Duration(milliseconds: 800),
+      duration: const Duration(milliseconds: 1000), // Longer for iOS feel
       vsync: this,
     );
-    _slideAnimation = Tween<double>(begin: 30.0, end: 0.0).animate(
-      CurvedAnimation(parent: _animationController, curve: Curves.easeOut),
+    _slideAnimation = Tween<double>(begin: 40.0, end: 0.0).animate(
+      CurvedAnimation(
+        parent: _animationController,
+        curve: Curves.easeOutCubic, // iOS signature curve
+      ),
     );
     _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(parent: _animationController, curve: Curves.easeIn),
+      CurvedAnimation(
+        parent: _animationController,
+        curve: const Interval(
+          0.0,
+          0.7,
+          curve: Curves.easeOut,
+        ), // Fade completes earlier
+      ),
     );
     _animationController.forward();
     super.initState();
@@ -68,18 +78,37 @@ class _AnimatedTransactionListState extends State<AnimatedTransactionList>
                       itemBuilder: (context, index) {
                         final transaction = widget.transactions[index];
                         return TweenAnimationBuilder<double>(
-                          duration: Duration(milliseconds: 300 + (index * 50)),
+                          key: ValueKey(transaction.id),
+                          duration: Duration(milliseconds: 600 + (index * 80)),
                           tween: Tween<double>(begin: 0.0, end: 1.0),
+                          curve: Curves.easeOutCubic,
                           builder: (context, value, child) {
-                            return Transform.translate(
-                              offset: Offset(50 * (1 - value), 0),
-                              child: Opacity(
-                                opacity: value,
-                                child: TransactionTile(
-                                  transaction: transaction,
-                                  onTap: () {
-                                    widget.onTap(widget.transactions[index]);
-                                  },
+                            final slideValue = Curves.easeOutCubic.transform(
+                              value,
+                            );
+                            final fadeValue = Curves.easeOut.transform(value);
+                            final scaleValue =
+                                0.95 +
+                                (0.05 *
+                                    Curves.easeOutBack.transform(
+                                      value,
+                                    )); // Subtle scale with bounce
+
+                            return Transform.scale(
+                              scale: scaleValue,
+                              child: Transform.translate(
+                                offset: Offset(
+                                  0,
+                                  30 * (1 - slideValue),
+                                ), // Slightly more Y movement
+                                child: Opacity(
+                                  opacity: fadeValue,
+                                  child: TransactionTile(
+                                    transaction: transaction,
+                                    onTap: () {
+                                      widget.onTap(transaction);
+                                    },
+                                  ),
                                 ),
                               ),
                             );
