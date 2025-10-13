@@ -1,7 +1,9 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:munshi/core/theme.dart';
+import 'package:munshi/firebase_options.dart';
 import 'package:munshi/screens/main_screen.dart';
 import 'package:munshi/providers/theme_provider.dart';
 import 'package:munshi/features/transactions/providers/transaction_provider.dart';
@@ -23,6 +25,9 @@ void main() async {
 
   // Preserve the native splash screen until initialization is complete.
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
+
+  // Initialize Firebase
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   // Register all app-wide singletons/services using get_it, including SharedPreferences and ThemeProvider.
   // This ensures SharedPreferences is ready before ThemeProvider is created, allowing synchronous theme loading.

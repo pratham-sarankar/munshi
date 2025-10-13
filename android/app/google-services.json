@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "573858831973",
+    "project_id": "munshi-c1fc7",
+    "storage_bucket": "munshi-c1fc7.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:573858831973:android:94c0b34867b35c4b1cb08c",
+        "android_client_info": {
+          "package_name": "sarankar.app.munshi"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDTMprR1MsgSPkbVqdenvTchUtMw1-xor4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
