@@ -8,10 +8,12 @@ class AnimatedTransactionList extends StatefulWidget {
     super.key,
     required this.transactions,
     required this.onTap,
+    this.onDelete,
     this.controller,
   });
   final List<Transaction> transactions;
   final Function(Transaction) onTap;
+  final Future<void> Function(Transaction transaction)? onDelete;
   final ScrollController? controller;
   @override
   State<AnimatedTransactionList> createState() =>
@@ -108,6 +110,7 @@ class _AnimatedTransactionListState extends State<AnimatedTransactionList>
                                     onTap: () {
                                       widget.onTap(transaction);
                                     },
+                                    onDelete: widget.onDelete,
                                   ),
                                 ),
                               ),

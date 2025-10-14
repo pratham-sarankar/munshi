@@ -60,6 +60,9 @@ class _TransactionsScreenState extends State<TransactionsScreen>
             onTap: (transaction) {
               _showTransactionDetails(transaction, colorScheme);
             },
+            onDelete: (transaction) async {
+              await transactionProvider.deleteTransaction(transaction);
+            },
             transactions: transactions,
           ),
         );

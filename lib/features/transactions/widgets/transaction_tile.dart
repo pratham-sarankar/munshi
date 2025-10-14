@@ -11,9 +11,11 @@ class TransactionTile extends StatefulWidget {
     super.key,
     required this.onTap,
     required this.transaction,
+    this.onDelete,
   });
   final VoidCallback onTap;
   final Transaction transaction;
+  final Future<void> Function(Transaction transaction)? onDelete;
 
   @override
   State<TransactionTile> createState() => _TransactionTileState();
@@ -36,44 +38,13 @@ class _TransactionTileState extends State<TransactionTile>
       controller: controller,
       key: ValueKey(widget.transaction.id),
       groupTag: "transactions",
-
       endActionPane: ActionPane(
         motion: BehindMotion(),
         dragDismissible: true,
         dismissible: DismissiblePane(
-          confirmDismiss: () async {
-            final result = await showDialog<bool>(
-              context: context,
-              builder: (context) => AlertDialog(
-                title: const Text("Confirm Deletion"),
-                content: const Text(
-                  "Are you sure you want to delete this transaction?",
-                ),
-                actions: [
-                  TextButton(
-                    onPressed: () => Navigator.of(context).pop(false), // cancel
-                    child: const Text("Cancel"),
-                  ),
-                  FilledButton(
-                    onPressed: () => Navigator.of(context).pop(true), // confirm
-                    child: const Text("Delete"),
-                  ),
-                ],
-              ),
-            );
-            if (result == true) {
-              HapticFeedback.mediumImpact();
-              return true; // ✅ delete
-            } else {
-              controller.close(); // 👈 slide back if cancelled
-              return false; // ❌ don’t delete
-            }
-          },
-          onDismissed: () {
-            ScaffoldMessenger.of(
-              context,
-            ).showSnackBar(SnackBar(content: Text("Transaction deleted")));
-          },
+          confirmDismiss: _showDeleteConfirmationDialog,
+          closeOnCancel: true,
+          onDismissed: _deleteTransaction,
         ),
         children: [
           SlidableAction(
@@ -86,7 +57,12 @@ class _TransactionTileState extends State<TransactionTile>
           ),
           SlidableAction(
             flex: 1,
-            onPressed: (context) {},
+            onPressed: (context) async {
+              final confirm = await _showDeleteConfirmationDialog();
+              if (confirm) {
+                _deleteTransaction();
+              }
+            },
             backgroundColor: colorScheme.error,
             foregroundColor: colorScheme.onError,
             icon: Iconsax.trash_outline,
@@ -128,5 +104,37 @@ class _TransactionTileState extends State<TransactionTile>
         ),
       ),
     );
+  }
+
+  Future<void> _deleteTransaction() async {
+    await widget.onDelete?.call(widget.transaction);
+    if (mounted) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text("Transaction deleted")));
+    }
+  }
+
+  Future<bool> _showDeleteConfirmationDialog() async {
+    final result = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text("Confirm Deletion"),
+        content: const Text(
+          "Are you sure you want to delete this transaction?",
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false), // cancel
+            child: const Text("Cancel"),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.of(context).pop(true), // confirm
+            child: const Text("Delete"),
+          ),
+        ],
+      ),
+    );
+    return result ?? false;
   }
 }
