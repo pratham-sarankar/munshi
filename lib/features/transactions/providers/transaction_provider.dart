@@ -16,6 +16,10 @@ class TransactionProvider extends ChangeNotifier {
     await _transactionsDao.insertTransaction(transaction);
   }
 
+  Future<void> updateTransaction(Insertable<Transaction> transaction) async {
+    await _transactionsDao.updateTransaction(transaction);
+  }
+
   Future<void> deleteTransaction(Transaction transaction) async {
     await _transactionsDao.deleteTransaction(transaction);
   }

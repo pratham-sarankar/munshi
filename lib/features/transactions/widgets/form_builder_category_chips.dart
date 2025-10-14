@@ -9,13 +9,16 @@ class FormBuilderCategoryChips extends StatelessWidget {
     super.key,
     required this.name,
     required this.type,
+    this.initialValue,
   });
   final String name;
   final TransactionType type;
+  final TransactionCategory? initialValue;
   @override
   Widget build(BuildContext context) {
     return FormBuilderChoiceChips<TransactionCategory>(
       name: name,
+      initialValue: initialValue,
       spacing: 5,
       runSpacing: 5,
       decoration: InputDecoration(

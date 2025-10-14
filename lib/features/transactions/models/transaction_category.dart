@@ -30,6 +30,14 @@ class TransactionCategory {
         ),
         Color(json['color']),
       );
+
+  @override
+  bool operator ==(Object other) {
+    return other is TransactionCategory && other.name == name;
+  }
+
+  @override
+  int get hashCode => Object.hash(name, icon, color);
 }
 
 final List<TransactionCategory> expenseCategories = [

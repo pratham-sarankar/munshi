@@ -27,8 +27,15 @@ class _TransactionFormScreenState extends State<TransactionFormScreen>
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 2, vsync: this)
-      ..addListener(() => setState(() {}));
+    // Set initial tab based on transaction type when editing
+    final initialTabIndex = widget.transaction?.type == TransactionType.income
+        ? 1
+        : 0;
+    _tabController = TabController(
+      length: 2,
+      vsync: this,
+      initialIndex: initialTabIndex,
+    )..addListener(() => setState(() {}));
     _formKey = GlobalKey<FormBuilderState>();
   }
 
@@ -42,7 +49,9 @@ class _TransactionFormScreenState extends State<TransactionFormScreen>
           },
           icon: Icon(Iconsax.arrow_left_outline),
         ),
-        title: Text("Add Transaction"),
+        title: Text(
+          widget.transaction != null ? "Edit Transaction" : "Add Transaction",
+        ),
         bottom: TabBar(
           controller: _tabController,
           tabs: [
@@ -66,6 +75,7 @@ class _TransactionFormScreenState extends State<TransactionFormScreen>
                 const SizedBox(height: 5),
                 FormBuilderTextField(
                   name: 'amount',
+                  initialValue: widget.transaction?.amount.toString(),
                   keyboardType: const TextInputType.numberWithOptions(
                     decimal: true,
                   ),
@@ -103,6 +113,7 @@ class _TransactionFormScreenState extends State<TransactionFormScreen>
                     type: _tabController.index == 0
                         ? TransactionType.expense
                         : TransactionType.income,
+                    initialValue: widget.transaction?.category,
                   ),
                 ),
 
@@ -112,7 +123,7 @@ class _TransactionFormScreenState extends State<TransactionFormScreen>
                 FormBuilderDateTimePicker(
                   name: 'datetime',
                   inputType: InputType.both,
-                  initialValue: DateTime.now(),
+                  initialValue: widget.transaction?.date ?? DateTime.now(),
                   decoration: const InputDecoration(
                     prefixIcon: Icon(Iconsax.calendar_edit_outline),
                     hintText: 'Select date and time',
@@ -130,6 +141,7 @@ class _TransactionFormScreenState extends State<TransactionFormScreen>
                 const SizedBox(height: 5),
                 FormBuilderTextField(
                   name: 'description',
+                  initialValue: widget.transaction?.note,
                   maxLines: 3,
                   decoration: const InputDecoration(
                     prefixIcon: Icon(Iconsax.note_outline),
@@ -154,7 +166,7 @@ class _TransactionFormScreenState extends State<TransactionFormScreen>
                       ),
                     ),
                   ),
-                  child: const Text("Submit"),
+                  child: Text(widget.transaction != null ? "Update" : "Submit"),
                 ),
                 const SizedBox(height: 20),
               ],
@@ -177,13 +189,25 @@ class _TransactionFormScreenState extends State<TransactionFormScreen>
           : formData['income_category'];
       final datetime = formData['datetime'] as DateTime;
       final description = formData['description'] as String?;
-      final transaction = TransactionsCompanion(
-        amount: drift.Value(amount),
-        category: drift.Value(category),
-        type: drift.Value(type),
-        date: drift.Value(datetime),
-        note: drift.Value(description),
-      );
+
+      final transaction = widget.transaction != null
+          ? TransactionsCompanion(
+              id: drift.Value(
+                widget.transaction!.id,
+              ), // Keep existing ID for updates
+              amount: drift.Value(amount),
+              category: drift.Value(category),
+              type: drift.Value(type),
+              date: drift.Value(datetime),
+              note: drift.Value(description),
+            )
+          : TransactionsCompanion(
+              amount: drift.Value(amount),
+              category: drift.Value(category),
+              type: drift.Value(type),
+              date: drift.Value(datetime),
+              note: drift.Value(description),
+            );
 
       widget.onSubmit(transaction);
       Navigator.of(context).pop();

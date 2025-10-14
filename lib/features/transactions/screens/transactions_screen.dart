@@ -63,6 +63,17 @@ class _TransactionsScreenState extends State<TransactionsScreen>
             onDelete: (transaction) async {
               await transactionProvider.deleteTransaction(transaction);
             },
+            onEdit: (transaction) async {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => TransactionFormScreen(
+                    transaction: transaction,
+                    onSubmit: (updatedTransaction) => transactionProvider
+                        .updateTransaction(updatedTransaction),
+                  ),
+                ),
+              );
+            },
             transactions: transactions,
           ),
         );

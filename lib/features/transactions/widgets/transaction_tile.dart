@@ -11,10 +11,12 @@ class TransactionTile extends StatefulWidget {
     required this.onTap,
     required this.transaction,
     this.onDelete,
+    this.onEdit,
   });
   final VoidCallback onTap;
   final Transaction transaction;
   final Future<void> Function(Transaction transaction)? onDelete;
+  final Future<void> Function(Transaction transaction)? onEdit;
 
   @override
   State<TransactionTile> createState() => _TransactionTileState();
@@ -48,7 +50,7 @@ class _TransactionTileState extends State<TransactionTile>
         children: [
           SlidableAction(
             flex: 1,
-            onPressed: (context) {},
+            onPressed: (context) => _editTransaction(),
             backgroundColor: colorScheme.inverseSurface,
             foregroundColor: colorScheme.onInverseSurface,
             icon: Iconsax.edit_outline,
@@ -106,12 +108,21 @@ class _TransactionTileState extends State<TransactionTile>
   }
 
   Future<void> _deleteTransaction() async {
-    await widget.onDelete?.call(widget.transaction);
+    if (widget.onDelete != null) {
+      await widget.onDelete!(widget.transaction);
+    }
     if (mounted) {
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(SnackBar(content: Text("Transaction deleted")));
     }
+  }
+
+  void _editTransaction() {
+    if (widget.onEdit != null) {
+      widget.onEdit!(widget.transaction);
+    }
+    // If onEdit is null, do nothing - as the developer intended
   }
 
   Future<bool> _showDeleteConfirmationDialog() async {
