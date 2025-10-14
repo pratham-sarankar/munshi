@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:icons_plus/icons_plus.dart';
+import 'package:intl/intl.dart';
 import 'package:munshi/core/database/app_database.dart';
 import 'package:munshi/features/transactions/models/transaction_type.dart';
 import 'package:munshi/features/transactions/widgets/form_builder_category_chips.dart';
@@ -122,6 +123,7 @@ class _TransactionFormScreenState extends State<TransactionFormScreen>
                 const SizedBox(height: 5),
                 FormBuilderDateTimePicker(
                   name: 'datetime',
+                  format: DateFormat('d MMM, h:mm a'),
                   inputType: InputType.both,
                   initialValue: widget.transaction?.date ?? DateTime.now(),
                   decoration: const InputDecoration(
@@ -151,6 +153,7 @@ class _TransactionFormScreenState extends State<TransactionFormScreen>
                   validator: FormBuilderValidators.maxLength(
                     200,
                     errorText: 'Description too long',
+                    checkNullOrEmpty: false,
                   ),
                 ),
                 const SizedBox(height: 20),
