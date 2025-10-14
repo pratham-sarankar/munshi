@@ -5,7 +5,6 @@ import 'package:munshi/core/database/app_database.dart';
 import 'package:munshi/features/dashboard/widgets/dashboard_stats_widget.dart';
 import 'package:munshi/features/dashboard/widgets/dashboard_summary_card.dart';
 import 'package:munshi/features/transactions/widgets/transaction_tile.dart';
-import 'package:munshi/widgets/rounded_dropdown.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});

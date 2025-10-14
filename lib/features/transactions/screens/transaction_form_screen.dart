@@ -4,7 +4,6 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:icons_plus/icons_plus.dart';
 import 'package:munshi/core/database/app_database.dart';
-import 'package:munshi/features/transactions/models/transaction_category.dart';
 import 'package:munshi/features/transactions/models/transaction_type.dart';
 import 'package:munshi/features/transactions/widgets/form_builder_category_chips.dart';
 
