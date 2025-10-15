@@ -17,6 +17,10 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   DateTime _currentMonth = DateTime.now();
   late AnimationController _summaryCardAnimationController;
   late Animation<double> _summaryCardAnimation;
+  late Animation<Offset> _summaryCardSlideAnimation;
+  late AnimationController _statsAnimationController;
+  late List<Animation<double>> _statsScaleAnimations;
+  late List<Animation<Offset>> _statsSlideAnimations;
   late AnimationController _transactionAnimationController;
   late List<Animation<Offset>> _transactionAnimations;
 
@@ -24,49 +28,98 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   final String _userName = "Alex Johnson";
 
   // Sample data
-
-  final int _transactionCount = 45;
   final double _biggestSpendAmount = 3200;
-
   final List<Transaction> _recentTransactions = [];
 
   @override
   void initState() {
     super.initState();
+
+    // Summary card animations with iOS-style spring curves
     _summaryCardAnimationController = AnimationController(
-      duration: const Duration(milliseconds: 800),
+      duration: const Duration(milliseconds: 1200),
       vsync: this,
     );
+
     _summaryCardAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
       CurvedAnimation(
         parent: _summaryCardAnimationController,
-        curve: Curves.easeOutExpo,
+        curve: Curves.easeOutBack,
       ),
     );
 
-    // Transaction animations
+    _summaryCardSlideAnimation =
+        Tween<Offset>(begin: const Offset(0, 0.3), end: Offset.zero).animate(
+          CurvedAnimation(
+            parent: _summaryCardAnimationController,
+            curve: const Cubic(0.175, 0.885, 0.32, 1.0), // iOS easeOutQuart
+          ),
+        );
+
+    // Stats animations with staggered timing
+    _statsAnimationController = AnimationController(
+      duration: const Duration(milliseconds: 1000),
+      vsync: this,
+    );
+
+    _statsScaleAnimations = List.generate(2, (index) {
+      return Tween<double>(begin: 0.8, end: 1.0).animate(
+        CurvedAnimation(
+          parent: _statsAnimationController,
+          curve: Interval(
+            index * 0.15,
+            0.6 + (index * 0.15),
+            curve: const Cubic(0.23, 1.0, 0.32, 1.0), // iOS easeOutQuint
+          ),
+        ),
+      );
+    });
+
+    _statsSlideAnimations = List.generate(2, (index) {
+      return Tween<Offset>(
+        begin: const Offset(0, 0.4),
+        end: Offset.zero,
+      ).animate(
+        CurvedAnimation(
+          parent: _statsAnimationController,
+          curve: Interval(
+            index * 0.15,
+            0.6 + (index * 0.15),
+            curve: const Cubic(0.23, 1.0, 0.32, 1.0),
+          ),
+        ),
+      );
+    });
+
+    // Transaction animations with smooth stagger
     _transactionAnimationController = AnimationController(
-      duration: const Duration(milliseconds: 1200),
+      duration: const Duration(milliseconds: 1500),
       vsync: this,
     );
 
     _transactionAnimations = List.generate(
       _recentTransactions.length,
       (index) =>
-          Tween<Offset>(begin: const Offset(0, 0.5), end: Offset.zero).animate(
+          Tween<Offset>(begin: const Offset(0, 0.3), end: Offset.zero).animate(
             CurvedAnimation(
               parent: _transactionAnimationController,
               curve: Interval(
-                index * 0.1,
-                0.5 + (index * 0.1),
-                curve: Curves.easeOutCubic,
+                index * 0.08,
+                0.5 + (index * 0.08),
+                curve: const Cubic(0.165, 0.84, 0.44, 1.0), // iOS easeOutQuart
               ),
             ),
           ),
     );
 
+    // Start animations with iOS-like staggered timing
     _summaryCardAnimationController.forward();
-    Future.delayed(const Duration(milliseconds: 300), () {
+
+    Future.delayed(const Duration(milliseconds: 200), () {
+      _statsAnimationController.forward();
+    });
+
+    Future.delayed(const Duration(milliseconds: 400), () {
       _transactionAnimationController.forward();
     });
   }
@@ -74,6 +127,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   @override
   void dispose() {
     _summaryCardAnimationController.dispose();
+    _statsAnimationController.dispose();
     _transactionAnimationController.dispose();
     super.dispose();
   }
@@ -231,10 +285,16 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             children: [
               const SizedBox(height: 10),
 
-              // Hero Summary Card
-              ScaleTransition(
-                scale: _summaryCardAnimation,
-                child: DashboardSummaryCard(),
+              // Hero Summary Card with enhanced animations
+              SlideTransition(
+                position: _summaryCardSlideAnimation,
+                child: ScaleTransition(
+                  scale: _summaryCardAnimation,
+                  child: FadeTransition(
+                    opacity: _summaryCardAnimation,
+                    child: const DashboardSummaryCard(),
+                  ),
+                ),
               ),
               const SizedBox(height: 15),
 
@@ -255,20 +315,38 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     return Row(
       children: [
         Expanded(
-          child: DashboardStatsWidget(
-            'Transactions',
-            _transactionCount.toString(),
-            Iconsax.receipt_search_outline,
-            Colors.blue,
+          child: SlideTransition(
+            position: _statsSlideAnimations[0],
+            child: ScaleTransition(
+              scale: _statsScaleAnimations[0],
+              child: FadeTransition(
+                opacity: _statsAnimationController,
+                child: const DashboardStatsWidget(
+                  'Transactions',
+                  '45',
+                  Iconsax.receipt_search_outline,
+                  Colors.blue,
+                ),
+              ),
+            ),
           ),
         ),
         const SizedBox(width: 15),
         Expanded(
-          child: DashboardStatsWidget(
-            'Biggest Spend',
-            _formatCurrency(_biggestSpendAmount),
-            Iconsax.card_pos_outline,
-            Colors.orange,
+          child: SlideTransition(
+            position: _statsSlideAnimations[1],
+            child: ScaleTransition(
+              scale: _statsScaleAnimations[1],
+              child: FadeTransition(
+                opacity: _statsAnimationController,
+                child: DashboardStatsWidget(
+                  'Biggest Spend',
+                  _formatCurrency(_biggestSpendAmount),
+                  Iconsax.card_pos_outline,
+                  Colors.orange,
+                ),
+              ),
+            ),
           ),
         ),
       ],
