@@ -123,7 +123,23 @@ class HomeScreen extends StatelessWidget {
                   const SizedBox(height: 15),
 
                   // Quick Stats Row
-                  _buildQuickStatsRow(context, dashboardProvider, colorScheme),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: DashboardStatsWidget(
+                          statType: DashboardStatType.transactions,
+                          animationDelay: const Duration(milliseconds: 200),
+                        ),
+                      ),
+                      const SizedBox(width: 15),
+                      Expanded(
+                        child: DashboardStatsWidget(
+                          statType: DashboardStatType.biggestSpend,
+                          animationDelay: const Duration(milliseconds: 350),
+                        ),
+                      ),
+                    ],
+                  ),
                   const SizedBox(height: 25),
 
                   // Recent Transactions
@@ -134,30 +150,6 @@ class HomeScreen extends StatelessWidget {
           ),
         );
       },
-    );
-  }
-
-  Widget _buildQuickStatsRow(
-    BuildContext context,
-    DashboardProvider dashboardProvider,
-    ColorScheme colorScheme,
-  ) {
-    return Row(
-      children: [
-        Expanded(
-          child: DashboardStatsWidget(
-            statType: DashboardStatType.transactions,
-            animationDelay: const Duration(milliseconds: 200),
-          ),
-        ),
-        const SizedBox(width: 15),
-        Expanded(
-          child: DashboardStatsWidget(
-            statType: DashboardStatType.biggestSpend,
-            animationDelay: const Duration(milliseconds: 350),
-          ),
-        ),
-      ],
     );
   }
 }

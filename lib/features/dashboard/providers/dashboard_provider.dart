@@ -9,9 +9,10 @@ class DashboardProvider extends ChangeNotifier {
   PeriodSummaryData? _summaryData;
   bool _isLoading = false;
   String? _error;
+  final DashboardDataService _dashboardDataService;
 
   // Constructor
-  DashboardProvider() {
+  DashboardProvider(this._dashboardDataService) {
     // Initialize with current month
     _selectedPeriod = DatePeriod.monthly(DateTime.now());
     _loadDashboardData();
@@ -39,10 +40,10 @@ class DashboardProvider extends ChangeNotifier {
     notifyListeners();
 
     try {
-      await Future.delayed(
-        const Duration(milliseconds: 2000),
-      ); // Simulate delay
-      final data = await DashboardDataService.getPeriodSummary(_selectedPeriod);
+      // Use the efficient database-based summary calculation
+      final data = await _dashboardDataService.getPeriodSummarySql(
+        _selectedPeriod,
+      );
       _summaryData = data;
       _error = null;
     } catch (e) {

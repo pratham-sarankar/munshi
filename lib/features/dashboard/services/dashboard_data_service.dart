@@ -1,4 +1,6 @@
 import 'package:munshi/core/models/date_period.dart';
+import 'package:munshi/core/database/daos/transaction_dao.dart';
+import 'package:munshi/features/transactions/models/transaction_category.dart';
 
 class PeriodSummaryData {
   final double totalSpent;
@@ -33,61 +35,23 @@ class PeriodSummaryData {
 }
 
 class DashboardDataService {
-  // In the future, this will connect to your database/API
-  // For now, it returns mock data based on the period
+  final TransactionsDao _transactionsDao;
 
-  static Future<PeriodSummaryData> getPeriodSummary(DatePeriod period) async {
-    // Simulate API call delay
-    await Future.delayed(const Duration(milliseconds: 500));
+  DashboardDataService(this._transactionsDao);
 
-    // Mock data - replace with real database queries
-    switch (period.type) {
-      case PeriodType.daily:
-        return PeriodSummaryData(
-          totalSpent: 450,
-          totalIncome: 0, // Usually no daily income tracking
-          balance: -450,
-          avgDaily: 450, // Same as daily spend
-          transactionCount: 3,
-          biggestSpend: 200,
-          period: period,
-        );
-
-      case PeriodType.weekly:
-        return PeriodSummaryData(
-          totalSpent: 2800,
-          totalIncome: 1200, // Maybe some side income
-          balance: -1600,
-          avgDaily: 400, // 2800 / 7 days
-          transactionCount: 15,
-          biggestSpend: 800,
-          period: period,
-        );
-
-      case PeriodType.monthly:
-        return PeriodSummaryData(
-          totalSpent: 12430,
-          totalIncome: 45800,
-          balance: 33370,
-          avgDaily: 401, // 12430 / ~31 days
-          transactionCount: 45,
-          biggestSpend: 3200,
-          period: period,
-        );
-    }
+  /// Alternative method using SQL-based calculation for better performance
+  Future<PeriodSummaryData> getPeriodSummarySql(DatePeriod period) async {
+    // Use the SQL-based DAO method for maximum efficiency
+    return await _transactionsDao.getPeriodSummarySql(period);
   }
 
-  // Future methods for real data integration:
+  /// Get spending breakdown by category for the period
+  Future<Map<TransactionCategory, double>> getSpendingByCategory(
+    DatePeriod period,
+  ) async {
+    return await _transactionsDao.getSpendingByCategory(period);
+  }
 
-  // static Future<List<Transaction>> getTransactionsForPeriod(DatePeriod period) async {
-  //   // Query transactions where date is between period.startDate and period.endDate
-  // }
-
-  // static Future<List<Category>> getSpendingByCategory(DatePeriod period) async {
-  //   // Get spending breakdown by category for the period
-  // }
-
-  // static Future<Map<String, double>> getComparisonWithPreviousPeriod(DatePeriod period) async {
-  //   // Compare current period with previous period
-  // }
+  // Future<List<Transaction>> getTransactionsForPeriod(DatePeriod period) async {
+  //   return await _transactionsDao.getTransactions(period: period
 }
