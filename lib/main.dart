@@ -7,6 +7,7 @@ import 'package:munshi/firebase_options.dart';
 import 'package:munshi/screens/main_screen.dart';
 import 'package:munshi/providers/theme_provider.dart';
 import 'package:munshi/features/transactions/providers/transaction_provider.dart';
+import 'package:munshi/features/dashboard/providers/dashboard_provider.dart';
 import 'package:munshi/core/database/daos/transaction_dao.dart';
 import 'package:provider/provider.dart';
 import 'package:munshi/core/service_locator.dart';
@@ -44,6 +45,7 @@ void main() async {
         ChangeNotifierProvider(
           create: (_) => TransactionProvider(locator<TransactionsDao>()),
         ),
+        ChangeNotifierProvider(create: (_) => DashboardProvider()),
       ],
       child: const Munshi(),
     ),
