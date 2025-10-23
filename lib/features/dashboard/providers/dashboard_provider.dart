@@ -24,7 +24,8 @@ class DashboardProvider extends ChangeNotifier {
   // Getters
   DatePeriod get selectedPeriod => _selectedPeriod;
   PeriodSummaryData? get summaryData => _summaryData;
-  Map<TransactionCategory, CategorySpendingData>? get categorySpending => _categorySpending;
+  Map<TransactionCategory, CategorySpendingData>? get categorySpending =>
+      _categorySpending;
   bool get isLoading => _isLoading;
   String? get error => _error;
 
@@ -45,6 +46,9 @@ class DashboardProvider extends ChangeNotifier {
     _error = null;
     notifyListeners();
 
+    // Add 300ms delay for smoother UX
+    await Future.delayed(const Duration(milliseconds: 300));
+
     try {
       // Load both summary data and category spending in parallel
       final results = await Future.wait([
@@ -53,7 +57,8 @@ class DashboardProvider extends ChangeNotifier {
       ]);
 
       _summaryData = results[0] as PeriodSummaryData;
-      _categorySpending = results[1] as Map<TransactionCategory, CategorySpendingData>;
+      _categorySpending =
+          results[1] as Map<TransactionCategory, CategorySpendingData>;
       _error = null;
     } catch (e) {
       _error = e.toString();

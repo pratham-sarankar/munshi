@@ -57,8 +57,7 @@ class _DashboardCategoriesWidgetState extends State<DashboardCategoriesWidget>
                   color: colorScheme.onSurface,
                 ),
               ),
-              if (dashboardProvider.isLoading ||
-                  !dashboardProvider.hasCategoryData)
+              if (dashboardProvider.isLoading)
                 _buildLoadingCategories(colorScheme)
               else if (dashboardProvider.hasCategoryData)
                 _buildCategoriesList(dashboardProvider)
