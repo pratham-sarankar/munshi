@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:munshi/features/transactions/models/transaction_category.dart';
 
@@ -8,14 +6,16 @@ class CategoryTile extends StatefulWidget {
     super.key,
     required this.category,
     required this.onTap,
+    this.spendingAmount = 0.0,
+    this.transactionCount = 0,
     this.animationDelay = const Duration(milliseconds: 0),
-    this.index = 0,
   });
 
   final TransactionCategory category;
   final VoidCallback onTap;
+  final double spendingAmount;
+  final int transactionCount;
   final Duration animationDelay;
-  final int index;
 
   @override
   State<CategoryTile> createState() => _CategoryTileState();
@@ -39,7 +39,7 @@ class _CategoryTileState extends State<CategoryTile>
     );
 
     _scaleController = AnimationController(
-      duration: Duration(milliseconds: 300 + (widget.index * 100)),
+      duration: Duration(milliseconds: 300),
       vsync: this,
     );
 
@@ -81,8 +81,11 @@ class _CategoryTileState extends State<CategoryTile>
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
-    final random = Random();
-    final transaction = random.nextInt(150) + 50; // Random between 50 and 200
+
+    // Format spending amount in Indian Rupee format
+    final formattedAmount = widget.spendingAmount > 0
+        ? "₹${widget.spendingAmount.toStringAsFixed(0).replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match match) => '${match[1]},')}"
+        : "₹0";
 
     return SlideTransition(
       position: _slideAnimation,
@@ -151,11 +154,23 @@ class _CategoryTileState extends State<CategoryTile>
                               ),
                             ),
                             const SizedBox(height: 2),
-                            Text(
-                              '$transaction Transactions',
-                              style: theme.textTheme.bodySmall?.copyWith(
-                                color: colorScheme.onSurfaceVariant,
-                              ),
+                            Row(
+                              children: [
+                                Text(
+                                  formattedAmount,
+                                  style: theme.textTheme.bodySmall?.copyWith(
+                                    color: colorScheme.primary,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                                const SizedBox(width: 4),
+                                Text(
+                                  '• ${widget.transactionCount} transactions',
+                                  style: theme.textTheme.bodySmall?.copyWith(
+                                    color: colorScheme.onSurfaceVariant,
+                                  ),
+                                ),
+                              ],
                             ),
                           ],
                         ),

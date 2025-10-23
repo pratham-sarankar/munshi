@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:munshi/features/dashboard/providers/dashboard_provider.dart';
 import 'package:munshi/features/dashboard/widgets/category_tile.dart';
-import 'package:munshi/features/transactions/models/transaction_category.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
 
@@ -58,10 +57,13 @@ class _DashboardCategoriesWidgetState extends State<DashboardCategoriesWidget>
                   color: colorScheme.onSurface,
                 ),
               ),
-              if (dashboardProvider.isLoading || !dashboardProvider.hasData)
+              if (dashboardProvider.isLoading ||
+                  !dashboardProvider.hasCategoryData)
                 _buildLoadingCategories(colorScheme)
+              else if (dashboardProvider.hasCategoryData)
+                _buildCategoriesList(dashboardProvider)
               else
-                _buildCategoriesList(),
+                _buildEmptyCategoriesState(colorScheme),
             ],
           ),
         );
@@ -69,22 +71,60 @@ class _DashboardCategoriesWidgetState extends State<DashboardCategoriesWidget>
     );
   }
 
-  Widget _buildCategoriesList() {
+  Widget _buildCategoriesList(DashboardProvider dashboardProvider) {
     return ListView.separated(
       shrinkWrap: true,
       padding: const EdgeInsets.only(top: 5),
       physics: const NeverScrollableScrollPhysics(),
-      itemCount: expenseCategories.length,
-      separatorBuilder: (context, index) => const SizedBox(),
+      itemCount: dashboardProvider.categorySpending!.keys.length,
+      separatorBuilder: (context, index) => const SizedBox(height: 8),
       itemBuilder: (context, index) {
-        final category = expenseCategories[index];
+        final category = dashboardProvider.categorySpending!.keys.elementAt(
+          index,
+        );
+        final spendingAmount = dashboardProvider.getCategorySpending(category);
+        final transactionCount = dashboardProvider.getCategoryTransactionCount(
+          category,
+        );
+
         return CategoryTile(
           onTap: () {},
           category: category,
+          spendingAmount: spendingAmount,
+          transactionCount: transactionCount,
           animationDelay: Duration(milliseconds: 400 + (index * 120)),
-          index: index,
         );
       },
+    );
+  }
+
+  Widget _buildEmptyCategoriesState(ColorScheme colorScheme) {
+    return Container(
+      padding: const EdgeInsets.all(24),
+      child: Column(
+        children: [
+          Icon(
+            Icons.category_outlined,
+            size: 48,
+            color: colorScheme.onSurfaceVariant.withValues(alpha: 0.6),
+          ),
+          const SizedBox(height: 16),
+          Text(
+            'No spending data yet',
+            style: Theme.of(context).textTheme.titleMedium?.copyWith(
+              color: colorScheme.onSurfaceVariant,
+            ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            'Add some transactions to see category breakdown',
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+              color: colorScheme.onSurfaceVariant.withValues(alpha: 0.7),
+            ),
+            textAlign: TextAlign.center,
+          ),
+        ],
+      ),
     );
   }
 

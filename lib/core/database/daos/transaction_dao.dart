@@ -1,6 +1,7 @@
 import 'package:drift/drift.dart';
 import 'package:munshi/core/database/converters/transaction_category_converter.dart';
 import 'package:munshi/core/models/date_period.dart';
+import 'package:munshi/features/dashboard/models/category_spending_data.dart';
 import 'package:munshi/features/dashboard/services/dashboard_data_service.dart';
 import 'package:munshi/features/transactions/models/transaction_category.dart';
 import 'package:munshi/features/transactions/models/transaction_type.dart';
@@ -14,33 +15,6 @@ part 'transaction_dao.g.dart';
 class TransactionsDao extends DatabaseAccessor<AppDatabase>
     with _$TransactionsDaoMixin {
   TransactionsDao(super.db);
-
-  Future<List<Transaction>> getTransactions({
-    DatePeriod? period,
-    TransactionType? type,
-    TransactionCategory? category,
-  }) {
-    final query = select(transactions);
-    if (period != null) {
-      query.where(
-        (table) => table.date.isBetweenValues(period.startDate, period.endDate),
-      );
-    }
-    if (type != null) {
-      query.where(
-        (table) =>
-            table.type.equals(const TransactionTypeConverter().toSql(type)),
-      );
-    }
-    if (category != null) {
-      query.where(
-        (table) => table.category.equals(
-          const TransactionCategoryConverter().toSql(category),
-        ),
-      );
-    }
-    return query.get();
-  }
 
   Future<List<Transaction>> getAllTransactions() => select(transactions).get();
 
@@ -65,45 +39,6 @@ class TransactionsDao extends DatabaseAccessor<AppDatabase>
               tbl.type.equals(const TransactionTypeConverter().toSql(type)),
         ))
         .get();
-  }
-
-  /// Efficiently calculates period summary data in a single database operation
-  Future<PeriodSummaryData> getPeriodSummary(DatePeriod period) async {
-    // Get all transactions for the period
-    final transactionsInPeriod = await getTransactions(period: period);
-
-    if (transactionsInPeriod.isEmpty) {
-      return PeriodSummaryData.empty(period);
-    }
-
-    double totalIncome = 0;
-    double totalExpense = 0;
-    double biggestSpend = 0;
-
-    for (final transaction in transactionsInPeriod) {
-      if (transaction.type == TransactionType.income) {
-        totalIncome += transaction.amount;
-      } else {
-        totalExpense += transaction.amount;
-        if (transaction.amount > biggestSpend) {
-          biggestSpend = transaction.amount;
-        }
-      }
-    }
-
-    final balance = totalIncome - totalExpense;
-    final periodDays = period.endDate.difference(period.startDate).inDays + 1;
-    final avgDaily = totalExpense / periodDays;
-
-    return PeriodSummaryData(
-      totalSpent: totalExpense,
-      totalIncome: totalIncome,
-      balance: balance,
-      avgDaily: avgDaily,
-      transactionCount: transactionsInPeriod.length,
-      biggestSpend: biggestSpend,
-      period: period,
-    );
   }
 
   /// Alternative: More efficient SQL-based calculation (requires custom SQL)
@@ -161,13 +96,12 @@ class TransactionsDao extends DatabaseAccessor<AppDatabase>
     );
   }
 
-  /// Get spending breakdown by category for a given period
-  Future<Map<TransactionCategory, double>> getSpendingByCategory(
-    DatePeriod period,
-  ) async {
+  /// Get spending breakdown by category with both amount and transaction count
+  Future<Map<TransactionCategory, CategorySpendingData>>
+  getSpendingByCategoryWithCount(DatePeriod period) async {
     final result = await customSelect(
       '''
-      SELECT category, SUM(amount) as total_amount
+      SELECT category, SUM(amount) as total_amount, COUNT(*) as transaction_count
       FROM transactions 
       WHERE date BETWEEN ? AND ? AND type = ?
       GROUP BY category
@@ -181,14 +115,19 @@ class TransactionsDao extends DatabaseAccessor<AppDatabase>
       ],
     ).get();
 
-    final Map<TransactionCategory, double> categorySpending = {};
+    final Map<TransactionCategory, CategorySpendingData> categorySpending = {};
     for (final row in result) {
       final categoryString = row.read<String>('category');
       final amount = row.read<double>('total_amount');
+      final count = row.read<int>('transaction_count');
       final category = const TransactionCategoryConverter().fromSql(
         categoryString,
       );
-      categorySpending[category] = amount;
+      categorySpending[category] = CategorySpendingData(
+        category: category,
+        totalAmount: amount,
+        transactionCount: count,
+      );
     }
 
     return categorySpending;

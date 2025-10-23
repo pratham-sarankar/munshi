@@ -2,11 +2,14 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:munshi/core/models/date_period.dart';
 import 'package:munshi/features/dashboard/services/dashboard_data_service.dart';
+import 'package:munshi/features/transactions/models/transaction_category.dart';
+import 'package:munshi/features/dashboard/models/category_spending_data.dart';
 
 class DashboardProvider extends ChangeNotifier {
   // Private fields
   late DatePeriod _selectedPeriod;
   PeriodSummaryData? _summaryData;
+  Map<TransactionCategory, CategorySpendingData>? _categorySpending;
   bool _isLoading = false;
   String? _error;
   final DashboardDataService _dashboardDataService;
@@ -21,11 +24,14 @@ class DashboardProvider extends ChangeNotifier {
   // Getters
   DatePeriod get selectedPeriod => _selectedPeriod;
   PeriodSummaryData? get summaryData => _summaryData;
+  Map<TransactionCategory, CategorySpendingData>? get categorySpending => _categorySpending;
   bool get isLoading => _isLoading;
   String? get error => _error;
 
   // Convenience getters for UI
   bool get hasData => _summaryData != null;
+  bool get hasCategoryData =>
+      _categorySpending != null && _categorySpending!.isNotEmpty;
   double get totalSpent => _summaryData?.totalSpent ?? 0;
   double get totalIncome => _summaryData?.totalIncome ?? 0;
   double get balance => _summaryData?.balance ?? 0;
@@ -40,15 +46,19 @@ class DashboardProvider extends ChangeNotifier {
     notifyListeners();
 
     try {
-      // Use the efficient database-based summary calculation
-      final data = await _dashboardDataService.getPeriodSummarySql(
-        _selectedPeriod,
-      );
-      _summaryData = data;
+      // Load both summary data and category spending in parallel
+      final results = await Future.wait([
+        _dashboardDataService.getPeriodSummarySql(_selectedPeriod),
+        _dashboardDataService.getSpendingByCategoryWithCount(_selectedPeriod),
+      ]);
+
+      _summaryData = results[0] as PeriodSummaryData;
+      _categorySpending = results[1] as Map<TransactionCategory, CategorySpendingData>;
       _error = null;
     } catch (e) {
       _error = e.toString();
       _summaryData = PeriodSummaryData.empty(_selectedPeriod);
+      _categorySpending = {};
     } finally {
       _isLoading = false;
       notifyListeners();
@@ -100,6 +110,21 @@ class DashboardProvider extends ChangeNotifier {
     return "₹${amount.toStringAsFixed(0).replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match match) => '${match[1]},')}";
   }
 
+  /// Get spending amount for a specific category
+  double getCategorySpending(TransactionCategory category) {
+    return _categorySpending?[category]?.totalAmount ?? 0.0;
+  }
+
+  /// Get transaction count for a specific category
+  int getCategoryTransactionCount(TransactionCategory category) {
+    return _categorySpending?[category]?.transactionCount ?? 0;
+  }
+
+  /// Get CategorySpendingData for a specific category
+  CategorySpendingData? getCategorySpendingData(TransactionCategory category) {
+    return _categorySpending?[category];
+  }
+
   /// Get formatted values for UI display
   String get formattedTotalSpent => formatCurrency(totalSpent);
   String get formattedTotalIncome => formatCurrency(totalIncome);
@@ -107,4 +132,9 @@ class DashboardProvider extends ChangeNotifier {
   String get formattedAvgDaily => formatCurrency(avgDaily);
   String get formattedBiggestSpend => formatCurrency(biggestSpend);
   String get formattedTransactionCount => transactionCount.toString();
+
+  /// Get formatted category spending
+  String getFormattedCategorySpending(TransactionCategory category) {
+    return formatCurrency(getCategorySpending(category));
+  }
 }
