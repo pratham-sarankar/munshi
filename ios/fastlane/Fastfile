@@ -38,7 +38,7 @@ platform :ios do
     # Clean, get dependencies, and build the Flutter IPA
     sh "flutter clean"
     sh "flutter pub get"
-    sh "flutter build ipa --release --no-tree-shake-icons --export-method app-store"
+    sh "flutter build ipa --release --no-tree-shake-icons --export-method app-store --verbose"
 
     # # Locate the generated IPA
     ipa_path = "../build/ios/ipa/munshi.ipa"
