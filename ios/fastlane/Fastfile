@@ -1,0 +1,64 @@
+# This file contains the fastlane.tools configuration
+# You can find the documentation at https://docs.fastlane.tools
+#
+# For a list of all available actions, check out
+#     https://docs.fastlane.tools/actions
+#
+# For a list of all available plugins, check out
+#     https://docs.fastlane.tools/plugins/available-plugins
+#
+
+default_platform(:ios)
+
+platform :ios do
+
+  desc "Build the iOS app using Flutter (local only)"
+  lane :build do
+    # 1️⃣ Prepare Flutter project
+    sh "flutter clean"
+    sh "flutter pub get"
+
+    # 2️⃣ Build the release IPA for App Store distribution
+    sh "flutter build ipa --release --no-tree-shake-icons --export-method app-store"
+
+    # 3️⃣ Output location
+    sh "echo '✅ IPA built successfully! Find it under build/ios/ipa/Runner.ipa'"
+  end
+
+
+  desc "🚀 Build and upload a new TestFlight build"
+  lane :beta do
+    # # Fetch signing certificates & provisioning profiles
+    # match(
+    #   type: "appstore",
+    #   readonly: true   # Prevents overwriting existing certs
+    # )
+
+    # # Clean, get dependencies, and build the Flutter IPA
+    # sh "flutter clean"
+    # sh "flutter pub get"
+    # sh "flutter build ipa --release --no-tree-shake-icons --export-method app-store"
+
+    # # Locate the generated IPA
+    ipa_path = "../build/ios/ipa/munshi.ipa"
+
+    app_store_connect_api_key(
+      key_id: "6W3U9Q7XKG",
+      issuer_id: "bca83270-a27f-4398-aceb-2bdb17bff2a2",
+      key_filepath: "./AuthKey_6W3U9Q7XKG.p8",
+      duration: 1200, # optional (maximum 1200)
+      in_house: false 
+    )
+
+
+    # Upload to TestFlight
+    pilot(
+      ipa: ipa_path,
+      skip_waiting_for_build_processing: false, # waits until Apple processes it
+      distribute_external: false                # change to true if you want to send to external testers
+    )
+
+    sh "echo '🎉 Successfully uploaded build to TestFlight!'"
+  end
+
+end

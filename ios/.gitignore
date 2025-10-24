@@ -32,3 +32,6 @@ Runner/GeneratedPluginRegistrant.*
 !default.mode2v3
 !default.pbxuser
 !default.perspectivev3
+
+# Fastlane
+AuthKey_6W3U9Q7XKG.p8
