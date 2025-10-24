@@ -15,6 +15,8 @@ jobs:
       APPSTORE_KEY_ID: ${{ secrets.APPSTORE_KEY_ID }}
       APPSTORE_ISSUER_ID: ${{ secrets.APPSTORE_ISSUER_ID }}
       APPSTORE_KEY: ${{ secrets.APPSTORE_KEY }} # base64 encoded .p8 file
+      MATCH_GIT_BASIC_AUTHORIZATION: ${{ secrets.MATCH_GIT_BASIC_AUTHORIZATION }}
+
 
     steps:
       - name: 🧹 Checkout repository
@@ -33,8 +35,6 @@ jobs:
 
       - name: 🚀 Run Fastlane Beta Lane
         working-directory: ios
-        env:
-          MATCH_GIT_TOKEN: ${{ secrets.MATCH_GIT_TOKEN }}
         run: |
           bundle install || gem install fastlane
           fastlane beta

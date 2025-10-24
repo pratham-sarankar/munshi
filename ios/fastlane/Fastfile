@@ -32,7 +32,7 @@ platform :ios do
     match(
       type: "appstore",
       readonly: true,
-      git_basic_authorization: "#{ENV['MATCH_GIT_TOKEN']}:x-oauth-basic"
+      git_basic_authorization: ENV['MATCH_GIT_BASIC_AUTHORIZATION']
     )
 
     # Clean, get dependencies, and build the Flutter IPA
