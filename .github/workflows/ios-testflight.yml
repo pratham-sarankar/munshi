@@ -29,13 +29,28 @@ jobs:
           flutter-version: ${{ env.FLUTTER_VERSION }}
           channel: stable
 
-      - name: 🔑 Decode App Store Connect API key
+      - name: � Install Flutter dependencies
+        run: flutter pub get
+
+      - name: 🧹 Clean iOS build cache
+        working-directory: ios
+        run: |
+          rm -rf Pods
+          rm -rf Podfile.lock
+          rm -rf ~/Library/Caches/CocoaPods
+          rm -rf ~/.cocoapods
+
+      - name: �🔑 Decode App Store Connect API key
         run: |
           mkdir -p ios
           echo "$APPSTORE_KEY" | base64 --decode > ios/AuthKey_${APPSTORE_KEY_ID}.p8
 
-      - name: 🚀 Run Fastlane Beta Lane
+      - name: 🍎 Setup Ruby and Bundler
         working-directory: ios
         run: |
-          bundle install || gem install fastlane
-          fastlane beta
+          bundle config set --local path 'vendor/bundle'
+          bundle install
+
+      - name: 🚀 Run Fastlane Beta Lane
+        working-directory: ios
+        run: fastlane beta
