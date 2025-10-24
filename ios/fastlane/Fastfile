@@ -28,16 +28,16 @@ platform :ios do
 
   desc "🚀 Build and upload a new TestFlight build"
   lane :beta do
-    # # Fetch signing certificates & provisioning profiles
-    # match(
-    #   type: "appstore",
-    #   readonly: true   # Prevents overwriting existing certs
-    # )
+    # Fetch signing certificates & provisioning profiles
+    match(
+      type: "appstore",
+      readonly: true   # Prevents overwriting existing certs
+    )
 
-    # # Clean, get dependencies, and build the Flutter IPA
-    # sh "flutter clean"
-    # sh "flutter pub get"
-    # sh "flutter build ipa --release --no-tree-shake-icons --export-method app-store"
+    # Clean, get dependencies, and build the Flutter IPA
+    sh "flutter clean"
+    sh "flutter pub get"
+    sh "flutter build ipa --release --no-tree-shake-icons --export-method app-store"
 
     # # Locate the generated IPA
     ipa_path = "../build/ios/ipa/munshi.ipa"
