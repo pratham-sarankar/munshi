@@ -35,9 +35,17 @@ platform :ios do
       git_basic_authorization: ENV['MATCH_GIT_BASIC_AUTHORIZATION']
     )
 
-    # Clean, get dependencies, and build the Flutter IPA
+    # Clean workspace and dependencies
     sh "flutter clean"
+    
+    # Get Flutter dependencies
     sh "flutter pub get"
+    
+    # Clean and update CocoaPods
+    sh "cd .. && rm -rf ios/Pods ios/Podfile.lock"
+    sh "pod repo update --silent" rescue nil  # Update pod repo, ignore errors
+    
+    # Build the Flutter IPA with verbose output for debugging
     sh "flutter build ipa --release --no-tree-shake-icons --export-method app-store --verbose"
 
     # # Locate the generated IPA

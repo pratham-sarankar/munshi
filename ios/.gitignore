@@ -33,5 +33,8 @@ Runner/GeneratedPluginRegistrant.*
 !default.pbxuser
 !default.perspectivev3
 
+# Bundle vendor directory
+vendor/
+
 # Fastlane
 AuthKey_6W3U9Q7XKG.p8
