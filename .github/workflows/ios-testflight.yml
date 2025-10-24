@@ -33,6 +33,8 @@ jobs:
 
       - name: 🚀 Run Fastlane Beta Lane
         working-directory: ios
+        env:
+          MATCH_GIT_TOKEN: ${{ secrets.MATCH_GIT_TOKEN }}
         run: |
           bundle install || gem install fastlane
           fastlane beta

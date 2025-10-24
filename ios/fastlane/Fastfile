@@ -31,7 +31,8 @@ platform :ios do
     # Fetch signing certificates & provisioning profiles
     match(
       type: "appstore",
-      readonly: true   # Prevents overwriting existing certs
+      readonly: true,
+      git_basic_authorization: "#{ENV['MATCH_GIT_TOKEN']}:x-oauth-basic"
     )
 
     # Clean, get dependencies, and build the Flutter IPA
