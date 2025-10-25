@@ -51,7 +51,8 @@ platform :ios do
     sh "flutter clean"
     sh "flutter pub get"
     sh "pod install --repo-update"
-    sh "flutter build ipa --release --no-tree-shake-icons --export-options-plist=ExportOptions.plist"
+    sh "ls"
+    sh "flutter build ipa --release --no-tree-shake-icons --export-options-plist=../ExportOptions.plist"
 
     # # Locate the generated IPA
     ipa_path = "../build/ios/ipa/munshi.ipa"
@@ -66,11 +67,11 @@ platform :ios do
 
 
     # Upload to TestFlight
-    pilot(
-      ipa: ipa_path,
-      skip_waiting_for_build_processing: false, # waits until Apple processes it
-      distribute_external: false                # change to true if you want to send to external testers
-    )
+    # pilot(
+    #   ipa: ipa_path,
+    #   skip_waiting_for_build_processing: false, # waits until Apple processes it
+    #   distribute_external: false                # change to true if you want to send to external testers
+    # )
 
     delete_keychain(name: "temp_keychain")
 

@@ -5,37 +5,57 @@
     
     
       
-      <testcase classname="fastlane.lanes" name="0: default_platform" time="0.000184">
+      <testcase classname="fastlane.lanes" name="00: default_platform" time="0.000174">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="1: match" time="3.669252">
+      <testcase classname="fastlane.lanes" name="01: create_keychain" time="3.088644">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="2: flutter clean" time="3.439229">
+      <testcase classname="fastlane.lanes" name="02: match" time="15.879756">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="3: flutter pub get" time="3.031407">
+      <testcase classname="fastlane.lanes" name="03: flutter clean" time="3.684547">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="4: flutter build ipa --release --no-tree-shake-icons --export-method app-store" time="81.074104">
+      <testcase classname="fastlane.lanes" name="04: flutter pub get" time="2.990331">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="5: app_store_connect_api_key" time="0.015997">
+      <testcase classname="fastlane.lanes" name="05: pod install --repo-update" time="2.434816">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="6: echo &apos;🎉 Successfully uploaded build to TestFlight!&apos;" time="0.006523">
+      <testcase classname="fastlane.lanes" name="06: ls" time="0.005809">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="07: flutter build ipa --release --no-tree-shake-icons --export-options-plist=../ExportOptions.plist" time="56.888233">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="08: app_store_connect_api_key" time="0.01544">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="09: delete_keychain" time="0.031021">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="10: echo &apos;🎉 Successfully uploaded build to TestFlight!&apos;" time="0.005229">
         
       </testcase>
     
