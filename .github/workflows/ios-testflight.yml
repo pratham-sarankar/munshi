@@ -32,6 +32,11 @@ jobs:
           mkdir -p ios
           echo "$APPSTORE_KEY" | base64 --decode > ios/AuthKey_${APPSTORE_KEY_ID}.p8
 
+      - name: Decode Export Options Plist
+        run: |
+          mkdir -p ios
+          echo "$EXPORT_OPTIONS_PLIST" | base64 --decode > ios/ExportOptions.plist    
+
       - name: 💎 Install Fastlane & CocoaPods globally
         run: |
           sudo gem install fastlane -v 2.228.0
