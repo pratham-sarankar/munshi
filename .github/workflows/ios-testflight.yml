@@ -3,12 +3,11 @@ name: 🚀 iOS TestFlight Upload
 on:
   push:
     tags:
-      - 'v*'
+      - 'v*'  # Runs only when you push a tag like v1.0.0
 
 jobs:
   build-and-upload:
-    name: Build and Upload to TestFlight
-    runs-on: macos-14 # Faster M1 runner
+    runs-on: macos-14  # M1 runner (faster)
 
     env:
       FLUTTER_VERSION: '3.35.5'
@@ -28,36 +27,19 @@ jobs:
           flutter-version: ${{ env.FLUTTER_VERSION }}
           channel: stable
 
-      - name: ⚡️ Cache CocoaPods
-        uses: actions/cache@v4
-        with:
-          path: |
-            ios/Pods
-            ~/Library/Caches/CocoaPods
-            ~/.cocoapods
-          key: ${{ runner.os }}-pods-${{ hashFiles('ios/Podfile.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-pods-
-
-      - name: 💎 Cache Ruby Gems
-        uses: actions/cache@v4
-        with:
-          path: vendor/bundle
-          key: ${{ runner.os }}-gems-${{ hashFiles('ios/Gemfile.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-gems-
+      - name: ⚙️ Install Flutter dependencies
+        run: |
+          flutter pub get
+          flutter precache --ios
 
       - name: 🔑 Decode App Store Connect API key
         run: |
           mkdir -p ios
           echo "$APPSTORE_KEY" | base64 --decode > ios/AuthKey_${APPSTORE_KEY_ID}.p8
 
-      - name: 🚀 Run Fastlane Beta Lane
+      - name: 🚀 Build & Upload via Fastlane
         working-directory: ios
         run: |
-          gem install bundler
-          bundle config path vendor/bundle
-          bundle install
-          pod repo remove master || true
+          gem install fastlane
           pod install --repo-update
-          bundle exec fastlane beta
+          fastlane beta
