@@ -41,4 +41,7 @@ jobs:
       - name: 🚀 Build & Upload via Fastlane
         working-directory: ios
         run: |
+          # print pod and ruby versions
+          pod --version
+          ruby -v
           fastlane beta
