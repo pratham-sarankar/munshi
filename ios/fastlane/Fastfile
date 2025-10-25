@@ -38,6 +38,7 @@ platform :ios do
     # Clean, get dependencies, and build the Flutter IPA
     sh "flutter clean"
     sh "flutter pub get"
+    sh "pod install --repo-update"
     sh "flutter build ipa --release --no-tree-shake-icons --export-method app-store"
 
     # # Locate the generated IPA

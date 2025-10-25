@@ -44,4 +44,5 @@ jobs:
           # print pod and ruby versions
           pod --version
           ruby -v
+          fastlane --version
           fastlane beta
