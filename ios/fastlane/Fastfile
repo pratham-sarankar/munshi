@@ -29,22 +29,22 @@ platform :ios do
   desc "🚀 Build and upload a new TestFlight build"
   lane :beta do
     # Create and unlock a temporary keychain for CI
-    create_keychain(
-      name: "temp_keychain",
-      password: ENV['MATCH_PASSWORD'],
-      default_keychain: true,
-      unlock: true,
-      timeout: 3600,
-      lock_when_sleeps: false
-    )
+    # create_keychain(
+    #   name: "temp_keychain",
+    #   password: ENV['MATCH_PASSWORD'],
+    #   default_keychain: true,
+    #   unlock: true,
+    #   timeout: 3600,
+    #   lock_when_sleeps: false
+    # )
 
     # Fetch signing certificates & provisioning profiles
     match(
       type: "appstore",
       readonly: true,
       git_basic_authorization: ENV['MATCH_GIT_BASIC_AUTHORIZATION'],
-      keychain_name: "temp_keychain",
-      keychain_password: ENV['MATCH_PASSWORD']
+      # keychain_name: "temp_keychain",
+      # keychain_password: ENV['MATCH_PASSWORD']
     )
 
     # Clean, get dependencies, and build the Flutter IPA
@@ -56,23 +56,23 @@ platform :ios do
     # # Locate the generated IPA
     ipa_path = "../build/ios/ipa/munshi.ipa"
 
-    app_store_connect_api_key(
-      key_id: "6W3U9Q7XKG",
-      issuer_id: "bca83270-a27f-4398-aceb-2bdb17bff2a2",
-      key_filepath: "./AuthKey_6W3U9Q7XKG.p8",
-      duration: 1200, # optional (maximum 1200)
-      in_house: false 
-    )
+    # app_store_connect_api_key(
+    #   key_id: "6W3U9Q7XKG",
+    #   issuer_id: "bca83270-a27f-4398-aceb-2bdb17bff2a2",
+    #   key_filepath: "./AuthKey_6W3U9Q7XKG.p8",
+    #   duration: 1200, # optional (maximum 1200)
+    #   in_house: false 
+    # )
 
 
     # Upload to TestFlight
-    pilot(
-      ipa: ipa_path,
-      skip_waiting_for_build_processing: false, # waits until Apple processes it
-      distribute_external: false                # change to true if you want to send to external testers
-    )
+    # pilot(
+    #   ipa: ipa_path,
+    #   skip_waiting_for_build_processing: false, # waits until Apple processes it
+    #   distribute_external: false                # change to true if you want to send to external testers
+    # )
 
-    delete_keychain(name: "temp_keychain")
+    # delete_keychain(name: "temp_keychain")
 
     sh "echo '🎉 Successfully uploaded build to TestFlight!'"
   end
