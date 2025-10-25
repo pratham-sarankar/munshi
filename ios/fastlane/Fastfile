@@ -39,7 +39,7 @@ platform :ios do
     sh "flutter clean"
     sh "flutter pub get"
     sh "pod install --repo-update"
-    sh "flutter build ipa --release --no-tree-shake-icons --export-method app-store"
+    sh "flutter build ipa --release --no-tree-shake-icons --export-method app-store --verbose"
 
     # # Locate the generated IPA
     ipa_path = "../build/ios/ipa/munshi.ipa"
