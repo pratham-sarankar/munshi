@@ -41,5 +41,4 @@ jobs:
       - name: 🚀 Build & Upload via Fastlane
         working-directory: ios
         run: |
-          pod install --repo-update          # install pods for Flutter IPA
           fastlane beta
