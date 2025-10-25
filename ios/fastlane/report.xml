@@ -5,12 +5,37 @@
     
     
       
-      <testcase classname="fastlane.lanes" name="0: default_platform" time="0.000187">
+      <testcase classname="fastlane.lanes" name="0: default_platform" time="0.000184">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="1: match" time="2.075737">
+      <testcase classname="fastlane.lanes" name="1: match" time="3.669252">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="2: flutter clean" time="3.439229">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="3: flutter pub get" time="3.031407">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="4: flutter build ipa --release --no-tree-shake-icons --export-method app-store" time="81.074104">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="5: app_store_connect_api_key" time="0.015997">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="6: echo &apos;🎉 Successfully uploaded build to TestFlight!&apos;" time="0.006523">
         
       </testcase>
     
