@@ -3,21 +3,20 @@ name: 🚀 iOS TestFlight Upload
 on:
   push:
     tags:
-      - 'v*'  # Trigger only on tags starting with v
+      - 'v*'
 
 jobs:
   build-and-upload:
     name: Build and Upload to TestFlight
-    runs-on: macos-latest
+    runs-on: macos-14 # Faster M1 runner
 
     env:
-      FLUTTER_VERSION: '3.35.5' # change if needed
+      FLUTTER_VERSION: '3.35.5'
       APPSTORE_KEY_ID: ${{ secrets.APPSTORE_KEY_ID }}
       APPSTORE_ISSUER_ID: ${{ secrets.APPSTORE_ISSUER_ID }}
-      APPSTORE_KEY: ${{ secrets.APPSTORE_KEY }} # base64 encoded .p8 file
+      APPSTORE_KEY: ${{ secrets.APPSTORE_KEY }}
       MATCH_GIT_BASIC_AUTHORIZATION: ${{ secrets.MATCH_GIT_BASIC_AUTHORIZATION }}
       MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
-
 
     steps:
       - name: 🧹 Checkout repository
@@ -29,6 +28,25 @@ jobs:
           flutter-version: ${{ env.FLUTTER_VERSION }}
           channel: stable
 
+      - name: ⚡️ Cache CocoaPods
+        uses: actions/cache@v4
+        with:
+          path: |
+            ios/Pods
+            ~/Library/Caches/CocoaPods
+            ~/.cocoapods
+          key: ${{ runner.os }}-pods-${{ hashFiles('ios/Podfile.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-pods-
+
+      - name: 💎 Cache Ruby Gems
+        uses: actions/cache@v4
+        with:
+          path: vendor/bundle
+          key: ${{ runner.os }}-gems-${{ hashFiles('ios/Gemfile.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-gems-
+
       - name: 🔑 Decode App Store Connect API key
         run: |
           mkdir -p ios
@@ -37,5 +55,9 @@ jobs:
       - name: 🚀 Run Fastlane Beta Lane
         working-directory: ios
         run: |
-          bundle install || gem install fastlane
-          fastlane beta
+          gem install bundler
+          bundle config path vendor/bundle
+          bundle install
+          pod repo remove master || true
+          pod install --repo-update
+          bundle exec fastlane beta
