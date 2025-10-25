@@ -2,8 +2,8 @@ name: 🚀 iOS TestFlight Upload
 
 on:
   push:
-    tags:
-      - 'v*'  # Runs only when you push a tag like v1.0.0
+    branches:
+      - main
 
 jobs:
   build-and-upload:
