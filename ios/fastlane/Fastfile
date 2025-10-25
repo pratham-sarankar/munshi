@@ -67,11 +67,11 @@ platform :ios do
 
 
     # Upload to TestFlight
-    # pilot(
-    #   ipa: ipa_path,
-    #   skip_waiting_for_build_processing: false, # waits until Apple processes it
-    #   distribute_external: false                # change to true if you want to send to external testers
-    # )
+    pilot(
+      ipa: ipa_path,
+      skip_waiting_for_build_processing: false, # waits until Apple processes it
+      distribute_external: false                # change to true if you want to send to external testers
+    )
 
     delete_keychain(name: "temp_keychain")
 
