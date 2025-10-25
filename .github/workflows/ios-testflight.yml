@@ -7,7 +7,7 @@ on:
 
 jobs:
   build-and-upload:
-    runs-on: macos-15  # ✅ macOS Sequoia with Xcode 16 (Swift 6)
+    runs-on: macos-15  # macOS Sequoia with Xcode 16
 
     env:
       FLUTTER_VERSION: '3.35.5'
@@ -27,20 +27,19 @@ jobs:
           flutter-version: ${{ env.FLUTTER_VERSION }}
           channel: stable
 
-      - name: ⚙️ Install Flutter dependencies
-        run: |
-          flutter pub get
-          flutter precache --ios
-
       - name: 🔑 Decode App Store Connect API key
         run: |
           mkdir -p ios
           echo "$APPSTORE_KEY" | base64 --decode > ios/AuthKey_${APPSTORE_KEY_ID}.p8
 
-      - name: 🚀 Build & Upload via Fastlane (Bundler)
+      - name: 💎 Install Fastlane & CocoaPods globally
+        run: |
+          sudo gem install fastlane -v 2.228.0
+          sudo gem install cocoapods -v 1.16.2
+          pod repo update
+
+      - name: 🚀 Build & Upload via Fastlane
         working-directory: ios
         run: |
-          gem install bundler
-          bundle install --path vendor/bundle
-          pod install --repo-update
-          bundle exec fastlane beta
+          pod install --repo-update          # install pods for Flutter IPA
+          fastlane beta
