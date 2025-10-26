@@ -15,13 +15,21 @@ For _fastlane_ installation instructions, see [Installing _fastlane_](https://do
 
 ## iOS
 
+### ios deploy
+
+```sh
+[bundle exec] fastlane ios deploy
+```
+
+Deploy to TestFlight via Github Actions
+
 ### ios build
 
 ```sh
 [bundle exec] fastlane ios build
 ```
 
-Build the iOS app using Flutter (local only)
+Build ipa for App Store Distribution
 
 ### ios beta
 

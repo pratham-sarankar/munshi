@@ -12,53 +12,59 @@ default_platform(:ios)
 
 platform :ios do
 
-  desc "Build the iOS app using Flutter (local only)"
-  lane :build do
-    # 1️⃣ Prepare Flutter project
-    sh "flutter clean"
-    sh "flutter pub get"
-
-    # 2️⃣ Build the release IPA for App Store distribution
-    sh "flutter build ipa --release --no-tree-shake-icons --export-method app-store"
-
-    # 3️⃣ Output location
-    sh "echo '✅ IPA built successfully! Find it under build/ios/ipa/Runner.ipa'"
-  end
-
-
-  desc "🚀 Build and upload a new TestFlight build"
+  desc "Deploy to TestFlight via Github Actions"
   lane :beta do
-    # # Fetch signing certificates & provisioning profiles
-    # match(
-    #   type: "appstore",
-    #   readonly: true   # Prevents overwriting existing certs
-    # )
+    # Create and unlock temporary keychain
+    create_keychain(
+      name: "github_actions_temp_keychain",
+      password: ENV['MATCH_PASSWORD'],
+      default_keychain: true,
+      unlock: true,
+      timeout: 3600,
+      lock_when_sleeps: false
+    )
 
-    # # Clean, get dependencies, and build the Flutter IPA
-    # sh "flutter clean"
-    # sh "flutter pub get"
-    # sh "flutter build ipa --release --no-tree-shake-icons --export-method app-store"
+    # Fetch provisioning profiles & signing certificates
+    match(
+      type: "appstore",
+      readonly: true,
+      git_basic_authorization: ENV['MATCH_GIT_BASIC_AUTHORIZATION'],
+      keychain_name: "github_actions_temp_keychain",
+      keychain_password: ENV['MATCH_PASSWORD']
+    )
 
-    # # Locate the generated IPA
-    ipa_path = "../build/ios/ipa/munshi.ipa"
+    # Build the Flutter iOS archive via Fastlane's gym
+    build_app(
+      workspace: "Runner.xcworkspace",
+      scheme: "Runner",
+      export_method: "app-store",
+      export_options: {
+        provisioningProfiles: {
+          "sarankar.app.munshi" => "match AppStore sarankar.app.munshi"
+        }
+      },
+      skip_build_archive: false
+    )
 
+    # Use the App Store Connect API key (token-based authentication)
     app_store_connect_api_key(
-      key_id: "6W3U9Q7XKG",
-      issuer_id: "bca83270-a27f-4398-aceb-2bdb17bff2a2",
+      key_id: '6W3U9Q7XKG',
+      issuer_id: 'bca83270-a27f-4398-aceb-2bdb17bff2a2',
       key_filepath: "./AuthKey_6W3U9Q7XKG.p8",
-      duration: 1200, # optional (maximum 1200)
+      duration: 1200,
       in_house: false 
     )
 
-
-    # Upload to TestFlight
-    pilot(
-      ipa: ipa_path,
-      skip_waiting_for_build_processing: false, # waits until Apple processes it
-      distribute_external: false                # change to true if you want to send to external testers
+    # Upload IPA to TestFlight
+    upload_to_testflight(
+      skip_waiting_for_build_processing: false,
+      distribute_external: false
     )
 
-    sh "echo '🎉 Successfully uploaded build to TestFlight!'"
-  end
+    # Cleanup keychain
+    delete_keychain(name: "github_actions_temp_keychain")
+
+    sh "echo '✅ Successfully uploaded build to TestFlight via GitHub Actions!'"
+  end  
 
 end

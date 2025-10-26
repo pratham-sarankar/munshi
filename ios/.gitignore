@@ -35,3 +35,6 @@ Runner/GeneratedPluginRegistrant.*
 
 # Fastlane
 AuthKey_6W3U9Q7XKG.p8
+
+Runner.app.dSYM.zip
+Runner.ipa
