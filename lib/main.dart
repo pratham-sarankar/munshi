@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:munshi/core/theme.dart';
+import 'package:munshi/features/auth/screens/login_screen.dart';
 import 'package:munshi/firebase_options.dart';
-import 'package:munshi/screens/main_screen.dart';
 import 'package:munshi/providers/theme_provider.dart';
 import 'package:munshi/features/transactions/providers/transaction_provider.dart';
 import 'package:munshi/features/dashboard/providers/dashboard_provider.dart';
@@ -81,7 +81,7 @@ class Munshi extends StatelessWidget {
           highContrastDarkTheme: theme.darkHighContrast(),
           themeMode: themeProvider
               .themeMode, // Uses the current theme mode from provider
-          home: MainScreen(), // Main navigation and dashboard
+          home: LoginScreen(), // Main navigation and dashboard
         );
       },
     );
