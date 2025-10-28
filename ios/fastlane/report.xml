@@ -5,22 +5,7 @@
     
     
       
-      <testcase classname="fastlane.lanes" name="0: default_platform" time="0.000169">
-        
-      </testcase>
-    
-      
-      <testcase classname="fastlane.lanes" name="1: create_keychain" time="8.158177">
-        
-      </testcase>
-    
-      
-      <testcase classname="fastlane.lanes" name="2: match" time="20.800914">
-        
-      </testcase>
-    
-      
-      <testcase classname="fastlane.lanes" name="3: build_app" time="64.979278">
+      <testcase classname="fastlane.lanes" name="0: default_platform" time="0.000175">
         
       </testcase>
     
