@@ -1,13 +1,13 @@
-name: 🚀 iOS TestFlight Upload
+name: Deploy App to TestFlight and Play Store.
 
 on:
   push:
     tags:
-      - 'v*'
+      - "v*"
 
 jobs:
   build-and-upload:
-    runs-on: macos-15  # macOS Sequoia with Xcode 16
+    runs-on: macos-15 # macOS Sequoia with Xcode 16
 
     env:
       MATCH_GIT_BASIC_AUTHORIZATION: ${{ secrets.MATCH_GIT_BASIC_AUTHORIZATION }}
@@ -16,34 +16,35 @@ jobs:
     steps:
       - name: 🧹 Checkout repository
         uses: actions/checkout@v4
-      
+
       - name: 🧰 Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.35.5'
-          channel: stable  
-        
+          flutter-version: "3.35.5"
+          channel: stable
+
       - name: Restore files from secrets
         run: |
           echo "${{ secrets.KEY_JKS_BASE64 }}" | base64 --decode > android/app/key.jks
           echo "${{ secrets.KEY_PROPERTIES }}" | base64 --decode > android/key.properties
           echo "${{ secrets.SERVICE_ACCOUNT_KEY }}" | base64 --decode > android/serviceAccountKey.json
-        
+          echo "${{ secrets.ENV_JSON }}" | base64 --decode > env.json
+
       - name: 🔑 Decode App Store Connect API key
         run: |
-            mkdir -p ios
-            echo "${{ secrets.APPSTORE_KEY }}" | base64 --decode > ios/AuthKey_6W3U9Q7XKG.p8
-          
+          mkdir -p ios
+          echo "${{ secrets.APPSTORE_KEY }}" | base64 --decode > ios/AuthKey_6W3U9Q7XKG.p8
+
       - name: 📦 Install dependencies
         run: flutter pub get
-          
+
       - name: 🚧 Build iOS (config-only)
         run: |
-          flutter build ios --release --no-codesign --config-only --no-tree-shake-icons
-          
+          flutter build ios --release --no-codesign --config-only --no-tree-shake-icons --dart-define-from-file=env.json
+
       - name: 🤖 Build Android App Bundle
         run: |
-          flutter build appbundle --no-tree-shake-icons            
+          flutter build appbundle --release --no-tree-shake-icons --dart-define-from-file=env.json
 
       - name: Install Ruby gems with Bundler
         working-directory: ios
