@@ -18,7 +18,7 @@ platform :ios do
     create_keychain(
       name: "github_actions_temp_keychain",
       password: ENV['MATCH_PASSWORD'],
-      default_keychain: true,
+      default_keychain: false,
       unlock: true,
       timeout: 3600,
       lock_when_sleeps: false
