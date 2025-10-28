@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:munshi/core/service_locator.dart';
+import 'package:munshi/features/auth/services/auth_service.dart';
 import 'package:munshi/features/auth/widgets/google_signin_button.dart';
 import 'package:munshi/features/auth/widgets/gradient_background.dart';
 import 'package:munshi/features/auth/widgets/munshi_logo.dart';
+import 'package:munshi/screens/main_screen.dart';
 import '../widgets/feature_cards.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -123,9 +126,18 @@ class _LoginScreenState extends State<LoginScreen>
     super.dispose();
   }
 
-  void _handleGoogleSignIn() {
-    // Handle Google sign-in logic here
-    // TODO: Implement Google sign-in
+  void _handleGoogleSignIn() async {
+    final result = await locator<AuthService>().signInWithGoogle();
+    if (result && mounted) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) {
+            return MainScreen();
+          },
+        ),
+      );
+    }
   }
 
   @override
