@@ -52,6 +52,10 @@ jobs:
           gem install bundler
           bundle install
 
-      - name: Run Fastlane lane
+      - name: Run Fastlane to deploy Android app to Play Store
+        working-directory: android
+        run: bundle exec fastlane deploy
+
+      - name: Run Fastlane to deploy iOS app to TestFlight
         working-directory: ios
         run: bundle exec fastlane beta
