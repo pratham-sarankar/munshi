@@ -20,6 +20,12 @@ class AuthService {
   final String _iOSRedirectUrl = const String.fromEnvironment(
     'IOS_REDIRECT_URL',
   );
+  final String _androidClientId = const String.fromEnvironment(
+    'ANDROID_CLIENT_ID',
+  );
+  final String _androidRedirectUrl = const String.fromEnvironment(
+    'ANDROID_REDIRECT_URL',
+  );
   final String _discoveryUrl =
       'https://accounts.google.com/.well-known/openid-configuration';
   final List<String> _scopes = [
@@ -58,9 +64,12 @@ class AuthService {
         scopes: _scopes,
       );
     } else {
-      // TODO: Create request for Android.
-      // Handle other platforms if needed
-      throw UnsupportedError('Unsupported platform');
+      request = AuthorizationTokenRequest(
+        _androidClientId,
+        _androidRedirectUrl,
+        discoveryUrl: _discoveryUrl,
+        scopes: _scopes,
+      );
     }
     try {
       final result = await _appAuth.authorizeAndExchangeCode(request);
@@ -113,8 +122,11 @@ class AuthService {
         'refresh_token': refreshToken,
       };
     } else {
-      // TODO: Create body for Android.
-      throw UnsupportedError('Unsupported platform');
+      body = {
+        'client_id': _androidClientId,
+        'grant_type': 'refresh_token',
+        'refresh_token': refreshToken,
+      };
     }
     try {
       final response = await http.post(
@@ -167,8 +179,11 @@ class AuthService {
         discoveryUrl: _discoveryUrl,
       );
     } else {
-      //TODO: Create request for Android.
-      throw UnsupportedError('Unsupported platform');
+      request = EndSessionRequest(
+        idTokenHint: await _secureStorage.read(key: _kIdToken),
+        postLogoutRedirectUrl: _androidRedirectUrl,
+        discoveryUrl: _discoveryUrl,
+      );
     }
     await _appAuth.endSession(request);
     await _secureStorage.deleteAll();
