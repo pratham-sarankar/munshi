@@ -1,5 +1,6 @@
 import { Button } from "./ui/button";
 import { Menu, Github } from "lucide-react";
+import { Link } from "react-router-dom";
 import logo from "@/assets/logo.png";
 
 export function Header() {
@@ -7,10 +8,10 @@ export function Header() {
     <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-border px-6 py-4 shadow-sm">
       <div className="mx-auto max-w-7xl flex items-center justify-between">
         <div className="flex items-center gap-12">
-          <div className="flex items-center gap-2">
+          <Link to="/" className="flex items-center gap-2">
             <img src={logo} alt="Munshi Logo" className="w-8 h-8" />
             <span className="text-xl text-foreground">Munshi</span>
-          </div>
+          </Link>
           
           <nav className="hidden md:flex items-center gap-8">
             <a href="#features" className="text-secondary hover:text-foreground transition-colors">
@@ -25,6 +26,9 @@ export function Header() {
             <a href="#faq" className="text-secondary hover:text-foreground transition-colors">
               FAQ
             </a>
+            <Link to="/privacy-policy" className="text-secondary hover:text-foreground transition-colors">
+              Privacy Policy
+            </Link>
           </nav>
         </div>
         

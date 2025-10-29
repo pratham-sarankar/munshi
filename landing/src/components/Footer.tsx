@@ -1,4 +1,5 @@
 import { Github, Twitter, Mail, Heart } from "lucide-react";
+import { Link } from "react-router-dom";
 import logo from "@/assets/logo.png";
 
 export function Footer() {
@@ -91,7 +92,11 @@ export function Footer() {
           <div>
             <h3 className="text-white mb-4">Legal</h3>
             <ul className="space-y-3 text-sm">
-              <li><a href="#" className="hover:text-white transition-colors">Privacy Policy</a></li>
+              <li>
+                <Link to="/privacy-policy" className="hover:text-white transition-colors">
+                  Privacy Policy
+                </Link>
+              </li>
               <li><a href="#" className="hover:text-white transition-colors">Terms of Service</a></li>
               <li><a href="mailto:support@munshi.app" className="hover:text-white transition-colors">Contact</a></li>
             </ul>
