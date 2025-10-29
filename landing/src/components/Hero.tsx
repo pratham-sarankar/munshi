@@ -49,7 +49,7 @@ export function Hero() {
                 <Button 
                   size="lg" 
                   variant="outline" 
-                  className="w-full border-[#5856D6] text-[#5856D6] hover:bg-[#5856D6]/5 rounded-xl px-8"
+                  className="w-full border-[#5856D6] text-[#5856D6] hover:bg-[#5856D6]/5 hover:text-[#5856D6] rounded-xl px-8"
                 >
                   <Github className="mr-2 h-5 w-5" />
                   View on GitHub

@@ -59,7 +59,7 @@ export function Testimonials() {
         <div className="text-center">
           <Button 
             variant="outline" 
-            className="border-[#5856D6] text-[#5856D6] hover:bg-[#5856D6]/5 rounded-xl"
+            className="border-[#5856D6] text-[#5856D6] hover:bg-[#5856D6]/5 hover:text-[#5856D6] rounded-xl"
           >
             Submit Your Testimonial
           </Button>
