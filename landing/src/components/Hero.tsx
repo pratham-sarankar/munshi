@@ -1,6 +1,5 @@
 import { Button } from "./ui/button";
 import { Download, Github, Play } from "lucide-react";
-import { ImageWithFallback } from "./figma/ImageWithFallback";
 import logo from "../assets/logo.png";
 
 export function Hero() {
