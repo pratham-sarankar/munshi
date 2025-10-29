@@ -1,5 +1,5 @@
 import { Button } from "./ui/button";
-import { Download, Github, Play } from "lucide-react";
+import { Download, Github } from "lucide-react";
 import logo from "../assets/logo.png";
 
 export function Hero() {
