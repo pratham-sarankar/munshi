@@ -40,6 +40,10 @@ jobs:
         working-directory: landing
         run: npm run build
 
+      - name: Copy index.html to 404.html for SPA routing
+        working-directory: landing
+        run: cp dist/index.html dist/404.html
+
       - name: Setup Pages
         uses: actions/configure-pages@v4
 
