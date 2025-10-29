@@ -27,7 +27,7 @@ export function Header() {
               FAQ
             </a>
             <Link to="/privacy-policy" className="text-secondary hover:text-foreground transition-colors">
-              Privacy
+              Privacy Policy
             </Link>
           </nav>
         </div>

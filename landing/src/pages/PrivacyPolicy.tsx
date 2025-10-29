@@ -29,7 +29,7 @@ export function PrivacyPolicy() {
             </p>
           </div>
 
-          <div className="prose prose-gray max-w-none space-y-8">
+          <div className="prose prose-gray max-w-none space-y-12">
             <section className="space-y-4">
               <h2 className="text-2xl md:text-3xl font-medium text-foreground">
                 Introduction
@@ -42,7 +42,7 @@ export function PrivacyPolicy() {
               </p>
             </section>
 
-            <section className="space-y-4">
+            <section className="space-y-4 pt-4">
               <h2 className="text-2xl md:text-3xl font-medium text-foreground">
                 Data Collection and Storage
               </h2>
@@ -74,7 +74,7 @@ export function PrivacyPolicy() {
               </div>
             </section>
 
-            <section className="space-y-4">
+            <section className="space-y-4 pt-4">
               <h2 className="text-2xl md:text-3xl font-medium text-foreground">
                 Information We Collect
               </h2>
@@ -102,7 +102,7 @@ export function PrivacyPolicy() {
               </div>
             </section>
 
-            <section className="space-y-4">
+            <section className="space-y-4 pt-4">
               <h2 className="text-2xl md:text-3xl font-medium text-foreground">
                 How We Use Your Information
               </h2>
@@ -117,7 +117,7 @@ export function PrivacyPolicy() {
               </ul>
             </section>
 
-            <section className="space-y-4">
+            <section className="space-y-4 pt-4">
               <h2 className="text-2xl md:text-3xl font-medium text-foreground">
                 Data Security
               </h2>
@@ -131,7 +131,7 @@ export function PrivacyPolicy() {
               </ul>
             </section>
 
-            <section className="space-y-4">
+            <section className="space-y-4 pt-4">
               <h2 className="text-2xl md:text-3xl font-medium text-foreground">
                 Third-Party Services
               </h2>
@@ -140,7 +140,7 @@ export function PrivacyPolicy() {
               </p>
             </section>
 
-            <section className="space-y-4">
+            <section className="space-y-4 pt-4">
               <h2 className="text-2xl md:text-3xl font-medium text-foreground">
                 Your Rights
               </h2>
@@ -155,7 +155,7 @@ export function PrivacyPolicy() {
               </ul>
             </section>
 
-            <section className="space-y-4">
+            <section className="space-y-4 pt-4">
               <h2 className="text-2xl md:text-3xl font-medium text-foreground">
                 Children's Privacy
               </h2>
@@ -164,7 +164,7 @@ export function PrivacyPolicy() {
               </p>
             </section>
 
-            <section className="space-y-4">
+            <section className="space-y-4 pt-4">
               <h2 className="text-2xl md:text-3xl font-medium text-foreground">
                 Open Source
               </h2>
@@ -182,7 +182,7 @@ export function PrivacyPolicy() {
               </p>
             </section>
 
-            <section className="space-y-4">
+            <section className="space-y-4 pt-4">
               <h2 className="text-2xl md:text-3xl font-medium text-foreground">
                 Changes to This Privacy Policy
               </h2>
@@ -194,7 +194,7 @@ export function PrivacyPolicy() {
               </p>
             </section>
 
-            <section className="space-y-4">
+            <section className="space-y-4 pt-4">
               <h2 className="text-2xl md:text-3xl font-medium text-foreground">
                 Contact Us
               </h2>
