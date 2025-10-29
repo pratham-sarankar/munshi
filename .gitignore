@@ -49,3 +49,9 @@ app.*.map.json
 
 # Environment configuration file
 env.json
+
+# Landing page (React/TypeScript)
+landing/node_modules/
+landing/dist/
+landing/package-lock.json
+landing/.vite/
