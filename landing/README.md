@@ -5,15 +5,18 @@ This is the landing page for Munshi, a personal finance tracker application. The
 ## Development
 
 ### Prerequisites
+
 - Node.js 20.x or higher
 - npm
 
 ### Setup
+
 ```bash
 npm install
 ```
 
 ### Development Server
+
 ```bash
 npm run dev
 ```
@@ -21,6 +24,7 @@ npm run dev
 The development server will start at `http://localhost:5173`
 
 ### Build
+
 ```bash
 npm run build
 ```
@@ -28,6 +32,7 @@ npm run build
 The built files will be in the `dist` folder.
 
 ### Preview Production Build
+
 ```bash
 npm run preview
 ```
