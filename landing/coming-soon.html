@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coming Soon — Munshi</title>
+    <meta name="description"
+        content="Munshi is coming soon! Get ready for the ultimate personal finance tracker with beautiful animations, fast search, and complete privacy.">
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="Coming Soon — Munshi">
+    <meta property="og:description"
+        content="Get ready for the ultimate personal finance tracker. Coming soon to Android and iOS!">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://munshi.app/coming-soon">
+    <meta property="og:site_name" content="Munshi">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Coming Soon — Munshi">
+    <meta name="twitter:description" content="Get ready for the ultimate personal finance tracker. Coming soon!">
+
+    <!-- Theme Color -->
+    <meta name="theme-color" content="#5856D6">
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        :root {
+            --font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            --background: #FAFAFB;
+            --foreground: #0F172A;
+            --primary: #5856D6;
+            --secondary: #6B7280;
+            --border: #E5E7EB;
+        }
+
+        body {
+            font-family: var(--font-family);
+            background-color: var(--background);
+            color: var(--foreground);
+        }
+
+        .animate-pulse {
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: .5;
+            }
+        }
+
+        .animate-bounce {
+            animation: bounce 1s infinite;
+        }
+
+        @keyframes bounce {
+
+            0%,
+            20%,
+            53%,
+            80%,
+            100% {
+                transform: translate3d(0, 0, 0);
+            }
+
+            40%,
+            43% {
+                transform: translate3d(0, -30px, 0);
+            }
+
+            70% {
+                transform: translate3d(0, -15px, 0);
+            }
+
+            90% {
+                transform: translate3d(0, -4px, 0);
+            }
+        }
+
+        .animate-float {
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0px);
+            }
+
+            50% {
+                transform: translateY(-20px);
+            }
+        }
+
+        /* Mobile menu styles */
+        .mobile-menu {
+            transform: translateX(100%);
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .mobile-menu.active {
+            transform: translateX(0);
+        }
+
+        .mobile-menu-overlay {
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease-in-out;
+        }
+
+        .mobile-menu-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        /* Countdown styles */
+        .countdown-item {
+            background: linear-gradient(145deg, #ffffff, #f8f9fa);
+            box-shadow: 0 10px 30px rgba(88, 86, 214, 0.1);
+            border: 1px solid rgba(88, 86, 214, 0.1);
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-[#E5E7EB] px-6 py-4 shadow-sm">
+        <div class="mx-auto max-w-7xl flex items-center justify-between">
+            <div class="flex items-center gap-12">
+                <a href="index.html" class="flex items-center gap-2">
+                    <img src="images/logo.png" alt="Munshi Logo" class="w-8 h-8 rounded-lg">
+                    <span class="text-xl text-[#0F172A]">Munshi</span>
+                </a>
+
+                <nav class="hidden md:flex items-center gap-8">
+                    <a href="index.html#features"
+                        class="text-[#6B7280] hover:text-[#0F172A] transition-colors">Features</a>
+                    <a href="index.html#how-it-works" class="text-[#6B7280] hover:text-[#0F172A] transition-colors">How
+                        It Works</a>
+                    <a href="index.html#screenshots"
+                        class="text-[#6B7280] hover:text-[#0F172A] transition-colors">Screenshots</a>
+                    <a href="index.html#faq" class="text-[#6B7280] hover:text-[#0F172A] transition-colors">FAQ</a>
+                    <a href="privacy.html" class="text-[#6B7280] hover:text-[#0F172A] transition-colors">Privacy</a>
+                </nav>
+            </div>
+
+            <div class="flex items-center gap-4">
+                <a href="https://github.com/pratham-sarankar/munshi" target="_blank" rel="noopener noreferrer"
+                    class="hidden md:inline-flex items-center gap-2 px-4 py-2 rounded-md hover:bg-[#F3F4F6] transition-colors">
+                    <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
+                        <path
+                            d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
+                    </svg>
+                    GitHub
+                </a>
+                <a href="mailto:support@sarankar.com"
+                    class="inline-flex items-center justify-center gap-2 px-6 py-2 rounded-md bg-[#5856D6] text-white hover:bg-[#4845B8] transition-colors">
+                    Contact
+                </a>
+                <button id="mobile-menu-btn"
+                    class="md:hidden inline-flex items-center justify-center w-9 h-9 rounded-md hover:bg-[#F3F4F6]">
+                    <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M4 6h16M4 12h16M4 18h16" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Mobile Menu Overlay -->
+    <div id="mobile-menu-overlay" class="mobile-menu-overlay fixed inset-0 bg-black/50 z-40"></div>
+
+    <!-- Mobile Menu -->
+    <div id="mobile-menu"
+        class="mobile-menu fixed top-0 right-0 h-full w-[300px] sm:w-[400px] bg-white shadow-xl z-50 overflow-y-auto">
+        <div class="p-6">
+            <button id="mobile-menu-close"
+                class="absolute top-6 right-6 w-9 h-9 flex items-center justify-center rounded-md hover:bg-[#F3F4F6]">
+                <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+            <nav class="flex flex-col gap-6 mt-12">
+                <a href="index.html#features"
+                    class="text-lg text-[#6B7280] hover:text-[#0F172A] transition-colors mobile-menu-link">Features</a>
+                <a href="index.html#how-it-works"
+                    class="text-lg text-[#6B7280] hover:text-[#0F172A] transition-colors mobile-menu-link">How It
+                    Works</a>
+                <a href="index.html#screenshots"
+                    class="text-lg text-[#6B7280] hover:text-[#0F172A] transition-colors mobile-menu-link">Screenshots</a>
+                <a href="index.html#faq"
+                    class="text-lg text-[#6B7280] hover:text-[#0F172A] transition-colors mobile-menu-link">FAQ</a>
+                <a href="privacy.html"
+                    class="text-lg text-[#6B7280] hover:text-[#0F172A] transition-colors mobile-menu-link">Privacy
+                    Policy</a>
+                <div class="pt-4 border-t border-[#E5E7EB]">
+                    <a href="https://github.com/pratham-sarankar/munshi" target="_blank" rel="noopener noreferrer"
+                        class="inline-flex items-center justify-center gap-2 w-full px-6 py-2 rounded-md border border-[#E5E7EB] hover:bg-[#F3F4F6] transition-colors">
+                        <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
+                            <path
+                                d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
+                        </svg>
+                        View on GitHub
+                    </a>
+                </div>
+            </nav>
+        </div>
+    </div>
+
+    <main>
+        <!-- Hero Section -->
+        <section
+            class="relative overflow-hidden bg-gradient-to-b from-[#FAFAFB] to-white px-6 py-16 md:py-24 min-h-screen flex items-center">
+            <div class="absolute top-20 right-0 w-96 h-96 bg-[#5856D6]/5 rounded-full blur-3xl animate-float"></div>
+            <div class="absolute bottom-0 left-0 w-96 h-96 bg-[#7C7FFF]/5 rounded-full blur-3xl"></div>
+            <div
+                class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-72 h-72 bg-[#5856D6]/3 rounded-full blur-2xl animate-pulse">
+            </div>
+
+            <div class="mx-auto max-w-5xl relative text-center">
+                <div class="space-y-8 md:space-y-12">
+                    <!-- Status Badge -->
+                    <div
+                        class="inline-flex items-center gap-2 rounded-full bg-[#5856D6]/10 px-6 py-3 border border-[#5856D6]/20">
+                        <span class="w-3 h-3 bg-[#5856D6] rounded-full animate-pulse"></span>
+                        <span class="text-[#5856D6] font-medium">Development in Progress</span>
+                    </div>
+
+                    <!-- Main Heading -->
+                    <div class="space-y-6">
+                        <h1 class="text-5xl md:text-6xl lg:text-7xl font-bold text-[#0F172A]">
+                            Something Amazing
+                            <br>
+                            <span class="text-[#5856D6]">is Coming</span>
+                        </h1>
+
+                        <p class="text-xl md:text-2xl text-[#6B7280] max-w-3xl mx-auto leading-relaxed">
+                            We're putting the finishing touches on Munshi, your future favorite personal finance
+                            tracker.
+                            Get ready for an experience that will revolutionize how you manage your money.
+                        </p>
+                    </div>
+
+                    <!-- Countdown Timer -->
+                    <div class="py-8">
+                        <h2 class="text-2xl md:text-3xl font-semibold text-[#0F172A] mb-8">Launch Countdown</h2>
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 max-w-2xl mx-auto">
+                            <div class="countdown-item rounded-2xl p-6 text-center">
+                                <div id="days" class="text-3xl md:text-4xl font-bold text-[#5856D6]">--</div>
+                                <div class="text-sm md:text-base text-[#6B7280] mt-2">Days</div>
+                            </div>
+                            <div class="countdown-item rounded-2xl p-6 text-center">
+                                <div id="hours" class="text-3xl md:text-4xl font-bold text-[#5856D6]">--</div>
+                                <div class="text-sm md:text-base text-[#6B7280] mt-2">Hours</div>
+                            </div>
+                            <div class="countdown-item rounded-2xl p-6 text-center">
+                                <div id="minutes" class="text-3xl md:text-4xl font-bold text-[#5856D6]">--</div>
+                                <div class="text-sm md:text-base text-[#6B7280] mt-2">Minutes</div>
+                            </div>
+                            <div class="countdown-item rounded-2xl p-6 text-center">
+                                <div id="seconds" class="text-3xl md:text-4xl font-bold text-[#5856D6]">--</div>
+                                <div class="text-sm md:text-base text-[#6B7280] mt-2">Seconds</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Features Preview -->
+                    <div class="grid gap-6 md:grid-cols-3 max-w-4xl mx-auto">
+                        <div class="bg-white/80 backdrop-blur-sm rounded-2xl p-6 border border-[#E5E7EB] shadow-lg">
+                            <div
+                                class="w-12 h-12 rounded-xl bg-[#5856D6]/10 flex items-center justify-center mb-4 mx-auto">
+                                <svg class="w-6 h-6 text-[#5856D6]" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M13 10V3L4 14h7v7l9-11h-7z" />
+                                </svg>
+                            </div>
+                            <h3 class="text-lg font-semibold text-[#0F172A] mb-2">Lightning Fast</h3>
+                            <p class="text-[#6B7280] text-sm">Add expenses in seconds with our intuitive interface.</p>
+                        </div>
+
+                        <div class="bg-white/80 backdrop-blur-sm rounded-2xl p-6 border border-[#E5E7EB] shadow-lg">
+                            <div
+                                class="w-12 h-12 rounded-xl bg-[#5856D6]/10 flex items-center justify-center mb-4 mx-auto">
+                                <svg class="w-6 h-6 text-[#5856D6]" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                                </svg>
+                            </div>
+                            <h3 class="text-lg font-semibold text-[#0F172A] mb-2">100% Private</h3>
+                            <p class="text-[#6B7280] text-sm">Your data stays on your device, always.</p>
+                        </div>
+
+                        <div class="bg-white/80 backdrop-blur-sm rounded-2xl p-6 border border-[#E5E7EB] shadow-lg">
+                            <div
+                                class="w-12 h-12 rounded-xl bg-[#5856D6]/10 flex items-center justify-center mb-4 mx-auto">
+                                <svg class="w-6 h-6 text-[#5856D6]" fill="currentColor" viewBox="0 0 24 24">
+                                    <path
+                                        d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.30.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
+                                </svg>
+                            </div>
+                            <h3 class="text-lg font-semibold text-[#0F172A] mb-2">Open Source</h3>
+                            <p class="text-[#6B7280] text-sm">Transparent, customizable, and community-driven.</p>
+                        </div>
+                    </div>
+
+                    <!-- Notify Form -->
+                    <div
+                        class="bg-white/80 backdrop-blur-sm rounded-3xl p-8 md:p-12 border border-[#E5E7EB] shadow-xl max-w-2xl mx-auto">
+                        <div class="text-center mb-8">
+                            <h2 class="text-2xl md:text-3xl font-bold text-[#0F172A] mb-4">Be the First to Know</h2>
+                            <p class="text-[#6B7280]">Get notified when Munshi launches and receive exclusive early
+                                access.</p>
+                        </div>
+
+                        <form class="flex flex-col sm:flex-row gap-4" id="notify-form">
+                            <input type="email" placeholder="Enter your email address"
+                                class="flex-1 px-6 py-4 rounded-xl border border-[#E5E7EB] focus:border-[#5856D6] focus:outline-none transition-colors"
+                                required>
+                            <button type="submit"
+                                class="px-8 py-4 rounded-xl bg-[#5856D6] text-white hover:bg-[#4845B8] transition-colors font-medium whitespace-nowrap">
+                                Notify Me
+                            </button>
+                        </form>
+
+                        <p class="text-xs text-[#6B7280] text-center mt-4">
+                            We respect your privacy. No spam, just launch updates.
+                        </p>
+                    </div>
+
+                    <!-- Progress Bar -->
+                    <div class="max-w-md mx-auto">
+                        <div class="flex justify-between text-sm text-[#6B7280] mb-2">
+                            <span>Development Progress</span>
+                            <span>85%</span>
+                        </div>
+                        <div class="w-full bg-[#E5E7EB] rounded-full h-3">
+                            <div class="bg-gradient-to-r from-[#5856D6] to-[#7C7FFF] h-3 rounded-full transition-all duration-1000 ease-out"
+                                style="width: 85%"></div>
+                        </div>
+                    </div>
+
+                    <!-- Social Links -->
+                    <div class="flex justify-center gap-6 pt-8">
+                        <a href="https://github.com/pratham-sarankar/munshi" target="_blank" rel="noopener noreferrer"
+                            class="w-12 h-12 rounded-xl bg-white/80 backdrop-blur-sm border border-[#E5E7EB] flex items-center justify-center hover:bg-[#5856D6] hover:text-white transition-all group">
+                            <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
+                                <path
+                                    d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
+                            </svg>
+                        </a>
+
+                        <a href="mailto:support@sarankar.com"
+                            class="w-12 h-12 rounded-xl bg-white/80 backdrop-blur-sm border border-[#E5E7EB] flex items-center justify-center hover:bg-[#5856D6] hover:text-white transition-all group">
+                            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                            </svg>
+                        </a>
+
+                        <a href="index.html"
+                            class="w-12 h-12 rounded-xl bg-white/80 backdrop-blur-sm border border-[#E5E7EB] flex items-center justify-center hover:bg-[#5856D6] hover:text-white transition-all group">
+                            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-[#0F172A] text-gray-300 px-6 py-12">
+        <div class="mx-auto max-w-7xl text-center">
+            <div class="flex items-center justify-center gap-2 mb-6">
+                <img src="images/logo.png" alt="Munshi Logo" class="w-8 h-8 rounded-lg">
+                <span class="text-xl text-white">Munshi</span>
+            </div>
+
+            <p class="text-gray-400 mb-6">
+                Your intelligent expense tracking companion. Simple, private, and open source.
+            </p>
+
+            <div class="flex justify-center gap-6 mb-8">
+                <a href="https://github.com/pratham-sarankar/munshi" target="_blank" rel="noopener noreferrer"
+                    class="hover:text-white transition-colors">
+                    <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
+                        <path
+                            d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
+                    </svg>
+                </a>
+                <a href="mailto:support@sarankar.com" class="hover:text-white transition-colors">
+                    <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                    </svg>
+                </a>
+            </div>
+
+            <div class="border-t border-gray-800 pt-6 text-sm text-gray-400">
+                <p>
+                    © <span id="current-year"></span> Munshi. Open source under MIT License.
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile menu toggle
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const mobileMenuOverlay = document.getElementById('mobile-menu-overlay');
+        const mobileMenuClose = document.getElementById('mobile-menu-close');
+        const mobileMenuLinks = document.querySelectorAll('.mobile-menu-link');
+
+        function openMobileMenu() {
+            mobileMenu.classList.add('active');
+            mobileMenuOverlay.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeMobileMenu() {
+            mobileMenu.classList.remove('active');
+            mobileMenuOverlay.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        mobileMenuBtn.addEventListener('click', openMobileMenu);
+        mobileMenuClose.addEventListener('click', closeMobileMenu);
+        mobileMenuOverlay.addEventListener('click', closeMobileMenu);
+
+        mobileMenuLinks.forEach(link => {
+            link.addEventListener('click', closeMobileMenu);
+        });
+
+        // Countdown Timer
+        function startCountdown() {
+            // Set launch date to November 24, 2025 at 12:00 AM
+            const launchDate = new Date('2025-11-24T00:00:00');
+
+            function updateCountdown() {
+                const now = new Date().getTime();
+                const distance = launchDate.getTime() - now;
+
+                if (distance > 0) {
+                    const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                    const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                    const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                    const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+                    document.getElementById('days').textContent = days.toString().padStart(2, '0');
+                    document.getElementById('hours').textContent = hours.toString().padStart(2, '0');
+                    document.getElementById('minutes').textContent = minutes.toString().padStart(2, '0');
+                    document.getElementById('seconds').textContent = seconds.toString().padStart(2, '0');
+                } else {
+                    document.getElementById('days').textContent = '00';
+                    document.getElementById('hours').textContent = '00';
+                    document.getElementById('minutes').textContent = '00';
+                    document.getElementById('seconds').textContent = '00';
+                }
+            }
+
+            updateCountdown();
+            setInterval(updateCountdown, 1000);
+        }
+
+        // Email form handler
+        document.getElementById('notify-form').addEventListener('submit', function (e) {
+            e.preventDefault();
+            const email = this.querySelector('input[type="email"]').value;
+
+            if (email) {
+                // Here you would typically send the email to your server
+                alert('Thank you! We\'ll notify you when Munshi launches.');
+                this.reset();
+            }
+        });
+
+        // Set current year
+        document.getElementById('current-year').textContent = new Date().getFullYear();
+
+        // Start countdown
+        startCountdown();
+
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                const href = this.getAttribute('href');
+                if (href !== '#' && href.length > 1) {
+                    e.preventDefault();
+                    const target = document.querySelector(href);
+                    if (target) {
+                        target.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>
