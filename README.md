@@ -3,7 +3,7 @@
 **Track your spending. Save more. Stress less.**  
 Munshi is a lightweight and privacy-first personal finance app built with **Flutter** for Android and iOS. It helps you manage expenses effortlessly with elegant animations, fast search, and easy categorization.
 
-🌐 **Website:** [munshi.app](https://munshi.sarankar.com)  
+🌐 **Website:** [munshi.sarankar.com](https://munshi.sarankar.com)  
 📱 **Google Play & App Store:** Coming soon  
 💡 **License:** [CC BY-NC 4.0 License](LICENSE)
 
