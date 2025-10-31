@@ -441,17 +441,38 @@
         </div>
 
         <div class="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-          <div class="rounded-3xl overflow-hidden shadow-2xl border border-[#E5E7EB]">
-            <img src="https://images.unsplash.com/photo-1563986768609-322da13575f3?w=400&h=800&fit=crop" alt="Dashboard"
-              class="w-full h-auto">
+          <div class="rounded-3xl overflow-hidden shadow-lg border border-[#E5E7EB] bg-white">
+            <div class="aspect-[9/16] flex flex-col items-center justify-center bg-gradient-to-b from-[#F8F9FA] to-[#E9ECEF] p-8">
+              <div class="w-16 h-16 rounded-2xl bg-[#E5E7EB] flex items-center justify-center mb-4">
+                <svg class="w-8 h-8 text-[#9CA3AF]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+              </div>
+              <p class="text-sm text-[#6B7280] text-center">Dashboard Screenshot</p>
+              <p class="text-xs text-[#9CA3AF] text-center mt-1">Coming Soon</p>
+            </div>
           </div>
-          <div class="rounded-3xl overflow-hidden shadow-2xl border border-[#E5E7EB]">
-            <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=400&h=800&fit=crop" alt="Analytics"
-              class="w-full h-auto">
+          <div class="rounded-3xl overflow-hidden shadow-lg border border-[#E5E7EB] bg-white">
+            <div class="aspect-[9/16] flex flex-col items-center justify-center bg-gradient-to-b from-[#F8F9FA] to-[#E9ECEF] p-8">
+              <div class="w-16 h-16 rounded-2xl bg-[#E5E7EB] flex items-center justify-center mb-4">
+                <svg class="w-8 h-8 text-[#9CA3AF]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                </svg>
+              </div>
+              <p class="text-sm text-[#6B7280] text-center">Analytics Screenshot</p>
+              <p class="text-xs text-[#9CA3AF] text-center mt-1">Coming Soon</p>
+            </div>
           </div>
-          <div class="rounded-3xl overflow-hidden shadow-2xl border border-[#E5E7EB] md:col-span-2 lg:col-span-1">
-            <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=400&h=800&fit=crop" alt="Categories"
-              class="w-full h-auto">
+          <div class="rounded-3xl overflow-hidden shadow-lg border border-[#E5E7EB] bg-white md:col-span-2 lg:col-span-1">
+            <div class="aspect-[9/16] flex flex-col items-center justify-center bg-gradient-to-b from-[#F8F9FA] to-[#E9ECEF] p-8">
+              <div class="w-16 h-16 rounded-2xl bg-[#E5E7EB] flex items-center justify-center mb-4">
+                <svg class="w-8 h-8 text-[#9CA3AF]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                </svg>
+              </div>
+              <p class="text-sm text-[#6B7280] text-center">Transactions Screenshot</p>
+              <p class="text-xs text-[#9CA3AF] text-center mt-1">Coming Soon</p>
+            </div>
           </div>
         </div>
       </div>
@@ -474,7 +495,7 @@
           <div class="border border-[#E5E7EB] rounded-xl overflow-hidden">
             <button
               class="faq-trigger w-full px-6 py-5 text-left flex justify-between items-center hover:bg-[#FAFAFB] transition-colors">
-              <span class="font-semibold text-[#0F172A] text-lg">Is Munshi really free?</span>
+              <span class="font-semibold text-[#0F172A] text-lg">Will Munshi always be free?</span>
               <svg class="faq-icon w-5 h-5 text-[#6B7280] transition-transform" fill="none" stroke="currentColor"
                 viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
@@ -482,8 +503,9 @@
             </button>
             <div class="faq-content hidden px-6 pb-5">
               <p class="text-[#6B7280] leading-relaxed">
-                Yes! Munshi is completely free and open source under the MIT license. There are no premium features,
-                no subscriptions, and no hidden costs. We believe financial tracking should be accessible to everyone.
+                Munshi is free and open-source, built to help others manage money privately.
+                To keep it sustainable, I may add optional paid features or accept donations in the future.
+                Your data will always stay private — no ads, no data selling.
               </p>
             </div>
           </div>
