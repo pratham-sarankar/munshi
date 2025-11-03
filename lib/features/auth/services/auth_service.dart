@@ -172,5 +172,6 @@ class AuthService {
   /// Logout and clear all stored tokens
   Future<void> signOut() async {
     await _secureStorage.deleteAll();
+    _isSignedIn = false;
   }
 }
