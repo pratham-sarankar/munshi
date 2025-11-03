@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:icons_plus/icons_plus.dart';
+import 'package:munshi/features/auth/services/auth_service.dart';
 import 'package:munshi/features/dashboard/providers/dashboard_provider.dart';
 import 'package:munshi/features/dashboard/widgets/dashboard_categories_widget.dart';
 import 'package:munshi/features/dashboard/widgets/dashboard_stats_widget.dart';
 import 'package:munshi/features/dashboard/widgets/dashboard_summary_card.dart';
+import 'package:munshi/features/dashboard/widgets/greeting_text.dart';
 import 'package:provider/provider.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
-
-  final String _userName = "Alex Johnson";
 
   @override
   Widget build(BuildContext context) {
@@ -22,12 +21,7 @@ class HomeScreen extends StatelessWidget {
             title: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  '${dashboardProvider.getGreeting()}, ${_userName.split(' ').first}! 👋',
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: colorScheme.onSurface.withValues(alpha: 0.7),
-                  ),
-                ),
+                const GreetingText(),
                 Text(
                   'Dashboard',
                   style: Theme.of(context).textTheme.headlineSmall?.copyWith(
@@ -80,34 +74,17 @@ class HomeScreen extends StatelessWidget {
               ),
 
               // Profile Avatar
-              Container(
-                margin: const EdgeInsets.only(right: 16, top: 8, bottom: 8),
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [colorScheme.primary, colorScheme.secondary],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                  ),
-                  borderRadius: BorderRadius.circular(20),
-                  boxShadow: [
-                    BoxShadow(
-                      color: colorScheme.primary.withValues(alpha: 0.3),
-                      blurRadius: 8,
-                      offset: const Offset(0, 2),
-                    ),
-                  ],
-                ),
-                child: CircleAvatar(
-                  radius: 18,
-                  backgroundColor: Colors.transparent,
-                  child: Icon(
-                    Iconsax.user_outline,
-                    size: 18,
-                    color: colorScheme.onPrimary,
-                  ),
-                ),
+              Consumer<AuthService>(
+                builder: (context, value, child) {
+                  return CircleAvatar(
+                    backgroundImage: value.currentUser == null
+                        ? null
+                        : NetworkImage(value.currentUser!.picture),
+                  );
+                },
               ),
             ],
+            actionsPadding: const EdgeInsets.only(right: 15),
           ),
           body: RefreshIndicator(
             onRefresh: () => dashboardProvider.refresh(),

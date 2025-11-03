@@ -98,18 +98,6 @@ class DashboardProvider extends ChangeNotifier {
     await _loadDashboardData();
   }
 
-  /// Helper method to get greeting based on current time
-  String getGreeting() {
-    final hour = DateTime.now().hour;
-    if (hour < 12) {
-      return 'Good morning';
-    } else if (hour < 17) {
-      return 'Good afternoon';
-    } else {
-      return 'Good evening';
-    }
-  }
-
   /// Format currency amount to Indian Rupee format
   String formatCurrency(double amount) {
     return "₹${amount.toStringAsFixed(0).replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match match) => '${match[1]},')}";
