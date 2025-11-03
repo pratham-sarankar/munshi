@@ -2,17 +2,23 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
+import 'package:flutter/material.dart';
 import 'package:flutter_appauth/flutter_appauth.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
+import 'package:munshi/features/auth/models/user.dart';
 
-class AuthService {
+class AuthService extends ChangeNotifier {
   final FlutterAppAuth _appAuth = const FlutterAppAuth();
   final FlutterSecureStorage _secureStorage = const FlutterSecureStorage();
 
   /// Initialize the AuthService and check if the user is signed in.
   bool _isSignedIn = false;
   bool get isSignedIn => _isSignedIn;
+
+  // Current user state
+  User? _currentUser;
+  User? get currentUser => _currentUser;
 
   // Your app's client info
   // FIXME: Update the CI/CD to inject these values securely.
@@ -43,7 +49,18 @@ class AuthService {
 
   Future<AuthService> init() async {
     _isSignedIn = await checkAccessToken();
-    // Any async initialization if needed
+    if (_isSignedIn) {
+      // Don't await - fetch user profile in background
+      getUserProfile()
+          .then((user) {
+            _currentUser = user;
+            notifyListeners();
+          })
+          .catchError((error) {
+            // Don't emit null here - keep existing user if any
+            log('Failed to fetch user profile in background: $error');
+          });
+    }
     return this;
   }
 
@@ -151,8 +168,7 @@ class AuthService {
   }
 
   /// Get user profile info (optional)
-  /// FIXME: Based on result design the response model.
-  Future<Map<String, dynamic>?> getUserProfile() async {
+  Future<User?> getUserProfile() async {
     final accessToken = await getAccessToken();
     if (accessToken == null) return null;
 
@@ -162,7 +178,7 @@ class AuthService {
     );
 
     if (response.statusCode == 200) {
-      return jsonDecode(response.body);
+      return User.fromJson(jsonDecode(response.body));
     } else {
       log('Failed to fetch user info: ${response.body}');
       return null;

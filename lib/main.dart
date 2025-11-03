@@ -45,6 +45,7 @@ void main() async {
     MultiProvider(
       providers: [
         ChangeNotifierProvider.value(value: locator<ThemeProvider>()),
+        ChangeNotifierProvider.value(value: locator<AuthService>()),
         ChangeNotifierProvider(
           create: (_) => TransactionProvider(locator<TransactionsDao>()),
         ),
