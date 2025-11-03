@@ -73,7 +73,7 @@ class _SettingsScreenState extends State<SettingsScreen>
     super.dispose();
   }
 
-  void _handleLogout() async {
+  Future<void> _handleLogout() async {
     // Show confirmation dialog
     final result = await showDialog<bool>(
       context: context,
