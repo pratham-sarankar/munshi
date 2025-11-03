@@ -5,6 +5,9 @@ import 'package:munshi/providers/theme_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:munshi/widgets/rounded_dropdown.dart';
 import 'package:munshi/features/settings/widgets/app_version_widget.dart';
+import 'package:munshi/core/service_locator.dart';
+import 'package:munshi/features/auth/services/auth_service.dart';
+import 'package:munshi/features/auth/screens/login_screen.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -47,7 +50,7 @@ class _SettingsScreenState extends State<SettingsScreen>
 
     // Create staggered animations for each section
     _itemAnimations = List<Animation<Offset>>.generate(
-      5, // Number of animated sections (Preferences, Notifications, Security, Support, Footer)
+      6, // Number of animated sections (Preferences, Notifications, Security, Support, Logout, Footer)
       (int index) =>
           Tween<Offset>(begin: const Offset(0, 0.3), end: Offset.zero).animate(
             CurvedAnimation(
@@ -68,6 +71,49 @@ class _SettingsScreenState extends State<SettingsScreen>
   void dispose() {
     _animationController.dispose();
     super.dispose();
+  }
+
+  void _handleLogout() async {
+    // Show confirmation dialog
+    final result = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Confirm Logout'),
+        content: const Text('Are you sure you want to logout?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: const Text('Cancel'),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            child: const Text('Logout'),
+          ),
+        ],
+      ),
+    );
+
+    if (result == true && mounted) {
+      try {
+        await locator<AuthService>().signOut();
+        if (mounted) {
+          Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(builder: (_) => const LoginScreen()),
+            (route) => false,
+          );
+        }
+      } catch (e) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Logout failed: ${e.toString()}'),
+              backgroundColor: Theme.of(context).colorScheme.error,
+            ),
+          );
+        }
+      }
+    }
   }
 
   @override
@@ -314,11 +360,54 @@ class _SettingsScreenState extends State<SettingsScreen>
                     ),
                   ),
                 ),
+                const SizedBox(height: 24),
+
+                // Logout Button
+                SlideTransition(
+                  position: _itemAnimations[4],
+                  child: FadeTransition(
+                    opacity: _animationController,
+                    child: SizedBox(
+                      width: double.infinity,
+                      child: OutlinedButton.icon(
+                        onPressed: _handleLogout,
+                        icon: Icon(
+                          Iconsax.logout_outline,
+                          size: 20,
+                          color: colorScheme.error,
+                        ),
+                        label: Text(
+                          'Logout',
+                          style: Theme.of(context).textTheme.bodyMedium
+                              ?.copyWith(
+                                color: colorScheme.error,
+                                fontWeight: FontWeight.w600,
+                              ),
+                        ),
+                        style: OutlinedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(vertical: 16),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                          side: BorderSide(
+                            color: colorScheme.error.withValues(alpha: 0.3),
+                          ),
+                          backgroundColor: colorScheme.error.withValues(
+                            alpha: 0.08,
+                          ),
+                          overlayColor: colorScheme.error.withValues(
+                            alpha: 0.1,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
                 const SizedBox(height: 40),
 
                 // Footer
                 SlideTransition(
-                  position: _itemAnimations[4],
+                  position: _itemAnimations[5],
                   child: FadeTransition(
                     opacity: _animationController,
                     child: _buildFooter(colorScheme),

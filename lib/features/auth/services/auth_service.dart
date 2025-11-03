@@ -171,21 +171,6 @@ class AuthService {
 
   /// Logout and clear all stored tokens
   Future<void> signOut() async {
-    late final EndSessionRequest request;
-    if (Platform.isIOS) {
-      request = EndSessionRequest(
-        idTokenHint: await _secureStorage.read(key: _kIdToken),
-        postLogoutRedirectUrl: _iOSRedirectUrl,
-        discoveryUrl: _discoveryUrl,
-      );
-    } else {
-      request = EndSessionRequest(
-        idTokenHint: await _secureStorage.read(key: _kIdToken),
-        postLogoutRedirectUrl: _androidRedirectUrl,
-        discoveryUrl: _discoveryUrl,
-      );
-    }
-    await _appAuth.endSession(request);
     await _secureStorage.deleteAll();
   }
 }
