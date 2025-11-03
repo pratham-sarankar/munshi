@@ -46,8 +46,14 @@ jobs:
         run: |
           flutter build appbundle --release --no-tree-shake-icons --dart-define-from-file=env.json
 
-      - name: Install Ruby gems with Bundler
+      - name: Install Ruby gems for iOS
         working-directory: ios
+        run: |
+          gem install bundler
+          bundle install
+
+      - name: Install Ruby gems for Android
+        working-directory: android
         run: |
           gem install bundler
           bundle install
