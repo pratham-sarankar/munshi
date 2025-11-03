@@ -1,4 +1,7 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
+import 'package:icons_plus/icons_plus.dart';
 import 'package:munshi/features/auth/services/auth_service.dart';
 import 'package:munshi/features/dashboard/providers/dashboard_provider.dart';
 import 'package:munshi/features/dashboard/widgets/dashboard_categories_widget.dart';
@@ -77,9 +80,18 @@ class HomeScreen extends StatelessWidget {
               Consumer<AuthService>(
                 builder: (context, value, child) {
                   return CircleAvatar(
-                    backgroundImage: value.currentUser == null
-                        ? null
-                        : NetworkImage(value.currentUser!.picture),
+                    child: value.currentUser == null
+                        ? Image.asset('assets/images/profile.png')
+                        : ClipOval(
+                            child: FadeInImage.assetNetwork(
+                              placeholder: 'assets/images/profile.png',
+                              image: value.currentUser!.picture,
+                              imageErrorBuilder: (context, error, stackTrace) {
+                                log('Failed to load profile image: $error');
+                                return const Icon(Iconsax.user_bold, size: 20);
+                              },
+                            ),
+                          ),
                   );
                 },
               ),
