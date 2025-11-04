@@ -1,3 +1,5 @@
+import 'package:intl/intl.dart';
+
 enum PeriodType { daily, weekly, monthly }
 
 class DatePeriod {
@@ -39,7 +41,8 @@ class DatePeriod {
       const Duration(days: 6, hours: 23, minutes: 59, seconds: 59),
     );
 
-    final displayName = 'Week of ${_formatDate(normalizedStart)}';
+    final displayName =
+        '${_formatDate(normalizedStart)} - ${_formatDate(endDate)}';
 
     return DatePeriod(
       type: PeriodType.weekly,
@@ -131,7 +134,7 @@ class DatePeriod {
   }
 
   static String _formatDate(DateTime date) {
-    return "${date.day}/${date.month}/${date.year}";
+    return DateFormat('d MMM').format(date);
   }
 
   @override
