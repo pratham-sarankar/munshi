@@ -52,7 +52,7 @@ class DatePeriod {
   factory DatePeriod.daily(DateTime date) {
     final startDate = DateTime(date.year, date.month, date.day);
     final endDate = DateTime(date.year, date.month, date.day, 23, 59, 59);
-    final displayName = _formatDate(date);
+    final displayName = _getDailyDisplayName(date);
 
     return DatePeriod(
       type: PeriodType.daily,
@@ -113,6 +113,21 @@ class DatePeriod {
       'Dec',
     ];
     return "${months[date.month - 1]} ${date.year}";
+  }
+
+  static String _getDailyDisplayName(DateTime date) {
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+    final yesterday = today.subtract(const Duration(days: 1));
+    final targetDate = DateTime(date.year, date.month, date.day);
+
+    if (targetDate == today) {
+      return 'Today';
+    } else if (targetDate == yesterday) {
+      return 'Yesterday';
+    } else {
+      return _formatDate(date);
+    }
   }
 
   static String _formatDate(DateTime date) {
