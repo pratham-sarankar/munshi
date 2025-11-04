@@ -8,6 +8,7 @@ import 'package:munshi/features/dashboard/widgets/dashboard_categories_widget.da
 import 'package:munshi/features/dashboard/widgets/dashboard_stats_widget.dart';
 import 'package:munshi/features/dashboard/widgets/dashboard_summary_card.dart';
 import 'package:munshi/features/dashboard/widgets/greeting_text.dart';
+import 'package:munshi/features/dashboard/widgets/period_selector_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -56,11 +57,26 @@ class HomeScreen extends StatelessWidget {
                       iconSize: 20,
                       visualDensity: VisualDensity.compact,
                     ),
-                    Text(
-                      dashboardProvider.selectedPeriod.displayName,
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        fontWeight: FontWeight.w600,
-                        color: colorScheme.onSurfaceVariant,
+                    GestureDetector(
+                      onTap: () => PeriodSelectorBottomSheet.show(
+                        context,
+                        dashboardProvider.currentPeriodType,
+                        (newType) =>
+                            dashboardProvider.changePeriodType(newType),
+                      ),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 8,
+                          vertical: 4,
+                        ),
+                        child: Text(
+                          dashboardProvider.selectedPeriod.displayName,
+                          style: Theme.of(context).textTheme.bodyMedium
+                              ?.copyWith(
+                                fontWeight: FontWeight.w600,
+                                color: colorScheme.onSurfaceVariant,
+                              ),
+                        ),
                       ),
                     ),
                     IconButton(
