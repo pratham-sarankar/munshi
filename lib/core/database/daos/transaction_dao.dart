@@ -42,62 +42,40 @@ class TransactionsDao extends DatabaseAccessor<AppDatabase>
         .get();
   }
 
-  /// Get transactions grouped by date using SQL for better performance
+  /// Get transactions grouped by date using a single query and grouping in Dart
   Future<List<GroupedTransactions>> getTransactionsGroupedByDate({
     DateTime? startDate,
     DateTime? endDate,
   }) async {
-    // Build the query with optional date filtering
-    String dateFilter = '';
-    List<Variable> variables = [];
+    final query = select(transactions)
+      ..orderBy([(t) => OrderingTerm.desc(t.date)]);
 
     if (startDate != null && endDate != null) {
-      dateFilter = ' WHERE date BETWEEN ? AND ?';
-      variables.addAll([
-        Variable.withDateTime(startDate),
-        Variable.withDateTime(endDate),
-      ]);
+      query.where((t) => t.date.isBetweenValues(startDate, endDate));
     } else if (startDate != null) {
-      dateFilter = ' WHERE date >= ?';
-      variables.add(Variable.withDateTime(startDate));
+      query.where((t) => t.date.isBiggerOrEqualValue(startDate));
     } else if (endDate != null) {
-      dateFilter = ' WHERE date <= ?';
-      variables.add(Variable.withDateTime(endDate));
+      query.where((t) => t.date.isSmallerOrEqualValue(endDate));
     }
 
-    // Get distinct dates ordered by date descending
-    final dateResult = await customSelect('''
-      SELECT DISTINCT DATE(date) as date_only
-      FROM transactions$dateFilter
-      ORDER BY date_only DESC
-      ''', variables: variables).get();
+    final allTransactions = await query.get();
 
-    final List<GroupedTransactions> groupedTransactions = [];
-
-    // For each date, fetch all transactions for that date
-    for (final dateRow in dateResult) {
-      final dateString = dateRow.read<String>('date_only');
-      final date = DateTime.parse(dateString);
-
-      // Get all transactions for this specific date
-      final transactionsForDate =
-          await (select(transactions)
-                ..where(
-                  (t) => t.date.isBetweenValues(
-                    DateTime(date.year, date.month, date.day),
-                    DateTime(date.year, date.month, date.day, 23, 59, 59),
-                  ),
-                )
-                ..orderBy([(t) => OrderingTerm.desc(t.date)]))
-              .get();
-
-      if (transactionsForDate.isNotEmpty) {
-        groupedTransactions.add(
-          GroupedTransactions(date: date, transactions: transactionsForDate),
-        );
-      }
+    // Group transactions by date (truncated to day)
+    final Map<DateTime, List<Transaction>> groupedMap = {};
+    for (final tx in allTransactions) {
+      final date = DateTime(tx.date.year, tx.date.month, tx.date.day);
+      groupedMap.putIfAbsent(date, () => []).add(tx);
     }
 
+    // Convert to list of GroupedTransactions, ordered by date descending
+    final groupedTransactions = groupedMap.entries
+        .map((entry) => GroupedTransactions(
+              date: entry.key,
+              transactions: entry.value
+                ..sort((a, b) => b.date.compareTo(a.date)),
+            ))
+        .toList()
+      ..sort((a, b) => b.date.compareTo(a.date));
     return groupedTransactions;
   }
 
