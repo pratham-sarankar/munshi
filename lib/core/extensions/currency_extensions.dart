@@ -41,7 +41,7 @@ extension CurrencyDoubleExtension on double {
 
       String formattedAmount;
       if (useGrouping) {
-        // Format with comma separators for Indian number system
+        // Format with comma separators using Western grouping (groups of 3)
         formattedAmount = toStringAsFixed(decimalPlaces).replaceAllMapped(
           RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'),
           (Match match) => '${match[1]},',
@@ -52,7 +52,7 @@ extension CurrencyDoubleExtension on double {
 
       return '$symbol$formattedAmount';
     } catch (e) {
-      // Fallback formatting with INR symbol
+      // Fallback formatting with INR symbol using Western grouping
       String formattedAmount;
       if (useGrouping) {
         formattedAmount = toStringAsFixed(decimalPlaces).replaceAllMapped(
@@ -75,7 +75,7 @@ extension CurrencyDoubleExtension on double {
 
       String formattedAmount;
       if (useGrouping) {
-        // Format with comma separators for Indian number system
+        // Format with comma separators using Western grouping (groups of 3)
         formattedAmount = toStringAsFixed(decimalPlaces).replaceAllMapped(
           RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'),
           (Match match) => '${match[1]},',
@@ -86,7 +86,7 @@ extension CurrencyDoubleExtension on double {
 
       return '$symbol $formattedAmount';
     } catch (e) {
-      // Fallback formatting with INR symbol
+      // Fallback formatting with INR symbol using Western grouping
       String formattedAmount;
       if (useGrouping) {
         formattedAmount = toStringAsFixed(decimalPlaces).replaceAllMapped(
