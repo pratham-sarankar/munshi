@@ -36,7 +36,7 @@ class _MainScreenState extends State<MainScreen> {
     const NavigationDestination(
       icon: Icon(Iconsax.receipt_item_outline),
       selectedIcon: Icon(Iconsax.receipt_item_bold),
-      label: "Transactions",
+      label: "History",
     ),
     const SizedBox(),
     const NavigationDestination(
@@ -77,7 +77,6 @@ class _MainScreenState extends State<MainScreen> {
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: BottomAppBar(
         notchMargin: 10,
-        padding: EdgeInsets.zero,
         shape: const CircularNotchedRectangle(),
         elevation: 10,
         child: NavigationBar(
