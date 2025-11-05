@@ -32,36 +32,36 @@ extension CurrencyStringExtension on String {
 
 /// Extension on double to add currency formatting functionality
 extension CurrencyDoubleExtension on double {
+  /// Helper method to format a number with optional grouping
+  String _formatAmount({required int decimalPlaces, required bool useGrouping}) {
+    if (useGrouping) {
+      // Format with comma separators for Indian number system
+      return toStringAsFixed(decimalPlaces).replaceAllMapped(
+        RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'),
+        (Match match) => '${match[1]},',
+      );
+    } else {
+      return toStringAsFixed(decimalPlaces);
+    }
+  }
+
   /// Formats the double as currency with the selected currency symbol
   /// Example: 1000.0.toCurrency() => "₹1,000"
   String toCurrency({int decimalPlaces = 0, bool useGrouping = true}) {
     try {
       final currencyProvider = locator<CurrencyProvider>();
       final symbol = currencyProvider.selectedCurrency.symbol;
-
-      String formattedAmount;
-      if (useGrouping) {
-        // Format with comma separators for Indian number system
-        formattedAmount = toStringAsFixed(decimalPlaces).replaceAllMapped(
-          RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'),
-          (Match match) => '${match[1]},',
-        );
-      } else {
-        formattedAmount = toStringAsFixed(decimalPlaces);
-      }
-
+      final formattedAmount = _formatAmount(
+        decimalPlaces: decimalPlaces,
+        useGrouping: useGrouping,
+      );
       return '$symbol$formattedAmount';
     } catch (e) {
       // Fallback formatting with INR symbol
-      String formattedAmount;
-      if (useGrouping) {
-        formattedAmount = toStringAsFixed(decimalPlaces).replaceAllMapped(
-          RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'),
-          (Match match) => '${match[1]},',
-        );
-      } else {
-        formattedAmount = toStringAsFixed(decimalPlaces);
-      }
+      final formattedAmount = _formatAmount(
+        decimalPlaces: decimalPlaces,
+        useGrouping: useGrouping,
+      );
       return '₹$formattedAmount';
     }
   }
@@ -72,30 +72,17 @@ extension CurrencyDoubleExtension on double {
     try {
       final currencyProvider = locator<CurrencyProvider>();
       final symbol = currencyProvider.selectedCurrency.symbol;
-
-      String formattedAmount;
-      if (useGrouping) {
-        // Format with comma separators for Indian number system
-        formattedAmount = toStringAsFixed(decimalPlaces).replaceAllMapped(
-          RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'),
-          (Match match) => '${match[1]},',
-        );
-      } else {
-        formattedAmount = toStringAsFixed(decimalPlaces);
-      }
-
+      final formattedAmount = _formatAmount(
+        decimalPlaces: decimalPlaces,
+        useGrouping: useGrouping,
+      );
       return '$symbol $formattedAmount';
     } catch (e) {
       // Fallback formatting with INR symbol
-      String formattedAmount;
-      if (useGrouping) {
-        formattedAmount = toStringAsFixed(decimalPlaces).replaceAllMapped(
-          RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'),
-          (Match match) => '${match[1]},',
-        );
-      } else {
-        formattedAmount = toStringAsFixed(decimalPlaces);
-      }
+      final formattedAmount = _formatAmount(
+        decimalPlaces: decimalPlaces,
+        useGrouping: useGrouping,
+      );
       return '₹ $formattedAmount';
     }
   }
