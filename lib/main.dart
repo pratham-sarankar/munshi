@@ -8,6 +8,7 @@ import 'package:munshi/features/auth/services/auth_service.dart';
 import 'package:munshi/firebase_options.dart';
 import 'package:munshi/providers/theme_provider.dart';
 import 'package:munshi/providers/currency_provider.dart';
+import 'package:munshi/providers/period_provider.dart';
 import 'package:munshi/features/transactions/providers/transaction_provider.dart';
 import 'package:munshi/features/dashboard/providers/dashboard_provider.dart';
 import 'package:munshi/features/dashboard/services/dashboard_data_service.dart';
@@ -47,12 +48,16 @@ void main() async {
       providers: [
         ChangeNotifierProvider.value(value: locator<ThemeProvider>()),
         ChangeNotifierProvider.value(value: locator<CurrencyProvider>()),
+        ChangeNotifierProvider.value(value: locator<PeriodProvider>()),
         ChangeNotifierProvider.value(value: locator<AuthService>()),
         ChangeNotifierProvider(
           create: (_) => TransactionProvider(locator<TransactionsDao>()),
         ),
         ChangeNotifierProvider(
-          create: (_) => DashboardProvider(locator<DashboardDataService>()),
+          create: (_) => DashboardProvider(
+            locator<DashboardDataService>(),
+            locator<PeriodProvider>(),
+          ),
         ),
       ],
       child: const Munshi(),
