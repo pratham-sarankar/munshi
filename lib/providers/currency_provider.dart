@@ -42,7 +42,7 @@ class CurrencyProvider extends ChangeNotifier {
     }
   }
 
-  void _saveCurrencyToPrefs() {
-    prefs.setString(_currencyCodeKey, _selectedCurrency.code);
+  Future<void> _saveCurrencyToPrefs() async {
+    await prefs.setString(_currencyCodeKey, _selectedCurrency.code);
   }
 }
