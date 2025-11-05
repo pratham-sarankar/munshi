@@ -26,6 +26,16 @@ jobs:
           distribution: "zulu"
           java-version: "17"
 
+      - name: 💎 Setup Ruby and install gems for Android
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 3.3.10
+          bundler-cache: true
+
+      - name: 💎 Install dependencies with Bundler
+        working-directory: android
+        run: bundle install
+
       - name: 🔑 Restore Android signing files from secrets
         run: |
           echo "${{ secrets.KEY_JKS_BASE64 }}" | base64 --decode > android/app/key.jks
@@ -33,20 +43,11 @@ jobs:
           echo "${{ secrets.SERVICE_ACCOUNT_KEY }}" | base64 --decode > android/serviceAccountKey.json
           echo "${{ secrets.ENV_JSON }}" | base64 --decode > env.json
 
-      - name: 📦 Install dependencies
+      - name: 📦 Install Flutter dependencies
         run: flutter pub get
 
       - name: 🤖 Build Android App Bundle
-        run: |
-          flutter build appbundle --release --no-tree-shake-icons --dart-define-from-file=env.json
-
-      - name: 💎 Install Ruby gems for Android
-        working-directory: android
-        env:
-          GEM_HOME: $HOME/.gem
-        run: |
-          gem install bundler
-          bundle install
+        run: flutter build appbundle --release --no-tree-shake-icons --dart-define-from-file=env.json
 
       - name: 🚀 Deploy Android app to Play Store
         working-directory: android
