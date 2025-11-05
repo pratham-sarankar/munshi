@@ -85,13 +85,7 @@ class _GroupedTransactionListState extends State<GroupedTransactionList>
     final List<Widget> widgets = [];
     int globalIndex = 0;
 
-    for (
-      int groupIndex = 0;
-      groupIndex < widget.groupedTransactions.length;
-      groupIndex++
-    ) {
-      final group = widget.groupedTransactions[groupIndex];
-
+    for (final (groupIndex, group) in widget.groupedTransactions.indexed) {
       // Add date divider
       widgets.add(_buildDateDivider(group.date, globalIndex));
       globalIndex++;
