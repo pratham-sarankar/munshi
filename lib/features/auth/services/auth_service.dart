@@ -45,22 +45,55 @@ class AuthService extends ChangeNotifier {
   final String _kRefreshToken = 'google_refresh_token';
   final String _kIdToken = 'google_id_token';
   final String _kTokenExpiry = 'google_token_expiry';
+  final String _kCachedUser = 'cached_user_data';
 
   Future<AuthService> init() async {
     _isSignedIn = await checkAccessToken();
     if (_isSignedIn) {
-      // Don't await - fetch user profile in background
+      // Load cached user data first for instant access
+      await _loadCachedUserData();
+
+      // Then fetch fresh user profile in background to update cache
       getUserProfile()
           .then((user) {
-            _currentUser = user;
-            notifyListeners();
+            if (user != null) {
+              _currentUser = user;
+              _cacheUserData(user); // Cache the fresh data
+              notifyListeners();
+            }
           })
           .catchError((error) {
-            // Don't emit null here - keep existing user if any
+            // Don't emit null here - keep existing cached user if any
             log('Failed to fetch user profile in background: $error');
           });
     }
     return this;
+  }
+
+  /// Load cached user data from secure storage
+  Future<void> _loadCachedUserData() async {
+    try {
+      final cachedUserJson = await _secureStorage.read(key: _kCachedUser);
+      if (cachedUserJson != null) {
+        final Map<String, dynamic> userMap = jsonDecode(cachedUserJson);
+        _currentUser = User.fromJson(userMap);
+        notifyListeners();
+      }
+    } catch (e) {
+      log('Failed to load cached user data: $e');
+      // Clear corrupted cache
+      await _secureStorage.delete(key: _kCachedUser);
+    }
+  }
+
+  /// Cache user data to secure storage
+  Future<void> _cacheUserData(User user) async {
+    try {
+      final userJson = jsonEncode(user.toJson());
+      await _secureStorage.write(key: _kCachedUser, value: userJson);
+    } catch (e) {
+      log('Failed to cache user data: $e');
+    }
   }
 
   /// Returns true if access token exists.
@@ -99,6 +132,24 @@ class AuthService extends ChangeNotifier {
         key: _kTokenExpiry,
         value: result.accessTokenExpirationDateTime?.toIso8601String(),
       );
+
+      // Set signed in state first since tokens are saved
+      _isSignedIn = true;
+
+      // Fetch and cache user profile immediately after successful sign-in
+      try {
+        final user = await getUserProfile();
+        if (user != null) {
+          _currentUser = user;
+          await _cacheUserData(user);
+        }
+      } catch (e) {
+        log('Failed to fetch user profile after sign-in: $e');
+        // Don't fail the sign-in if profile fetch fails - user can still use the app
+      }
+
+      // Notify listeners after all state changes
+      notifyListeners();
       return true;
     } on FlutterAppAuthUserCancelledException catch (_) {
       log('User cancelled the sign-in process.');
@@ -166,7 +217,7 @@ class AuthService extends ChangeNotifier {
     }
   }
 
-  /// Get user profile info (optional)
+  /// Get user profile info and cache it
   Future<User?> getUserProfile() async {
     final accessToken = await getAccessToken();
     if (accessToken == null) return null;
@@ -177,16 +228,21 @@ class AuthService extends ChangeNotifier {
     );
 
     if (response.statusCode == 200) {
-      return User.fromJson(jsonDecode(response.body));
+      final user = User.fromJson(jsonDecode(response.body));
+      // Return the user data; caching is handled by the caller
+      return user;
     } else {
       log('Failed to fetch user info: ${response.body}');
       return null;
     }
   }
 
-  /// Logout and clear all stored tokens
+  /// Logout and clear all stored tokens and cached user data
   Future<void> signOut() async {
-    await _secureStorage.deleteAll();
+    await _secureStorage
+        .deleteAll(); // This clears all data including cached user
     _isSignedIn = false;
+    _currentUser = null; // Clear in-memory user data
+    notifyListeners(); // Notify listeners of the state change
   }
 }
