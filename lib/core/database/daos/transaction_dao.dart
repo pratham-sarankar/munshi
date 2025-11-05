@@ -68,14 +68,17 @@ class TransactionsDao extends DatabaseAccessor<AppDatabase>
     }
 
     // Convert to list of GroupedTransactions, ordered by date descending
-    final groupedTransactions = groupedMap.entries
-        .map((entry) => GroupedTransactions(
-              date: entry.key,
-              transactions: entry.value
-                ..sort((a, b) => b.date.compareTo(a.date)),
-            ))
-        .toList()
-      ..sort((a, b) => b.date.compareTo(a.date));
+    final groupedTransactions =
+        groupedMap.entries
+            .map(
+              (entry) => GroupedTransactions(
+                date: entry.key,
+                transactions: entry.value
+                  ..sort((a, b) => b.date.compareTo(a.date)),
+              ),
+            )
+            .toList()
+          ..sort((a, b) => b.date.compareTo(a.date));
     return groupedTransactions;
   }
 
@@ -95,12 +98,21 @@ class TransactionsDao extends DatabaseAccessor<AppDatabase>
         filteredTransactions = filteredTransactions
             .where(
               (t) =>
-                  t.date.isAtSameMomentAs(startDate) || t.date.isAfter(startDate),
+                  t.date.isAtSameMomentAs(startDate) ||
+                  t.date.isAfter(startDate),
             )
             .toList();
       }
       if (endDate != null) {
-        final endOfDay = DateTime(endDate.year, endDate.month, endDate.day, 23, 59, 59, 999);
+        final endOfDay = DateTime(
+          endDate.year,
+          endDate.month,
+          endDate.day,
+          23,
+          59,
+          59,
+          999,
+        );
         filteredTransactions = filteredTransactions
             .where((t) => !t.date.isAfter(endOfDay))
             .toList();
