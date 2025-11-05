@@ -25,15 +25,15 @@ class CategorySpendingData {
   bool get hasSpending => totalAmount > 0 || transactionCount > 0;
 
   /// Average amount per transaction
-  double get averagePerTransaction => 
+  double get averagePerTransaction =>
       transactionCount > 0 ? totalAmount / transactionCount : 0.0;
 
   @override
   bool operator ==(Object other) {
-    return other is CategorySpendingData && 
-           other.category == category &&
-           other.totalAmount == totalAmount &&
-           other.transactionCount == transactionCount;
+    return other is CategorySpendingData &&
+        other.category == category &&
+        other.totalAmount == totalAmount &&
+        other.transactionCount == transactionCount;
   }
 
   @override
@@ -42,6 +42,6 @@ class CategorySpendingData {
   @override
   String toString() {
     return 'CategorySpendingData(category: ${category.name}, '
-           'totalAmount: $totalAmount, transactionCount: $transactionCount)';
+        'totalAmount: $totalAmount, transactionCount: $transactionCount)';
   }
 }
