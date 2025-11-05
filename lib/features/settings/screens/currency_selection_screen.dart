@@ -35,7 +35,15 @@ class _CurrencySelectionScreenState extends State<CurrencySelectionScreen>
       CurvedAnimation(parent: _animationController, curve: Curves.easeOutCubic),
     );
 
-    // Create staggered animations for currency items
+    // Create initial staggered animations for currency items
+    _generateItemAnimations();
+
+    _animationController.forward();
+
+    _searchController.addListener(_onSearchChanged);
+  }
+
+  void _generateItemAnimations() {
     _itemAnimations = List<Animation<Offset>>.generate(
       _filteredCurrencies.length.clamp(
         0,
@@ -53,16 +61,19 @@ class _CurrencySelectionScreenState extends State<CurrencySelectionScreen>
             ),
           ),
     );
-
-    _animationController.forward();
-
-    _searchController.addListener(_onSearchChanged);
   }
 
   void _onSearchChanged() {
     setState(() {
       _searchQuery = _searchController.text;
       _filteredCurrencies = SupportedCurrencies.searchCurrencies(_searchQuery);
+      
+      // Regenerate animations when filtered list changes
+      _generateItemAnimations();
+      
+      // Restart animation for smooth transition
+      _animationController.reset();
+      _animationController.forward();
     });
   }
 
