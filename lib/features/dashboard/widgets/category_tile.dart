@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:munshi/features/transactions/models/transaction_category.dart';
+import 'package:munshi/core/extensions/currency_extensions.dart';
 
 class CategoryTile extends StatefulWidget {
   const CategoryTile({
@@ -82,10 +83,10 @@ class _CategoryTileState extends State<CategoryTile>
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
 
-    // Format spending amount in Indian Rupee format
+    // Format spending amount using currency extension
     final formattedAmount = widget.spendingAmount > 0
-        ? "₹${widget.spendingAmount.toStringAsFixed(0).replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match match) => '${match[1]},')}"
-        : "₹0";
+        ? widget.spendingAmount.toCurrency()
+        : 0.toCurrency();
 
     return SlideTransition(
       position: _slideAnimation,
