@@ -71,7 +71,6 @@ class _GroupedTransactionListState extends State<GroupedTransactionList>
                 : SlidableAutoCloseBehavior(
                     child: ListView(
                       controller: widget.controller,
-                      shrinkWrap: false,
                       children: _buildGroupedTransactionWidgets(),
                     ),
                   ),
