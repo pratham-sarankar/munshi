@@ -21,7 +21,6 @@ class AuthService extends ChangeNotifier {
   User? get currentUser => _currentUser;
 
   // Your app's client info
-  // FIXME: Update the CI/CD to inject these values securely.
   final String _iOSClientId = const String.fromEnvironment('IOS_CLIENT_ID');
   final String _iOSRedirectUrl = const String.fromEnvironment(
     'IOS_REDIRECT_URL',

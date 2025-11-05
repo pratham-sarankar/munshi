@@ -10,6 +10,7 @@ import 'package:munshi/features/settings/screens/currency_selection_screen.dart'
 import 'package:munshi/core/service_locator.dart';
 import 'package:munshi/features/auth/services/auth_service.dart';
 import 'package:munshi/features/auth/screens/login_screen.dart';
+import 'package:munshi/widgets/webview_screen.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -295,6 +296,19 @@ class _SettingsScreenState extends State<SettingsScreen>
                           onTap: () {
                             HapticFeedback.lightImpact();
                             // Navigate to privacy policy
+                            const privacyPolicyUrl = String.fromEnvironment(
+                              'PRIVACY_POLICY_URL',
+                              defaultValue:
+                                  "https://munshi.sarankar.com/privacy.html",
+                            );
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (context) => WebViewScreen(
+                                  url: privacyPolicyUrl,
+                                  title: 'Privacy Policy',
+                                ),
+                              ),
+                            );
                           },
                           trailing: Icon(
                             Icons.chevron_right,
