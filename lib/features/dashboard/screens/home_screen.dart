@@ -117,16 +117,14 @@ class HomeScreen extends StatelessWidget {
           body: RefreshIndicator(
             onRefresh: () => dashboardProvider.refresh(),
             child: SingleChildScrollView(
-              physics: const ClampingScrollPhysics(),
+              physics: const AlwaysScrollableScrollPhysics(),
               padding: const EdgeInsets.fromLTRB(20, 0, 20, 100),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const SizedBox(height: 10),
-
                   DashboardSummaryCard(),
                   const SizedBox(height: 15),
-
                   // Quick Stats Row
                   Row(
                     children: [
