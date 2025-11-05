@@ -6,6 +6,9 @@ import 'package:munshi/features/transactions/models/grouped_transactions.dart';
 import 'package:munshi/features/transactions/widgets/transaction_tile.dart';
 
 class GroupedTransactionList extends StatefulWidget {
+  // Indent for dividers to align with ListTile title text
+  // Accounts for leading widget (56dp) + horizontal padding (16dp)
+  static const double _kDividerIndent = 72.0;
   const GroupedTransactionList({
     super.key,
     required this.groupedTransactions,
@@ -101,7 +104,13 @@ class _GroupedTransactionListState extends State<GroupedTransactionList>
 
         // Add separator if not the last transaction of the date
         if (transactionIndex < group.transactions.length - 1) {
-          widgets.add(const Divider(height: 1, thickness: 1, indent: 72));
+          widgets.add(
+            const Divider(
+              height: 1,
+              thickness: 1,
+              indent: GroupedTransactionList._kDividerIndent,
+            ),
+          );
         }
       }
 
