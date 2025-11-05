@@ -95,7 +95,7 @@ class TransactionsDao extends DatabaseAccessor<AppDatabase>
         filteredTransactions = filteredTransactions
             .where(
               (t) =>
-                  t.date.isAfter(startDate.subtract(const Duration(days: 1))),
+                  t.date.isAtSameMomentAs(startDate) || t.date.isAfter(startDate),
             )
             .toList();
       }
