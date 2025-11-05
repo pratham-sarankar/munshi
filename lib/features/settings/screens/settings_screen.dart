@@ -13,6 +13,9 @@ import 'package:munshi/core/service_locator.dart';
 import 'package:munshi/features/auth/services/auth_service.dart';
 import 'package:munshi/features/auth/screens/login_screen.dart';
 import 'package:munshi/widgets/webview_screen.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:package_info_plus/package_info_plus.dart';
+import 'dart:io' show Platform;
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -27,8 +30,8 @@ class _SettingsScreenState extends State<SettingsScreen>
   late List<Animation<Offset>> _itemAnimations;
 
   // Settings state
-  bool _expenseAlerts = true;
-  bool _monthlySummary = false;
+  bool _dailyReport = true;
+  bool _emailTransactionExtraction = true;
 
   final List<String> _themeOptions = ['Light', 'Dark', 'Auto'];
 
@@ -104,6 +107,146 @@ class _SettingsScreenState extends State<SettingsScreen>
             ),
           );
         }
+      }
+    }
+  }
+
+  Future<void> _reportBug() async {
+    try {
+      // Get app information
+      final packageInfo = await PackageInfo.fromPlatform();
+      final appName = packageInfo.appName;
+      final version = packageInfo.version;
+      final buildNumber = packageInfo.buildNumber;
+
+      // Get platform information
+      final platform = Platform.isIOS ? 'iOS' : 'Android';
+
+      // Get support email from environment
+      const supportEmail = String.fromEnvironment(
+        'SUPPORT_EMAIL',
+        defaultValue: 'support@sarankar.com',
+      );
+
+      // Prepare email content
+      final subject = Uri.encodeComponent('Bug Report - $appName');
+      final body = Uri.encodeComponent('''
+Hello Munshi Support Team,
+
+I would like to report a bug in the $appName mobile application.
+
+APP INFORMATION:
+- App Name: $appName
+- Version: $version ($buildNumber)
+- Platform: $platform
+
+BUG DESCRIPTION:
+[Please describe the bug you encountered in detail]
+
+STEPS TO REPRODUCE:
+1. [Step 1]
+2. [Step 2]
+3. [Step 3]
+
+EXPECTED BEHAVIOR:
+[What did you expect to happen?]
+
+ACTUAL BEHAVIOR:
+[What actually happened?]
+
+ADDITIONAL INFORMATION:
+[Any additional details, screenshots, or context that might help]
+
+Thank you for your time and support!
+
+Best regards,
+[Your Name]
+''');
+
+      final emailUri = Uri.parse(
+        'mailto:$supportEmail?subject=$subject&body=$body',
+      );
+      await launchUrl(emailUri);
+      return;
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Error: ${e.toString()}'),
+            backgroundColor: Theme.of(context).colorScheme.error,
+          ),
+        );
+      }
+    }
+  }
+
+  Future<void> _sendFeedback() async {
+    try {
+      // Get app information
+      final packageInfo = await PackageInfo.fromPlatform();
+      final appName = packageInfo.appName;
+      final version = packageInfo.version;
+      final buildNumber = packageInfo.buildNumber;
+
+      // Get platform information
+      final platform = Platform.isIOS ? 'iOS' : 'Android';
+
+      // Get support email from environment
+      const supportEmail = String.fromEnvironment(
+        'SUPPORT_EMAIL',
+        defaultValue: 'support@sarankar.com',
+      );
+
+      // Prepare email content
+      final subject = Uri.encodeComponent('Feedback - $appName');
+      final body = Uri.encodeComponent('''
+Hello Munshi Team,
+
+I would like to share my feedback about the $appName mobile application.
+
+APP INFORMATION:
+- App Name: $appName
+- Version: $version ($buildNumber)
+- Platform: $platform
+
+FEEDBACK TYPE:
+[ ] Feature Request
+[ ] Improvement Suggestion
+[ ] General Feedback
+[ ] User Experience
+
+FEEDBACK DETAILS:
+[Please share your thoughts, suggestions, or ideas for improvement]
+
+WHAT I LIKE:
+[Tell us what you enjoy about the app]
+
+WHAT COULD BE IMPROVED:
+[Share any suggestions for improvement]
+
+ADDITIONAL COMMENTS:
+[Any other thoughts or comments]
+
+Thank you for making Munshi better!
+
+Best regards,
+[Your Name]
+''');
+
+      final emailUri = Uri.parse(
+        'mailto:$supportEmail?subject=$subject&body=$body',
+      );
+
+      await launchUrl(emailUri);
+      return;
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Error: ${e.toString()}'),
+            backgroundColor: Theme.of(context).colorScheme.error,
+          ),
+        );
       }
     }
   }
@@ -261,24 +404,26 @@ class _SettingsScreenState extends State<SettingsScreen>
                       icon: Iconsax.notification_outline,
                       tiles: [
                         _SettingsTile(
-                          title: 'Expense Alerts',
-                          subtitle: 'Get notified when you spend',
+                          title: 'Email Sync',
+                          subtitle: 'Auto-sync transactions from emails',
                           trailing: Switch(
-                            value: _expenseAlerts,
+                            value: _emailTransactionExtraction,
                             onChanged: (bool value) {
-                              setState(() => _expenseAlerts = value);
+                              setState(
+                                () => _emailTransactionExtraction = value,
+                              );
                               HapticFeedback.lightImpact();
                             },
                             activeThumbColor: colorScheme.primary,
                           ),
                         ),
                         _SettingsTile(
-                          title: 'Monthly Summary',
-                          subtitle: 'Monthly spending report',
+                          title: 'Daily Report',
+                          subtitle: 'Receive daily expense summary',
                           trailing: Switch(
-                            value: _monthlySummary,
+                            value: _dailyReport,
                             onChanged: (bool value) {
-                              setState(() => _monthlySummary = value);
+                              setState(() => _dailyReport = value);
                               HapticFeedback.lightImpact();
                             },
                             activeThumbColor: colorScheme.primary,
@@ -346,6 +491,18 @@ class _SettingsScreenState extends State<SettingsScreen>
                           subtitle: 'Get help and find answers',
                           onTap: () {
                             HapticFeedback.lightImpact();
+                            // Navigate to FAQ
+                            const faqUrl = String.fromEnvironment(
+                              'FAQ_URL',
+                              defaultValue:
+                                  "https://munshi.sarankar.com/faq.html",
+                            );
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    WebViewScreen(url: faqUrl, title: 'FAQ'),
+                              ),
+                            );
                           },
                           trailing: Icon(
                             Icons.chevron_right_rounded,
@@ -357,6 +514,7 @@ class _SettingsScreenState extends State<SettingsScreen>
                           subtitle: 'Let us know about issues',
                           onTap: () {
                             HapticFeedback.lightImpact();
+                            _reportBug();
                           },
                           trailing: Icon(
                             Icons.chevron_right_rounded,
@@ -368,6 +526,7 @@ class _SettingsScreenState extends State<SettingsScreen>
                           subtitle: 'Share your thoughts',
                           onTap: () {
                             HapticFeedback.lightImpact();
+                            _sendFeedback();
                           },
                           trailing: Icon(
                             Icons.chevron_right_rounded,

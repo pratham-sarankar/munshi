@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FAQ — Munshi</title>
+    <meta name="description"
+        content="Frequently asked questions about Munshi - the private, open-source personal finance tracker. Learn about features, privacy, and how to get started.">
+
+    <!-- Theme Color -->
+    <meta name="theme-color" content="#5856D6">
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        :root {
+            --font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            --background: #FAFAFB;
+            --foreground: #0F172A;
+            --primary: #5856D6;
+            --secondary: #6B7280;
+            --border: #E5E7EB;
+        }
+
+        body {
+            font-family: var(--font-family);
+            background-color: var(--background);
+            color: var(--foreground);
+        }
+
+        /* Mobile menu styles */
+        .mobile-menu {
+            transform: translateX(100%);
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .mobile-menu.active {
+            transform: translateX(0);
+        }
+
+        .mobile-menu-overlay {
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease-in-out;
+        }
+
+        .mobile-menu-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-[#E5E7EB] px-6 py-4 shadow-sm">
+        <div class="mx-auto max-w-7xl flex items-center justify-between">
+            <div class="flex items-center gap-12">
+                <a href="index.html" class="flex items-center gap-2">
+                    <img src="images/logo.png" alt="Munshi Logo" class="w-8 h-8 rounded-lg">
+                    <span class="text-xl text-[#0F172A]">Munshi</span>
+                </a>
+
+                <nav class="hidden md:flex items-center gap-8">
+                    <a href="index.html#features"
+                        class="text-[#6B7280] hover:text-[#0F172A] transition-colors">Features</a>
+                    <a href="index.html#how-it-works" class="text-[#6B7280] hover:text-[#0F172A] transition-colors">How
+                        It Works</a>
+                    <a href="index.html#screenshots"
+                        class="text-[#6B7280] hover:text-[#0F172A] transition-colors">Screenshots</a>
+                    <a href="faq.html" class="text-[#5856D6] hover:text-[#4845B8] transition-colors font-medium">FAQ</a>
+                    <a href="privacy.html" class="text-[#6B7280] hover:text-[#0F172A] transition-colors">Privacy</a>
+                </nav>
+            </div>
+
+            <div class="flex items-center gap-4">
+                <a href="https://github.com/pratham-sarankar/munshi" target="_blank" rel="noopener noreferrer"
+                    class="hidden md:inline-flex items-center gap-2 px-4 py-2 rounded-md hover:bg-[#F3F4F6] transition-colors">
+                    <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
+                        <path
+                            d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
+                    </svg>
+                    GitHub
+                </a>
+                <a href="mailto:support@sarankar.com"
+                    class="inline-flex items-center justify-center gap-2 px-6 py-2 rounded-md bg-[#5856D6] text-white hover:bg-[#4845B8] transition-colors">
+                    Contact
+                </a>
+                <button id="mobile-menu-btn"
+                    class="md:hidden inline-flex items-center justify-center w-9 h-9 rounded-md hover:bg-[#F3F4F6]">
+                    <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M4 6h16M4 12h16M4 18h16" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Mobile Menu Overlay -->
+    <div id="mobile-menu-overlay" class="mobile-menu-overlay fixed inset-0 bg-black/50 z-40"></div>
+
+    <!-- Mobile Menu -->
+    <div id="mobile-menu"
+        class="mobile-menu fixed top-0 right-0 h-full w-[300px] sm:w-[400px] bg-white shadow-xl z-50 overflow-y-auto">
+        <div class="p-6">
+            <button id="mobile-menu-close"
+                class="absolute top-6 right-6 w-9 h-9 flex items-center justify-center rounded-md hover:bg-[#F3F4F6]">
+                <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+            <nav class="flex flex-col gap-6 mt-12">
+                <a href="index.html#features"
+                    class="text-lg text-[#6B7280] hover:text-[#0F172A] transition-colors mobile-menu-link">Features</a>
+                <a href="index.html#how-it-works"
+                    class="text-lg text-[#6B7280] hover:text-[#0F172A] transition-colors mobile-menu-link">How It
+                    Works</a>
+                <a href="index.html#screenshots"
+                    class="text-lg text-[#6B7280] hover:text-[#0F172A] transition-colors mobile-menu-link">Screenshots</a>
+                <a href="faq.html"
+                    class="text-lg text-[#5856D6] hover:text-[#4845B8] transition-colors mobile-menu-link font-medium">FAQ</a>
+                <a href="privacy.html"
+                    class="text-lg text-[#6B7280] hover:text-[#0F172A] transition-colors mobile-menu-link">Privacy
+                    Policy</a>
+                <div class="pt-4 border-t border-[#E5E7EB]">
+                    <a href="https://github.com/pratham-sarankar/munshi" target="_blank" rel="noopener noreferrer"
+                        class="inline-flex items-center justify-center gap-2 w-full px-6 py-2 rounded-md border border-[#E5E7EB] hover:bg-[#F3F4F6] transition-colors">
+                        <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
+                            <path
+                                d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
+                        </svg>
+                        View on GitHub
+                    </a>
+                </div>
+            </nav>
+        </div>
+    </div>
+
+    <main class="px-6 py-12 md:py-16">
+        <div class="mx-auto max-w-4xl">
+            <div class="space-y-8">
+                <div class="text-center">
+                    <h1 class="text-4xl md:text-5xl font-bold text-[#0F172A] mb-4">Frequently Asked Questions</h1>
+                    <p class="text-lg text-[#6B7280] max-w-2xl mx-auto">
+                        Everything you need to know about Munshi - your privacy-first personal finance tracker
+                    </p>
+                </div>
+
+                <div class="space-y-4">
+                    <!-- FAQ 1 -->
+                    <div class="border border-[#E5E7EB] rounded-xl overflow-hidden bg-white">
+                        <button
+                            class="faq-trigger w-full px-6 py-5 text-left flex justify-between items-center hover:bg-[#FAFAFB] transition-colors">
+                            <span class="font-semibold text-[#0F172A] text-lg">Will Munshi always be free?</span>
+                            <svg class="faq-icon w-5 h-5 text-[#6B7280] transition-transform" fill="none"
+                                stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M19 9l-7 7-7-7" />
+                            </svg>
+                        </button>
+                        <div class="faq-content hidden px-6 pb-5">
+                            <p class="text-[#6B7280] leading-relaxed">
+                                Yes! Munshi is open source under the MIT license and will always remain free. We believe
+                                personal finance
+                                tracking should be accessible to everyone without subscription fees or hidden costs. The
+                                app generates no
+                                revenue and has no ads - it's a passion project built for the community.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- FAQ 2 -->
+                    <div class="border border-[#E5E7EB] rounded-xl overflow-hidden bg-white">
+                        <button
+                            class="faq-trigger w-full px-6 py-5 text-left flex justify-between items-center hover:bg-[#FAFAFB] transition-colors">
+                            <span class="font-semibold text-[#0F172A] text-lg">Where is my data stored?</span>
+                            <svg class="faq-icon w-5 h-5 text-[#6B7280] transition-transform" fill="none"
+                                stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M19 9l-7 7-7-7" />
+                            </svg>
+                        </button>
+                        <div class="faq-content hidden px-6 pb-5">
+                            <p class="text-[#6B7280] leading-relaxed">
+                                All your data is stored locally on your device only. We don't use any cloud services or
+                                external servers.
+                                Your transactions, categories, and financial information never leave your phone. This
+                                ensures complete privacy
+                                and means you can use Munshi even without an internet connection.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- FAQ 3 -->
+                    <div class="border border-[#E5E7EB] rounded-xl overflow-hidden bg-white">
+                        <button
+                            class="faq-trigger w-full px-6 py-5 text-left flex justify-between items-center hover:bg-[#FAFAFB] transition-colors">
+                            <span class="font-semibold text-[#0F172A] text-lg">Can I use Munshi offline?</span>
+                            <svg class="faq-icon w-5 h-5 text-[#6B7280] transition-transform" fill="none"
+                                stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M19 9l-7 7-7-7" />
+                            </svg>
+                        </button>
+                        <div class="faq-content hidden px-6 pb-5">
+                            <p class="text-[#6B7280] leading-relaxed">
+                                Absolutely! Munshi is designed to work completely offline. You don't need an internet
+                                connection to track
+                                expenses, view reports, or use any core features. The app stores everything locally,
+                                making it perfect for
+                                travel or areas with limited connectivity.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- FAQ 4 -->
+                    <div class="border border-[#E5E7EB] rounded-xl overflow-hidden bg-white">
+                        <button
+                            class="faq-trigger w-full px-6 py-5 text-left flex justify-between items-center hover:bg-[#FAFAFB] transition-colors">
+                            <span class="font-semibold text-[#0F172A] text-lg">Which currencies are supported?</span>
+                            <svg class="faq-icon w-5 h-5 text-[#6B7280] transition-transform" fill="none"
+                                stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M19 9l-7 7-7-7" />
+                            </svg>
+                        </button>
+                        <div class="faq-content hidden px-6 pb-5">
+                            <p class="text-[#6B7280] leading-relaxed">
+                                Munshi supports all major world currencies including USD, EUR, GBP, JPY, INR, and many
+                                more. You can easily
+                                switch between currencies or track expenses in multiple currencies simultaneously. The
+                                app uses standard
+                                currency codes and symbols for consistency.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- FAQ 5 -->
+                    <div class="border border-[#E5E7EB] rounded-xl overflow-hidden bg-white">
+                        <button
+                            class="faq-trigger w-full px-6 py-5 text-left flex justify-between items-center hover:bg-[#FAFAFB] transition-colors">
+                            <span class="font-semibold text-[#0F172A] text-lg">How can I contribute to Munshi?</span>
+                            <svg class="faq-icon w-5 h-5 text-[#6B7280] transition-transform" fill="none"
+                                stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M19 9l-7 7-7-7" />
+                            </svg>
+                        </button>
+                        <div class="faq-content hidden px-6 pb-5">
+                            <p class="text-[#6B7280] leading-relaxed">
+                                We welcome contributions! You can help by reporting bugs, suggesting features,
+                                contributing code, or improving
+                                documentation. Visit our
+                                <a href="https://github.com/pratham-sarankar/munshi" target="_blank"
+                                    rel="noopener noreferrer"
+                                    class="text-[#5856D6] hover:text-[#4845B8] underline">GitHub repository</a>
+                                to get started. Even feedback and reviews help the project grow.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- FAQ 6 -->
+                    <div class="border border-[#E5E7EB] rounded-xl overflow-hidden bg-white">
+                        <button
+                            class="faq-trigger w-full px-6 py-5 text-left flex justify-between items-center hover:bg-[#FAFAFB] transition-colors">
+                            <span class="font-semibold text-[#0F172A] text-lg">Is my financial data secure?</span>
+                            <svg class="faq-icon w-5 h-5 text-[#6B7280] transition-transform" fill="none"
+                                stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M19 9l-7 7-7-7" />
+                            </svg>
+                        </button>
+                        <div class="faq-content hidden px-6 pb-5">
+                            <p class="text-[#6B7280] leading-relaxed">
+                                Your data is as secure as it gets - it never leaves your device! Since everything is
+                                stored locally, there's
+                                no risk of data breaches or unauthorized access through internet connections. You
+                                control your device's
+                                security measures like lock screens and encryption to protect your information.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- FAQ 7 -->
+                    <div class="border border-[#E5E7EB] rounded-xl overflow-hidden bg-white">
+                        <button
+                            class="faq-trigger w-full px-6 py-5 text-left flex justify-between items-center hover:bg-[#FAFAFB] transition-colors">
+                            <span class="font-semibold text-[#0F172A] text-lg">Can I backup my data?</span>
+                            <svg class="faq-icon w-5 h-5 text-[#6B7280] transition-transform" fill="none"
+                                stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M19 9l-7 7-7-7" />
+                            </svg>
+                        </button>
+                        <div class="faq-content hidden px-6 pb-5">
+                            <p class="text-[#6B7280] leading-relaxed">
+                                Yes! Munshi provides export functionality to backup your data. You can export your
+                                transactions to CSV or
+                                JSON formats and store them wherever you prefer - cloud storage, local files, or email
+                                them to yourself.
+                                You have complete control over your backup strategy.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- FAQ 8 -->
+                    <div class="border border-[#E5E7EB] rounded-xl overflow-hidden bg-white">
+                        <button
+                            class="faq-trigger w-full px-6 py-5 text-left flex justify-between items-center hover:bg-[#FAFAFB] transition-colors">
+                            <span class="font-semibold text-[#0F172A] text-lg">What platforms does Munshi
+                                support?</span>
+                            <svg class="faq-icon w-5 h-5 text-[#6B7280] transition-transform" fill="none"
+                                stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M19 9l-7 7-7-7" />
+                            </svg>
+                        </button>
+                        <div class="faq-content hidden px-6 pb-5">
+                            <p class="text-[#6B7280] leading-relaxed">
+                                Munshi is built with Flutter, so it runs natively on both Android and iOS devices. We're
+                                planning to add
+                                support for web and desktop platforms in the future. The app is optimized for mobile use
+                                with touch-friendly
+                                interfaces and responsive design.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- FAQ 9 -->
+                    <div class="border border-[#E5E7EB] rounded-xl overflow-hidden bg-white">
+                        <button
+                            class="faq-trigger w-full px-6 py-5 text-left flex justify-between items-center hover:bg-[#FAFAFB] transition-colors">
+                            <span class="font-semibold text-[#0F172A] text-lg">How do I get support or report
+                                bugs?</span>
+                            <svg class="faq-icon w-5 h-5 text-[#6B7280] transition-transform" fill="none"
+                                stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M19 9l-7 7-7-7" />
+                            </svg>
+                        </button>
+                        <div class="faq-content hidden px-6 pb-5">
+                            <p class="text-[#6B7280] leading-relaxed">
+                                You can reach out through multiple channels: email us at
+                                <a href="mailto:support@sarankar.com"
+                                    class="text-[#5856D6] hover:text-[#4845B8] underline">support@sarankar.com</a>,
+                                open an issue on our
+                                <a href="https://github.com/pratham-sarankar/munshi/issues" target="_blank"
+                                    rel="noopener noreferrer"
+                                    class="text-[#5856D6] hover:text-[#4845B8] underline">GitHub repository</a>,
+                                or use the feedback feature within the app itself.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- FAQ 10 -->
+                    <div class="border border-[#E5E7EB] rounded-xl overflow-hidden bg-white">
+                        <button
+                            class="faq-trigger w-full px-6 py-5 text-left flex justify-between items-center hover:bg-[#FAFAFB] transition-colors">
+                            <span class="font-semibold text-[#0F172A] text-lg">Does Munshi have ads or tracking?</span>
+                            <svg class="faq-icon w-5 h-5 text-[#6B7280] transition-transform" fill="none"
+                                stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M19 9l-7 7-7-7" />
+                            </svg>
+                        </button>
+                        <div class="faq-content hidden px-6 pb-5">
+                            <p class="text-[#6B7280] leading-relaxed">
+                                No ads, no tracking, no analytics - period. Munshi doesn't collect any user data or
+                                behavior information.
+                                There are no third-party services, no cookies, and no hidden telemetry. The app is
+                                completely clean and
+                                respects your privacy by design, not just by policy.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Contact Section -->
+                <div class="bg-[#5856D6]/5 border border-[#5856D6]/20 rounded-xl p-8 text-center space-y-4 mt-12">
+                    <h2 class="text-2xl font-semibold text-[#5856D6]">Still have questions?</h2>
+                    <p class="text-[#6B7280] leading-relaxed">
+                        We're here to help! Don't hesitate to reach out if you need assistance or have feedback about
+                        Munshi.
+                    </p>
+                    <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
+                        <a href="mailto:support@sarankar.com"
+                            class="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg bg-[#5856D6] text-white hover:bg-[#4845B8] transition-colors">
+                            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                            </svg>
+                            Email Support
+                        </a>
+                        <a href="https://github.com/pratham-sarankar/munshi/issues" target="_blank"
+                            rel="noopener noreferrer"
+                            class="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg border border-[#5856D6] text-[#5856D6] hover:bg-[#5856D6]/10 transition-colors">
+                            <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
+                                <path
+                                    d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.30.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
+                            </svg>
+                            GitHub Issues
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-[#0F172A] text-gray-300 px-6 py-12 md:py-16">
+        <div class="mx-auto max-w-7xl">
+            <div class="grid gap-8 md:gap-12 md:grid-cols-2 lg:grid-cols-4 mb-12">
+                <div>
+                    <div class="flex items-center gap-2 mb-4">
+                        <img src="images/logo.png" alt="Munshi Logo" class="w-8 h-8 rounded-lg">
+                        <span class="text-xl text-white">Munshi</span>
+                    </div>
+                    <p class="text-sm mb-6 text-gray-400">
+                        Your intelligent expense tracking companion. Simple, private, and open source.
+                    </p>
+                    <div class="flex gap-4">
+                        <a href="https://github.com/pratham-sarankar/munshi" target="_blank" rel="noopener noreferrer"
+                            class="hover:text-white transition-colors">
+                            <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
+                                <path
+                                    d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
+                            </svg>
+                        </a>
+                        <a href="mailto:support@sarankar.com" class="hover:text-white transition-colors">
+                            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+
+                <div>
+                    <h3 class="text-white mb-4 font-semibold">Product</h3>
+                    <ul class="space-y-3 text-sm">
+                        <li><a href="index.html#features" class="hover:text-white transition-colors">Features</a></li>
+                        <li><a href="index.html#screenshots" class="hover:text-white transition-colors">Screenshots</a>
+                        </li>
+                        <li><a href="index.html#how-it-works" class="hover:text-white transition-colors">How It
+                                Works</a></li>
+                        <li><a href="faq.html" class="hover:text-white transition-colors">FAQ</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="text-white mb-4 font-semibold">Resources</h3>
+                    <ul class="space-y-3 text-sm">
+                        <li>
+                            <a href="https://github.com/pratham-sarankar/munshi" target="_blank"
+                                rel="noopener noreferrer" class="hover:text-white transition-colors">
+                                GitHub Repository
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/pratham-sarankar/munshi/blob/main/README.md" target="_blank"
+                                rel="noopener noreferrer" class="hover:text-white transition-colors">
+                                Documentation
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/pratham-sarankar/munshi/issues" target="_blank"
+                                rel="noopener noreferrer" class="hover:text-white transition-colors">
+                                Report a Bug
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/pratham-sarankar/munshi/blob/main/LICENSE" target="_blank"
+                                rel="noopener noreferrer" class="hover:text-white transition-colors">
+                                License (MIT)
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="text-white mb-4 font-semibold">Legal</h3>
+                    <ul class="space-y-3 text-sm">
+                        <li><a href="privacy.html" class="hover:text-white transition-colors">Privacy Policy</a></li>
+                        <li><a href="faq.html" class="hover:text-white transition-colors">FAQ</a></li>
+                        <li><a href="mailto:support@sarankar.com" class="hover:text-white transition-colors">Contact</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div
+                class="border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-sm">
+                <p class="text-gray-400">
+                    © <span id="current-year"></span> Munshi. Open source under MIT License.
+                </p>
+                <div class="flex items-center gap-2 text-gray-400">
+                    <span>Built with Flutter and</span>
+                    <svg class="h-4 w-4 text-red-500 fill-red-500" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd"
+                            d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z"
+                            clip-rule="evenodd" />
+                    </svg>
+                    <span>in India</span>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile menu toggle
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const mobileMenuOverlay = document.getElementById('mobile-menu-overlay');
+        const mobileMenuClose = document.getElementById('mobile-menu-close');
+        const mobileMenuLinks = document.querySelectorAll('.mobile-menu-link');
+
+        function openMobileMenu() {
+            mobileMenu.classList.add('active');
+            mobileMenuOverlay.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeMobileMenu() {
+            mobileMenu.classList.remove('active');
+            mobileMenuOverlay.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        if (mobileMenuBtn) mobileMenuBtn.addEventListener('click', openMobileMenu);
+        if (mobileMenuClose) mobileMenuClose.addEventListener('click', closeMobileMenu);
+        if (mobileMenuOverlay) mobileMenuOverlay.addEventListener('click', closeMobileMenu);
+
+        mobileMenuLinks.forEach(link => {
+            link.addEventListener('click', closeMobileMenu);
+        });
+
+        // FAQ accordion
+        const faqTriggers = document.querySelectorAll('.faq-trigger');
+
+        faqTriggers.forEach(trigger => {
+            trigger.addEventListener('click', () => {
+                const content = trigger.nextElementSibling;
+                const icon = trigger.querySelector('.faq-icon');
+                const isOpen = !content.classList.contains('hidden');
+
+                // Close all FAQs
+                document.querySelectorAll('.faq-content').forEach(item => {
+                    item.classList.add('hidden');
+                });
+                document.querySelectorAll('.faq-icon').forEach(item => {
+                    item.style.transform = 'rotate(0deg)';
+                });
+
+                // Open clicked FAQ if it was closed
+                if (!isOpen) {
+                    content.classList.remove('hidden');
+                    icon.style.transform = 'rotate(180deg)';
+                }
+            });
+        });
+
+        // Set current year in footer
+        document.getElementById('current-year').textContent = new Date().getFullYear();
+    </script>
+</body>
+
+</html>
