@@ -42,6 +42,8 @@ jobs:
 
       - name: 💎 Install Ruby gems for Android
         working-directory: android
+        env:
+          GEM_HOME: $HOME/.gem
         run: |
           gem install bundler
           bundle install
