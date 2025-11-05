@@ -132,6 +132,10 @@ class AuthService extends ChangeNotifier {
         key: _kTokenExpiry,
         value: result.accessTokenExpirationDateTime?.toIso8601String(),
       );
+
+      // Set signed in state first since tokens are saved
+      _isSignedIn = true;
+
       // Fetch and cache user profile immediately after successful sign-in
       try {
         final user = await getUserProfile();
@@ -141,9 +145,12 @@ class AuthService extends ChangeNotifier {
         }
       } catch (e) {
         log('Failed to fetch user profile after sign-in: $e');
-      } finally {
-        notifyListeners();
+        // Don't fail the sign-in if profile fetch fails - user can still use the app
       }
+
+      // Notify listeners after all state changes
+      notifyListeners();
+      return true;
     } on FlutterAppAuthUserCancelledException catch (_) {
       log('User cancelled the sign-in process.');
       return false;
