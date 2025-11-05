@@ -1,0 +1,54 @@
+name: Deploy Android App to Play Store
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch: # Allow manual trigger
+
+jobs:
+  build-and-deploy-android:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 🧹 Checkout repository
+        uses: actions/checkout@v4
+
+      - name: 🧰 Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: "3.35.5"
+          channel: stable
+
+      - name: 🔧 Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: "zulu"
+          java-version: "17"
+
+      - name: 💎 Setup Ruby and install gems for Android
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 3.3.10
+          bundler-cache: true
+
+      - name: 💎 Install dependencies with Bundler
+        working-directory: android
+        run: bundle install
+
+      - name: 🔑 Restore Android signing files from secrets
+        run: |
+          echo "${{ secrets.KEY_JKS_BASE64 }}" | base64 --decode > android/app/key.jks
+          echo "${{ secrets.KEY_PROPERTIES }}" | base64 --decode > android/key.properties
+          echo "${{ secrets.SERVICE_ACCOUNT_KEY }}" | base64 --decode > android/serviceAccountKey.json
+          echo "${{ secrets.ENV_JSON }}" | base64 --decode > env.json
+
+      - name: 📦 Install Flutter dependencies
+        run: flutter pub get
+
+      - name: 🤖 Build Android App Bundle
+        run: flutter build appbundle --release --no-tree-shake-icons --dart-define-from-file=env.json
+
+      - name: 🚀 Deploy Android app to Play Store
+        working-directory: android
+        run: bundle exec fastlane deploy

@@ -1,12 +1,13 @@
-name: Deploy App to TestFlight and Play Store.
+name: Deploy iOS App to TestFlight
 
 on:
   push:
     tags:
       - "v*"
+  workflow_dispatch: # Allow manual trigger
 
 jobs:
-  build-and-upload:
+  build-and-deploy-ios:
     runs-on: macos-15 # macOS Sequoia with Xcode 16
 
     env:
@@ -23,17 +24,14 @@ jobs:
           flutter-version: "3.35.5"
           channel: stable
 
-      - name: Restore files from secrets
-        run: |
-          echo "${{ secrets.KEY_JKS_BASE64 }}" | base64 --decode > android/app/key.jks
-          echo "${{ secrets.KEY_PROPERTIES }}" | base64 --decode > android/key.properties
-          echo "${{ secrets.SERVICE_ACCOUNT_KEY }}" | base64 --decode > android/serviceAccountKey.json
-          echo "${{ secrets.ENV_JSON }}" | base64 --decode > env.json
-
       - name: 🔑 Decode App Store Connect API key
         run: |
           mkdir -p ios
           echo "${{ secrets.APPSTORE_KEY }}" | base64 --decode > ios/AuthKey_6W3U9Q7XKG.p8
+
+      - name: 🗂️ Restore environment configuration
+        run: |
+          echo "${{ secrets.ENV_JSON }}" | base64 --decode > env.json
 
       - name: 📦 Install dependencies
         run: flutter pub get
@@ -42,26 +40,12 @@ jobs:
         run: |
           flutter build ios --release --no-codesign --config-only --no-tree-shake-icons --dart-define-from-file=env.json
 
-      - name: 🤖 Build Android App Bundle
-        run: |
-          flutter build appbundle --release --no-tree-shake-icons --dart-define-from-file=env.json
-
-      - name: Install Ruby gems for iOS
+      - name: 💎 Install Ruby gems for iOS
         working-directory: ios
         run: |
           gem install bundler
           bundle install
 
-      - name: Install Ruby gems for Android
-        working-directory: android
-        run: |
-          gem install bundler
-          bundle install
-
-      - name: Run Fastlane to deploy Android app to Play Store
-        working-directory: android
-        run: bundle exec fastlane deploy
-
-      - name: Run Fastlane to deploy iOS app to TestFlight
+      - name: 🚀 Deploy iOS app to TestFlight
         working-directory: ios
         run: bundle exec fastlane beta
