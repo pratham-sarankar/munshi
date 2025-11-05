@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:icons_plus/icons_plus.dart';
 import 'package:munshi/core/database/app_database.dart';
-import 'package:munshi/features/transactions/widgets/animated_transaction_list.dart';
+import 'package:munshi/features/transactions/models/grouped_transactions.dart';
+import 'package:munshi/features/transactions/widgets/grouped_transaction_list.dart';
 import 'package:provider/provider.dart';
 import 'package:munshi/features/transactions/providers/transaction_provider.dart';
 import 'package:munshi/features/transactions/screens/transaction_form_screen.dart';
@@ -24,10 +25,10 @@ class _TransactionsScreenState extends State<TransactionsScreen>
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     final transactionProvider = Provider.of<TransactionProvider>(context);
-    return StreamBuilder<List<Transaction>>(
-      stream: transactionProvider.watchTransactions,
+    return StreamBuilder<List<GroupedTransactions>>(
+      stream: transactionProvider.watchGroupedTransactions,
       builder: (context, snapshot) {
-        final transactions = snapshot.data ?? [];
+        final groupedTransactions = snapshot.data ?? [];
         return Scaffold(
           backgroundColor: colorScheme.surface,
           appBar: AppBar(
@@ -57,7 +58,7 @@ class _TransactionsScreenState extends State<TransactionsScreen>
               ),
             ],
           ),
-          body: AnimatedTransactionList(
+          body: GroupedTransactionList(
             onTap: (transaction) {
               _showTransactionDetails(transaction, colorScheme);
             },
@@ -75,7 +76,7 @@ class _TransactionsScreenState extends State<TransactionsScreen>
                 ),
               );
             },
-            transactions: transactions,
+            groupedTransactions: groupedTransactions,
           ),
         );
       },

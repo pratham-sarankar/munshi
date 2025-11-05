@@ -3,6 +3,7 @@ import 'package:munshi/core/database/converters/transaction_category_converter.d
 import 'package:munshi/core/models/date_period.dart';
 import 'package:munshi/features/dashboard/models/category_spending_data.dart';
 import 'package:munshi/features/dashboard/services/dashboard_data_service.dart';
+import 'package:munshi/features/transactions/models/grouped_transactions.dart';
 import 'package:munshi/features/transactions/models/transaction_category.dart';
 import 'package:munshi/features/transactions/models/transaction_type.dart';
 import '../app_database.dart';
@@ -39,6 +40,123 @@ class TransactionsDao extends DatabaseAccessor<AppDatabase>
               tbl.type.equals(const TransactionTypeConverter().toSql(type)),
         ))
         .get();
+  }
+
+  /// Get transactions grouped by date using SQL for better performance
+  Future<List<GroupedTransactions>> getTransactionsGroupedByDate({
+    DateTime? startDate,
+    DateTime? endDate,
+  }) async {
+    // Build the query with optional date filtering
+    String dateFilter = '';
+    List<Variable> variables = [];
+
+    if (startDate != null && endDate != null) {
+      dateFilter = ' WHERE date BETWEEN ? AND ?';
+      variables.addAll([
+        Variable.withDateTime(startDate),
+        Variable.withDateTime(endDate),
+      ]);
+    } else if (startDate != null) {
+      dateFilter = ' WHERE date >= ?';
+      variables.add(Variable.withDateTime(startDate));
+    } else if (endDate != null) {
+      dateFilter = ' WHERE date <= ?';
+      variables.add(Variable.withDateTime(endDate));
+    }
+
+    // Get distinct dates ordered by date descending
+    final dateResult = await customSelect('''
+      SELECT DISTINCT DATE(date) as date_only
+      FROM transactions$dateFilter
+      ORDER BY date_only DESC
+      ''', variables: variables).get();
+
+    final List<GroupedTransactions> groupedTransactions = [];
+
+    // For each date, fetch all transactions for that date
+    for (final dateRow in dateResult) {
+      final dateString = dateRow.read<String>('date_only');
+      final date = DateTime.parse(dateString);
+
+      // Get all transactions for this specific date
+      final transactionsForDate =
+          await (select(transactions)
+                ..where(
+                  (t) => t.date.isBetweenValues(
+                    DateTime(date.year, date.month, date.day),
+                    DateTime(date.year, date.month, date.day, 23, 59, 59),
+                  ),
+                )
+                ..orderBy([(t) => OrderingTerm.desc(t.date)]))
+              .get();
+
+      if (transactionsForDate.isNotEmpty) {
+        groupedTransactions.add(
+          GroupedTransactions(date: date, transactions: transactionsForDate),
+        );
+      }
+    }
+
+    return groupedTransactions;
+  }
+
+  /// Watch transactions grouped by date with real-time updates
+  Stream<List<GroupedTransactions>> watchTransactionsGroupedByDate({
+    DateTime? startDate,
+    DateTime? endDate,
+  }) {
+    // For simplicity, we'll use the existing watchAllTransactions and group in Dart
+    // A more advanced implementation could use custom SQL with triggers
+    return watchAllTransactions().asyncMap((transactions) async {
+      if (transactions.isEmpty) return <GroupedTransactions>[];
+
+      // Filter transactions by date range if provided
+      var filteredTransactions = transactions;
+      if (startDate != null) {
+        filteredTransactions = filteredTransactions
+            .where(
+              (t) =>
+                  t.date.isAfter(startDate.subtract(const Duration(days: 1))),
+            )
+            .toList();
+      }
+      if (endDate != null) {
+        filteredTransactions = filteredTransactions
+            .where((t) => t.date.isBefore(endDate.add(const Duration(days: 1))))
+            .toList();
+      }
+
+      // Group by date
+      final Map<String, List<Transaction>> groupedMap = {};
+      for (final transaction in filteredTransactions) {
+        final dateKey = DateTime(
+          transaction.date.year,
+          transaction.date.month,
+          transaction.date.day,
+        );
+        final dateString =
+            '${dateKey.year}-${dateKey.month.toString().padLeft(2, '0')}-${dateKey.day.toString().padLeft(2, '0')}';
+        groupedMap.putIfAbsent(dateString, () => []).add(transaction);
+      }
+
+      // Convert to GroupedTransactions and sort by date descending
+      final List<GroupedTransactions> result = [];
+      final sortedDates = groupedMap.keys.toList()
+        ..sort((a, b) => b.compareTo(a));
+
+      for (final dateString in sortedDates) {
+        final date = DateTime.parse(dateString);
+        final transactionsForDate = groupedMap[dateString]!;
+        // Sort transactions within the day by time descending
+        transactionsForDate.sort((a, b) => b.date.compareTo(a.date));
+        result.add(
+          GroupedTransactions(date: date, transactions: transactionsForDate),
+        );
+      }
+
+      return result;
+    });
   }
 
   /// Alternative: More efficient SQL-based calculation (requires custom SQL)
