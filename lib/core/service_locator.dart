@@ -6,6 +6,7 @@ import 'package:munshi/features/auth/services/auth_service.dart';
 import 'package:munshi/features/dashboard/services/dashboard_data_service.dart';
 import 'package:munshi/providers/theme_provider.dart';
 import 'package:munshi/providers/currency_provider.dart';
+import 'package:munshi/providers/period_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 final GetIt locator = GetIt.instance;
@@ -16,6 +17,7 @@ final GetIt locator = GetIt.instance;
 /// - Retrieves an instance of [SharedPreferences] and registers it as a singleton.
 /// - Registers [ThemeProvider] as a lazy singleton, initialized with the shared preferences.
 /// - Registers [CurrencyProvider] as a lazy singleton, initialized with the shared preferences.
+/// - Registers [PeriodProvider] as a lazy singleton, initialized with the shared preferences.
 /// - Registers [AppDatabase] as a lazy singleton for database access.
 /// - Registers [TransactionsDao] as a lazy singleton, initialized with the [AppDatabase] instance.
 /// - Registers [DashboardDataService] as a lazy singleton, initialized with the [TransactionsDao] instance.
@@ -29,6 +31,7 @@ Future<void> setupLocator() async {
   locator.registerLazySingleton<CurrencyProvider>(
     () => CurrencyProvider(prefs),
   );
+  locator.registerLazySingleton<PeriodProvider>(() => PeriodProvider(prefs));
 
   locator.registerLazySingleton<AppDatabase>(() => AppDatabase());
   locator.registerLazySingleton<TransactionsDao>(

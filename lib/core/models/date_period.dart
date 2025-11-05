@@ -1,6 +1,5 @@
 import 'package:intl/intl.dart';
-
-enum PeriodType { daily, weekly, monthly }
+import 'package:munshi/core/models/period_type.dart';
 
 class DatePeriod {
   final PeriodType type;
@@ -14,6 +13,17 @@ class DatePeriod {
     required this.endDate,
     required this.displayName,
   });
+
+  factory DatePeriod.fromPeriodType(PeriodType type, DateTime date) {
+    switch (type) {
+      case PeriodType.daily:
+        return DatePeriod.daily(date);
+      case PeriodType.weekly:
+        return DatePeriod.weekly(date);
+      case PeriodType.monthly:
+        return DatePeriod.monthly(date);
+    }
+  }
 
   // Factory constructors for different period types
   factory DatePeriod.monthly(DateTime date) {

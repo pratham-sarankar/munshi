@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:munshi/core/models/date_period.dart';
+import 'package:munshi/core/models/period_type.dart';
 
 class PeriodSelectorBottomSheet extends StatelessWidget {
   final PeriodType currentPeriodType;

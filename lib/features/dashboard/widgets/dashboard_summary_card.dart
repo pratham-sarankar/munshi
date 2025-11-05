@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:icons_plus/icons_plus.dart';
-import 'package:munshi/core/models/date_period.dart';
+import 'package:munshi/core/models/period_type.dart';
 import 'package:munshi/features/dashboard/providers/dashboard_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';

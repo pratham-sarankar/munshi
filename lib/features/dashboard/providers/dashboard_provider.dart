@@ -1,6 +1,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:munshi/core/models/date_period.dart';
+import 'package:munshi/core/models/period_type.dart';
+import 'package:munshi/providers/period_provider.dart';
 import 'package:munshi/features/dashboard/services/dashboard_data_service.dart';
 import 'package:munshi/features/transactions/models/transaction_category.dart';
 import 'package:munshi/features/dashboard/models/category_spending_data.dart';
@@ -14,11 +16,15 @@ class DashboardProvider extends ChangeNotifier {
   bool _isLoading = false;
   String? _error;
   final DashboardDataService _dashboardDataService;
+  final PeriodProvider _periodProvider;
 
   // Constructor
-  DashboardProvider(this._dashboardDataService) {
-    // Initialize with current month
-    _selectedPeriod = DatePeriod.monthly(DateTime.now());
+  DashboardProvider(this._dashboardDataService, this._periodProvider) {
+    // Initialize with user's preferred default period
+    _selectedPeriod = DatePeriod.fromPeriodType(
+      _periodProvider.defaultPeriod,
+      DateTime.now(),
+    );
     _loadDashboardData();
   }
 

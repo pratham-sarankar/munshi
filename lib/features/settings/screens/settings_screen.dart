@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:icons_plus/icons_plus.dart';
+import 'package:munshi/core/models/period_type.dart';
 import 'package:munshi/providers/theme_provider.dart';
 import 'package:munshi/providers/currency_provider.dart';
+import 'package:munshi/providers/period_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:munshi/widgets/rounded_dropdown.dart';
 import 'package:munshi/features/settings/widgets/app_version_widget.dart';
@@ -27,14 +29,8 @@ class _SettingsScreenState extends State<SettingsScreen>
   // Settings state
   bool _expenseAlerts = true;
   bool _monthlySummary = false;
-  String _defaultMonthView = 'This Month';
 
   final List<String> _themeOptions = ['Light', 'Dark', 'Auto'];
-  final List<String> _monthViewOptions = [
-    'This Month',
-    'Last Month',
-    'Current Year',
-  ];
 
   @override
   void initState() {
@@ -169,32 +165,46 @@ class _SettingsScreenState extends State<SettingsScreen>
                           },
                         ),
                         _SettingsTile(
-                          title: 'Default Month View',
-                          trailing: RoundedDropdown<String>(
-                            value: _defaultMonthView,
-                            onChanged: (String? value) =>
-                                setState(() => _defaultMonthView = value!),
-                            items: _monthViewOptions
-                                .map<DropdownMenuItem<String>>((String option) {
-                                  return DropdownMenuItem<String>(
-                                    value: option,
-                                    child: Text(
-                                      option,
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .bodyMedium
-                                          ?.copyWith(
-                                            color: colorScheme.primary,
-                                            fontWeight: FontWeight.w500,
-                                          ),
-                                    ),
-                                  );
-                                })
-                                .toList(),
+                          title: 'Preferred Dashboard View',
+                          subtitle: "Restart to apply changes",
+                          trailing: Consumer<PeriodProvider>(
+                            builder: (context, periodProvider, child) {
+                              return RoundedDropdown<String>(
+                                value: periodProvider.defaultPeriodDisplayName,
+                                onChanged: (String? value) {
+                                  if (value != null) {
+                                    periodProvider
+                                        .setDefaultPeriodByDisplayName(value);
+                                    HapticFeedback.lightImpact();
+                                  }
+                                },
+                                items: PeriodType.values
+                                    .map<DropdownMenuItem<String>>((
+                                      PeriodType option,
+                                    ) {
+                                      return DropdownMenuItem<String>(
+                                        value: option.displayName,
+                                        child: Text(
+                                          option.displayName,
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .bodyMedium
+                                              ?.copyWith(
+                                                color: colorScheme.primary,
+                                                fontWeight: FontWeight.w500,
+                                              ),
+                                        ),
+                                      );
+                                    })
+                                    .toList(),
+                              );
+                            },
                           ),
                         ),
+
                         _SettingsTile(
                           title: 'Theme',
+                          subtitle: 'Light, Dark, or Auto',
                           trailing: Consumer<ThemeProvider>(
                             builder: (context, themeProvider, child) {
                               return RoundedDropdown<String>(
