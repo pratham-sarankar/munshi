@@ -4,6 +4,7 @@ import 'package:munshi/core/models/date_period.dart';
 import 'package:munshi/features/dashboard/services/dashboard_data_service.dart';
 import 'package:munshi/features/transactions/models/transaction_category.dart';
 import 'package:munshi/features/dashboard/models/category_spending_data.dart';
+import 'package:munshi/core/extensions/currency_extensions.dart';
 
 class DashboardProvider extends ChangeNotifier {
   // Private fields
@@ -124,9 +125,9 @@ class DashboardProvider extends ChangeNotifier {
     await _loadDashboardData();
   }
 
-  /// Format currency amount to Indian Rupee format
+  /// Format currency amount using the extension
   String formatCurrency(double amount) {
-    return "₹${amount.toStringAsFixed(0).replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match match) => '${match[1]},')}";
+    return amount.toCurrency();
   }
 
   /// Get spending amount for a specific category

@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:icons_plus/icons_plus.dart';
 import 'package:munshi/providers/theme_provider.dart';
+import 'package:munshi/providers/currency_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:munshi/widgets/rounded_dropdown.dart';
 import 'package:munshi/features/settings/widgets/app_version_widget.dart';
+import 'package:munshi/features/settings/screens/currency_selection_screen.dart';
 import 'package:munshi/core/service_locator.dart';
 import 'package:munshi/features/auth/services/auth_service.dart';
 import 'package:munshi/features/auth/screens/login_screen.dart';
@@ -24,16 +26,9 @@ class _SettingsScreenState extends State<SettingsScreen>
   // Settings state
   bool _expenseAlerts = true;
   bool _monthlySummary = false;
-  String _selectedCurrency = '₹ (INR)';
   String _defaultMonthView = 'This Month';
 
   final List<String> _themeOptions = ['Light', 'Dark', 'Auto'];
-  final List<String> _currencyOptions = [
-    '₹ (INR)',
-    '\$ (USD)',
-    '€ (EUR)',
-    '£ (GBP)',
-  ];
   final List<String> _monthViewOptions = [
     'This Month',
     'Last Month',
@@ -148,30 +143,29 @@ class _SettingsScreenState extends State<SettingsScreen>
                       title: 'Preferences',
                       icon: Iconsax.setting_4_outline,
                       tiles: [
-                        _SettingsTile(
-                          title: 'Currency',
-                          trailing: RoundedDropdown<String>(
-                            value: _selectedCurrency,
-                            onChanged: (String? value) =>
-                                setState(() => _selectedCurrency = value!),
-                            items: _currencyOptions
-                                .map<DropdownMenuItem<String>>((String option) {
-                                  return DropdownMenuItem<String>(
-                                    value: option,
-                                    child: Text(
-                                      option,
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .bodyMedium
-                                          ?.copyWith(
-                                            color: colorScheme.primary,
-                                            fontWeight: FontWeight.w500,
-                                          ),
-                                    ),
-                                  );
-                                })
-                                .toList(),
-                          ),
+                        Consumer<CurrencyProvider>(
+                          builder: (context, currencyProvider, child) {
+                            return _SettingsTile(
+                              title: 'Currency',
+                              subtitle:
+                                  currencyProvider.selectedCurrency.displayName,
+                              onTap: () {
+                                HapticFeedback.lightImpact();
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                    builder: (_) =>
+                                        const CurrencySelectionScreen(),
+                                  ),
+                                );
+                              },
+                              trailing: Icon(
+                                Icons.chevron_right,
+                                color: colorScheme.onSurface.withValues(
+                                  alpha: 0.4,
+                                ),
+                              ),
+                            );
+                          },
                         ),
                         _SettingsTile(
                           title: 'Default Month View',

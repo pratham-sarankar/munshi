@@ -5,6 +5,7 @@ import 'package:munshi/features/transactions/widgets/animated_transaction_list.d
 import 'package:provider/provider.dart';
 import 'package:munshi/features/transactions/providers/transaction_provider.dart';
 import 'package:munshi/features/transactions/screens/transaction_form_screen.dart';
+import 'package:munshi/core/extensions/currency_extensions.dart';
 
 class TransactionsScreen extends StatefulWidget {
   const TransactionsScreen({super.key});
@@ -16,7 +17,7 @@ class TransactionsScreen extends StatefulWidget {
 class _TransactionsScreenState extends State<TransactionsScreen>
     with TickerProviderStateMixin {
   String _formatCurrency(double amount) {
-    return '-\$${amount.toStringAsFixed(2)}';
+    return amount.toCurrency(decimalPlaces: 2);
   }
 
   @override
