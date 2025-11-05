@@ -100,8 +100,9 @@ class TransactionsDao extends DatabaseAccessor<AppDatabase>
             .toList();
       }
       if (endDate != null) {
+        final endOfDay = DateTime(endDate.year, endDate.month, endDate.day, 23, 59, 59, 999);
         filteredTransactions = filteredTransactions
-            .where((t) => t.date.isBefore(endDate.add(const Duration(days: 1))))
+            .where((t) => !t.date.isAfter(endOfDay))
             .toList();
       }
 
