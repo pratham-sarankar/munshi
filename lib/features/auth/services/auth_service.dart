@@ -138,16 +138,11 @@ class AuthService extends ChangeNotifier {
         if (user != null) {
           _currentUser = user;
           await _cacheUserData(user);
-          _isSignedIn = true;
-          notifyListeners();
-          return true;
-        } else {
-          log('User profile is null after sign-in.');
-          return false;
         }
       } catch (e) {
         log('Failed to fetch user profile after sign-in: $e');
-        return false;
+      } finally {
+        notifyListeners();
       }
     } on FlutterAppAuthUserCancelledException catch (_) {
       log('User cancelled the sign-in process.');
