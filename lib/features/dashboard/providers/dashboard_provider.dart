@@ -23,6 +23,7 @@ class DashboardProvider extends ChangeNotifier {
 
   // Getters
   DatePeriod get selectedPeriod => _selectedPeriod;
+  PeriodType get currentPeriodType => _selectedPeriod.type;
   PeriodSummaryData? get summaryData => _summaryData;
   Map<TransactionCategory, CategorySpendingData>? get categorySpending =>
       _categorySpending;
@@ -91,6 +92,31 @@ class DashboardProvider extends ChangeNotifier {
     notifyListeners(); // Notify immediately for UI responsiveness
 
     await _loadDashboardData();
+  }
+
+  /// Changes the period type (daily, weekly, monthly) and resets to current period
+  Future<void> changePeriodType(PeriodType newType) async {
+    if (_selectedPeriod.type == newType) return;
+
+    final now = DateTime.now();
+    DatePeriod newPeriod;
+
+    switch (newType) {
+      case PeriodType.daily:
+        newPeriod = DatePeriod.daily(now);
+        break;
+      case PeriodType.weekly:
+        newPeriod = DatePeriod.weekly(now);
+        break;
+      case PeriodType.monthly:
+        newPeriod = DatePeriod.monthly(now);
+        break;
+    }
+
+    await setPeriod(newPeriod);
+
+    // Provide haptic feedback
+    HapticFeedback.selectionClick();
   }
 
   /// Manually refresh the dashboard data

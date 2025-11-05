@@ -1,3 +1,5 @@
+import 'package:intl/intl.dart';
+
 enum PeriodType { daily, weekly, monthly }
 
 class DatePeriod {
@@ -39,7 +41,8 @@ class DatePeriod {
       const Duration(days: 6, hours: 23, minutes: 59, seconds: 59),
     );
 
-    final displayName = 'Week of ${_formatDate(normalizedStart)}';
+    final displayName =
+        '${_formatDate(normalizedStart)} - ${_formatDate(endDate)}';
 
     return DatePeriod(
       type: PeriodType.weekly,
@@ -52,7 +55,7 @@ class DatePeriod {
   factory DatePeriod.daily(DateTime date) {
     final startDate = DateTime(date.year, date.month, date.day);
     final endDate = DateTime(date.year, date.month, date.day, 23, 59, 59);
-    final displayName = _formatDate(date);
+    final displayName = _getDailyDisplayName(date);
 
     return DatePeriod(
       type: PeriodType.daily,
@@ -115,8 +118,23 @@ class DatePeriod {
     return "${months[date.month - 1]} ${date.year}";
   }
 
+  static String _getDailyDisplayName(DateTime date) {
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+    final yesterday = today.subtract(const Duration(days: 1));
+    final targetDate = DateTime(date.year, date.month, date.day);
+
+    if (targetDate == today) {
+      return 'Today';
+    } else if (targetDate == yesterday) {
+      return 'Yesterday';
+    } else {
+      return _formatDate(date);
+    }
+  }
+
   static String _formatDate(DateTime date) {
-    return "${date.day}/${date.month}/${date.year}";
+    return DateFormat('d MMM').format(date);
   }
 
   @override
