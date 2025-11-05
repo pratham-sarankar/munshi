@@ -143,6 +143,7 @@ class _CurrencySelectionScreenState extends State<CurrencySelectionScreen>
                     horizontal: 16,
                     vertical: 16,
                   ),
+                  filled: false,
                 ),
                 style: Theme.of(
                   context,
