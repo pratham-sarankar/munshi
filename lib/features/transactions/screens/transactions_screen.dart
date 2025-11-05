@@ -40,23 +40,7 @@ class _TransactionsScreenState extends State<TransactionsScreen>
               ),
             ),
             centerTitle: false,
-            actions: [
-              IconButton(
-                onPressed: () {
-                  Navigator.of(context).push<Transaction?>(
-                    MaterialPageRoute(
-                      builder: (context) {
-                        return TransactionFormScreen(
-                          onSubmit: (transaction) =>
-                              transactionProvider.addTransaction(transaction),
-                        );
-                      },
-                    ),
-                  );
-                },
-                icon: Icon(Iconsax.add_outline, color: colorScheme.onSurface),
-              ),
-            ],
+            actions: [],
           ),
           body: GroupedTransactionList(
             onTap: (transaction) {
