@@ -227,8 +227,7 @@ class AuthService extends ChangeNotifier {
 
     if (response.statusCode == 200) {
       final user = User.fromJson(jsonDecode(response.body));
-      // Cache the user data whenever it's successfully fetched
-      await _cacheUserData(user);
+      // Return the user data; caching is handled by the caller
       return user;
     } else {
       log('Failed to fetch user info: ${response.body}');
