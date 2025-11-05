@@ -1,3 +1,4 @@
+import 'package:intl/intl.dart';
 import 'package:munshi/providers/currency_provider.dart';
 import 'package:munshi/core/service_locator.dart';
 
@@ -32,14 +33,31 @@ extension CurrencyStringExtension on String {
 
 /// Extension on double to add currency formatting functionality
 extension CurrencyDoubleExtension on double {
-  /// Helper method to format a number with optional grouping
-  String _formatAmount({required int decimalPlaces, required bool useGrouping}) {
+  /// Helper method to format a number with optional grouping using intl package
+  String _formatAmount({
+    required int decimalPlaces,
+    required bool useGrouping,
+  }) {
     if (useGrouping) {
-      // Format with comma separators for Indian number system
-      return toStringAsFixed(decimalPlaces).replaceAllMapped(
-        RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'),
-        (Match match) => '${match[1]},',
-      );
+      try {
+        final currencyProvider = locator<CurrencyProvider>();
+        final selectedCurrency = currencyProvider.selectedCurrency;
+
+        // Create NumberFormat with the currency's locale and decimal places
+        final formatter = NumberFormat.decimalPatternDigits(
+          locale: selectedCurrency.locale,
+          decimalDigits: decimalPlaces,
+        );
+
+        return formatter.format(this);
+      } catch (e) {
+        // Fallback to Indian locale formatting if provider is not available
+        final formatter = NumberFormat.decimalPatternDigits(
+          locale: 'hi_IN',
+          decimalDigits: decimalPlaces,
+        );
+        return formatter.format(this);
+      }
     } else {
       return toStringAsFixed(decimalPlaces);
     }
