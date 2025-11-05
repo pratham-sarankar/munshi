@@ -7,6 +7,8 @@ import 'package:provider/provider.dart';
 import 'package:munshi/features/transactions/providers/transaction_provider.dart';
 import 'package:munshi/features/transactions/screens/transaction_form_screen.dart';
 import 'package:munshi/core/extensions/currency_extensions.dart';
+import 'package:munshi/features/transactions/widgets/transaction_filter_bottom_sheet.dart';
+import 'package:munshi/features/transactions/models/transaction_filter.dart';
 
 class TransactionsScreen extends StatefulWidget {
   const TransactionsScreen({super.key});
@@ -40,27 +42,125 @@ class _TransactionsScreenState extends State<TransactionsScreen>
               ),
             ),
             centerTitle: false,
-            actions: [],
-          ),
-          body: GroupedTransactionList(
-            onTap: (transaction) {
-              _showTransactionDetails(transaction, colorScheme);
-            },
-            onDelete: (transaction) async {
-              await transactionProvider.deleteTransaction(transaction);
-            },
-            onEdit: (transaction) async {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (context) => TransactionFormScreen(
-                    transaction: transaction,
-                    onSubmit: (updatedTransaction) => transactionProvider
-                        .updateTransaction(updatedTransaction),
+            actions: [
+              Stack(
+                children: [
+                  IconButton(
+                    onPressed: () =>
+                        _showFilterBottomSheet(context, transactionProvider),
+                    icon: const Icon(Iconsax.filter_outline),
+                    tooltip: 'Filter transactions',
                   ),
+                  if (transactionProvider.currentFilter.hasActiveFilters)
+                    Positioned(
+                      right: 8,
+                      top: 8,
+                      child: Container(
+                        padding: const EdgeInsets.all(4),
+                        decoration: BoxDecoration(
+                          color: colorScheme.primary,
+                          shape: BoxShape.circle,
+                        ),
+                        constraints: const BoxConstraints(
+                          minWidth: 16,
+                          minHeight: 16,
+                        ),
+                        child: Text(
+                          '${transactionProvider.currentFilter.activeFilterCount}',
+                          style: TextStyle(
+                            color: colorScheme.onPrimary,
+                            fontSize: 10,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    ),
+                ],
+              ),
+              const SizedBox(width: 8),
+            ],
+          ),
+          body: Column(
+            children: [
+              // Active Filters Indicator
+              Consumer<TransactionProvider>(
+                builder: (context, provider, child) {
+                  if (!provider.currentFilter.hasActiveFilters) {
+                    return const SizedBox.shrink();
+                  }
+
+                  return Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
+                    color: colorScheme.primaryContainer.withValues(alpha: 0.3),
+                    child: Row(
+                      children: [
+                        Icon(
+                          Iconsax.filter_tick_outline,
+                          size: 16,
+                          color: colorScheme.primary,
+                        ),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: Text(
+                            _getActiveFiltersText(provider.currentFilter),
+                            style: Theme.of(context).textTheme.bodySmall
+                                ?.copyWith(
+                                  color: colorScheme.primary,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                          ),
+                        ),
+                        TextButton(
+                          onPressed: () => provider.clearFilters(),
+                          style: TextButton.styleFrom(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 12,
+                              vertical: 4,
+                            ),
+                            minimumSize: Size.zero,
+                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                          ),
+                          child: Text(
+                            'Clear',
+                            style: TextStyle(
+                              color: colorScheme.primary,
+                              fontSize: 12,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              ),
+
+              // Transaction List
+              Expanded(
+                child: GroupedTransactionList(
+                  onTap: (transaction) {
+                    _showTransactionDetails(transaction, colorScheme);
+                  },
+                  onDelete: (transaction) async {
+                    await transactionProvider.deleteTransaction(transaction);
+                  },
+                  onEdit: (transaction) async {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => TransactionFormScreen(
+                          transaction: transaction,
+                          onSubmit: (updatedTransaction) => transactionProvider
+                              .updateTransaction(updatedTransaction),
+                        ),
+                      ),
+                    );
+                  },
+                  groupedTransactions: groupedTransactions,
                 ),
-              );
-            },
-            groupedTransactions: groupedTransactions,
+              ),
+            ],
           ),
         );
       },
@@ -345,5 +445,59 @@ class _TransactionsScreenState extends State<TransactionsScreen>
         ],
       ),
     );
+  }
+
+  void _showFilterBottomSheet(
+    BuildContext context,
+    TransactionProvider provider,
+  ) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => TransactionFilterBottomSheet(
+        initialFilter: provider.currentFilter,
+        onApplyFilter: (filter) {
+          provider.applyFilter(filter);
+        },
+      ),
+    );
+  }
+
+  String _getActiveFiltersText(TransactionFilter filter) {
+    final List<String> activeFilters = [];
+
+    if (filter.hasAmountFilter) {
+      if (filter.minAmount != null && filter.maxAmount != null) {
+        activeFilters.add(
+          'Amount: ₹${filter.minAmount!.toStringAsFixed(0)} - ₹${filter.maxAmount!.toStringAsFixed(0)}',
+        );
+      } else if (filter.minAmount != null) {
+        activeFilters.add('Min: ₹${filter.minAmount!.toStringAsFixed(0)}');
+      } else if (filter.maxAmount != null) {
+        activeFilters.add('Max: ₹${filter.maxAmount!.toStringAsFixed(0)}');
+      }
+    }
+
+    if (filter.hasTypeFilter) {
+      final types = filter.types!.map((t) => t.name.toUpperCase()).join(', ');
+      activeFilters.add('Type: $types');
+    }
+
+    if (filter.hasCategoryFilter) {
+      final count = filter.categories!.length;
+      activeFilters.add('$count ${count == 1 ? 'Category' : 'Categories'}');
+    }
+
+    if (filter.hasDateFilter) {
+      if (filter.datePeriod != null) {
+        activeFilters.add('Period: ${filter.datePeriod!.displayName}');
+      } else if (filter.customStartDate != null ||
+          filter.customEndDate != null) {
+        activeFilters.add('Custom Date Range');
+      }
+    }
+
+    return activeFilters.join(' • ');
   }
 }
