@@ -3,7 +3,7 @@ import 'package:munshi/core/models/date_period.dart';
 
 class PeriodSelectorBottomSheet extends StatelessWidget {
   final PeriodType currentPeriodType;
-  final Function(PeriodType) onPeriodTypeChanged;
+  final ValueChanged<PeriodType> onPeriodTypeChanged;
 
   const PeriodSelectorBottomSheet({
     super.key,
@@ -194,7 +194,7 @@ class PeriodSelectorBottomSheet extends StatelessWidget {
   static Future<void> show(
     BuildContext context,
     PeriodType currentPeriodType,
-    Function(PeriodType) onPeriodTypeChanged,
+    ValueChanged<PeriodType> onPeriodTypeChanged,
   ) {
     return showModalBottomSheet<void>(
       context: context,
