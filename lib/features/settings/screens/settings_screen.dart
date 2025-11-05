@@ -30,8 +30,8 @@ class _SettingsScreenState extends State<SettingsScreen>
   late List<Animation<Offset>> _itemAnimations;
 
   // Settings state
-  bool _expenseAlerts = true;
-  bool _monthlySummary = false;
+  bool _dailyReport = true;
+  bool _emailTransactionExtraction = true;
 
   final List<String> _themeOptions = ['Light', 'Dark', 'Auto'];
 
@@ -404,24 +404,26 @@ Best regards,
                       icon: Iconsax.notification_outline,
                       tiles: [
                         _SettingsTile(
-                          title: 'Expense Alerts',
-                          subtitle: 'Get notified when you spend',
+                          title: 'Email Sync',
+                          subtitle: 'Auto-sync transactions from emails',
                           trailing: Switch(
-                            value: _expenseAlerts,
+                            value: _emailTransactionExtraction,
                             onChanged: (bool value) {
-                              setState(() => _expenseAlerts = value);
+                              setState(
+                                () => _emailTransactionExtraction = value,
+                              );
                               HapticFeedback.lightImpact();
                             },
                             activeThumbColor: colorScheme.primary,
                           ),
                         ),
                         _SettingsTile(
-                          title: 'Monthly Summary',
-                          subtitle: 'Monthly spending report',
+                          title: 'Daily Report',
+                          subtitle: 'Receive daily expense summary',
                           trailing: Switch(
-                            value: _monthlySummary,
+                            value: _dailyReport,
                             onChanged: (bool value) {
-                              setState(() => _monthlySummary = value);
+                              setState(() => _dailyReport = value);
                               HapticFeedback.lightImpact();
                             },
                             activeThumbColor: colorScheme.primary,
