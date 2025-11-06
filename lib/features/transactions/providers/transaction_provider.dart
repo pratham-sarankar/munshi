@@ -17,11 +17,6 @@ class TransactionProvider extends ChangeNotifier {
   /// Apply a new filter
   void applyFilter(TransactionFilter filter) {
     _currentFilter = filter;
-    if (kDebugMode) {
-      print(
-        'Applied filter with categories: ${filter.categories?.map((c) => c.name).join(', ') ?? 'none'}',
-      );
-    }
     notifyListeners();
   }
 
@@ -83,12 +78,6 @@ class TransactionProvider extends ChangeNotifier {
         if (_currentFilter.categories != null &&
             _currentFilter.categories!.isNotEmpty &&
             !_currentFilter.categories!.contains(transaction.category)) {
-          if (kDebugMode) {
-            print('Filtering out transaction: ${transaction.category.name}');
-            print(
-              'Filter categories: ${_currentFilter.categories!.map((c) => c.name).join(', ')}',
-            );
-          }
           return false;
         }
 
