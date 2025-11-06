@@ -39,10 +39,11 @@ void main() {
     });
 
     test('Average calculation should use full period for past periods', () {
-      // Get a past month (last month)
+      // Get a past month (last month) - use DateTime constructor to handle year rollover
       final now = DateTime.now();
-      final lastMonth = DateTime(now.year, now.month - 1, 15);
-      final lastMonthPeriod = DatePeriod.monthly(lastMonth);
+      // Subtract 1 month properly by going to day 1 of current month, then subtracting 1 day
+      final lastMonthDate = DateTime(now.year, now.month, 1).subtract(const Duration(days: 1));
+      final lastMonthPeriod = DatePeriod.monthly(lastMonthDate);
       
       final today = DateTime(now.year, now.month, now.day, 23, 59, 59);
       
@@ -116,8 +117,9 @@ void main() {
       final today = DateTime(now.year, now.month, now.day, 23, 59, 59);
       
       // Create a period that starts in the future (next month)
-      final futureMonth = DateTime(now.year, now.month + 1, 15);
-      final futurePeriod = DatePeriod.monthly(futureMonth);
+      // Use DateTime constructor to handle year rollover properly
+      final nextMonthDate = DateTime(now.year, now.month + 2, 1).subtract(const Duration(days: 1));
+      final futurePeriod = DatePeriod.monthly(nextMonthDate);
       
       // Calculate effective end date
       final effectiveEndDate = futurePeriod.endDate.isAfter(today) ? today : futurePeriod.endDate;
