@@ -57,6 +57,7 @@ void main() async {
           create: (_) => DashboardProvider(
             locator<DashboardDataService>(),
             locator<PeriodProvider>(),
+            locator<CurrencyProvider>(),
           ),
         ),
       ],

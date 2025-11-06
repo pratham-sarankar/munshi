@@ -9,6 +9,7 @@ import 'package:munshi/features/transactions/screens/transaction_form_screen.dar
 import 'package:munshi/core/extensions/currency_extensions.dart';
 import 'package:munshi/features/transactions/widgets/transaction_filter_bottom_sheet.dart';
 import 'package:munshi/features/transactions/models/transaction_filter.dart';
+import 'package:munshi/providers/currency_provider.dart';
 
 class TransactionsScreen extends StatefulWidget {
   const TransactionsScreen({super.key});
@@ -27,6 +28,10 @@ class _TransactionsScreenState extends State<TransactionsScreen>
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     final transactionProvider = Provider.of<TransactionProvider>(context);
+    // Watch CurrencyProvider to rebuild entire screen when currency changes.
+    // This is necessary because currency formatting occurs throughout the widget tree
+    // in transaction tiles, filter displays, and detail modals.
+    context.watch<CurrencyProvider>();
     return StreamBuilder<List<GroupedTransactions>>(
       stream: transactionProvider.watchGroupedTransactions,
       builder: (context, snapshot) {
