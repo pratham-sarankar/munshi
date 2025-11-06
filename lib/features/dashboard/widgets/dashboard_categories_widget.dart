@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:icons_plus/icons_plus.dart';
 import 'package:munshi/features/dashboard/providers/dashboard_provider.dart';
 import 'package:munshi/features/dashboard/widgets/category_tile.dart';
 import 'package:provider/provider.dart';
@@ -99,30 +100,77 @@ class _DashboardCategoriesWidgetState extends State<DashboardCategoriesWidget>
 
   Widget _buildEmptyCategoriesState(ColorScheme colorScheme) {
     return Container(
-      padding: const EdgeInsets.all(24),
-      child: Column(
-        children: [
-          Icon(
-            Icons.category_outlined,
-            size: 48,
-            color: colorScheme.onSurfaceVariant.withValues(alpha: 0.6),
-          ),
-          const SizedBox(height: 16),
-          Text(
-            'No spending data yet',
-            style: Theme.of(context).textTheme.titleMedium?.copyWith(
-              color: colorScheme.onSurfaceVariant,
+      margin: const EdgeInsets.symmetric(horizontal: 0, vertical: 15),
+      child: Material(
+        elevation: 2,
+        borderRadius: BorderRadius.circular(16),
+        shadowColor: colorScheme.shadow.withValues(alpha: 0.1),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 48),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(16),
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [
+                colorScheme.surface,
+                colorScheme.surface.withValues(alpha: 0.8),
+              ],
+            ),
+            border: Border.all(
+              color: colorScheme.outline.withValues(alpha: 0.1),
+              width: 1,
             ),
           ),
-          const SizedBox(height: 8),
-          Text(
-            'Add some transactions to see category breakdown',
-            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-              color: colorScheme.onSurfaceVariant.withValues(alpha: 0.7),
+          child: Center(
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 400),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  // Icon container with background (matching category tile style)
+                  Container(
+                    width: 72,
+                    height: 72,
+                    decoration: BoxDecoration(
+                      color: colorScheme.primaryContainer.withValues(
+                        alpha: 0.3,
+                      ),
+                      borderRadius: BorderRadius.circular(20),
+                      border: Border.all(
+                        color: colorScheme.primary.withValues(alpha: 0.2),
+                        width: 1.5,
+                      ),
+                    ),
+                    child: Icon(
+                      Iconsax.graph_outline,
+                      size: 36,
+                      color: colorScheme.primary,
+                    ),
+                  ),
+                  const SizedBox(height: 24),
+                  Text(
+                    'No spending data yet',
+                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                      fontWeight: FontWeight.w600,
+                      color: colorScheme.onSurface,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 12),
+                  Text(
+                    'Add some transactions to see your spending breakdown by category',
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      color: colorScheme.onSurfaceVariant,
+                      height: 1.5,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ],
+              ),
             ),
-            textAlign: TextAlign.center,
           ),
-        ],
+        ),
       ),
     );
   }
