@@ -191,8 +191,25 @@ class TransactionsDao extends DatabaseAccessor<AppDatabase>
     }
 
     final balance = totalIncome - totalExpense;
-    final periodDays = period.endDate.difference(period.startDate).inDays + 1;
-    final avgDaily = totalExpense / periodDays;
+
+    // Calculate days only up to today for average calculation
+    // to avoid including future dates in the denominator
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day, 23, 59, 59);
+    final effectiveEndDate = period.endDate.isAfter(today)
+        ? today
+        : period.endDate;
+
+    // Handle edge case where period starts in the future
+    // In this case, use period start date as effective end date
+    final effectiveEnd = effectiveEndDate.isBefore(period.startDate)
+        ? period.startDate
+        : effectiveEndDate;
+
+    // Calculate period days with inclusive counting
+    // (inDays returns full 24-hour periods, so we add 1 for inclusive count)
+    final periodDays = effectiveEnd.difference(period.startDate).inDays + 1;
+    final double avgDaily = periodDays > 0 ? totalExpense / periodDays : 0;
 
     return PeriodSummaryData(
       totalSpent: totalExpense,
