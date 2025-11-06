@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:icons_plus/icons_plus.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
+import '../../../providers/currency_provider.dart';
 import '../models/transaction_filter.dart';
 import '../models/transaction_type.dart';
 import '../models/transaction_category.dart';
@@ -50,6 +52,14 @@ class _TransactionFilterBottomSheetState
     if (_workingFilter.maxAmount != null) {
       _maxAmountController.text = _workingFilter.maxAmount!.toStringAsFixed(2);
     }
+
+    // Add listeners to update UI when text changes
+    _minAmountController.addListener(() {
+      setState(() {});
+    });
+    _maxAmountController.addListener(() {
+      setState(() {});
+    });
   }
 
   @override
@@ -347,6 +357,11 @@ class _TransactionFilterBottomSheetState
   }
 
   Widget _buildAmountFilterTab(ColorScheme colorScheme) {
+    final currencySymbol = context
+        .watch<CurrencyProvider>()
+        .selectedCurrency
+        .symbol;
+
     return SingleChildScrollView(
       padding: const EdgeInsets.all(24),
       child: Column(
@@ -369,7 +384,7 @@ class _TransactionFilterBottomSheetState
             decoration: InputDecoration(
               labelText: 'Minimum Amount',
               prefixIcon: const Icon(Iconsax.wallet_1_outline),
-              prefixText: '₹ ',
+              prefixText: '$currencySymbol ',
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
               ),
@@ -393,7 +408,7 @@ class _TransactionFilterBottomSheetState
             decoration: InputDecoration(
               labelText: 'Maximum Amount',
               prefixIcon: const Icon(Iconsax.wallet_1_outline),
-              prefixText: '₹ ',
+              prefixText: '$currencySymbol ',
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
               ),
