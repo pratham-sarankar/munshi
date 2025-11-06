@@ -41,10 +41,10 @@ void main() {
     });
 
     test('Average calculation should use full period for past periods', () {
-      // Get a past month (last month) - use proper date arithmetic for year rollover
+      // Get a past month (last month)
       final now = DateTime.now();
-      // Get last month by subtracting 1 month using DateTime constructor's month rollover
-      // This properly handles January -> December of previous year
+      // Dart's DateTime constructor handles month overflow (month 0 -> Dec of prev year)
+      // This matches the pattern used in DatePeriod.previous() method
       final lastMonthDate = DateTime(now.year, now.month - 1, 15);
       final lastMonthPeriod = DatePeriod.monthly(lastMonthDate);
       
@@ -120,7 +120,8 @@ void main() {
       final today = DateTime(now.year, now.month, now.day, 23, 59, 59);
       
       // Create a period that starts in the future (next month)
-      // DateTime constructor handles month rollover: month 13 becomes January of next year
+      // Dart's DateTime constructor handles month overflow (month 13 -> Jan of next year)
+      // This matches the pattern used in DatePeriod.next() method
       final nextMonthDate = DateTime(now.year, now.month + 1, 15);
       final futurePeriod = DatePeriod.monthly(nextMonthDate);
       
