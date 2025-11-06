@@ -37,7 +37,7 @@ class TransactionCategory {
   }
 
   @override
-  int get hashCode => Object.hash(name, icon, color);
+  int get hashCode => name.hashCode;
 }
 
 final List<TransactionCategory> expenseCategories = [
