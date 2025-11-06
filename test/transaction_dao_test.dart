@@ -19,7 +19,9 @@ void main() {
       final expectedDays = effectiveEndDate.difference(currentMonth.startDate).inDays + 1;
       
       // If we're in the middle of the month, expectedDays should be less than total days in month
-      if (now.day < 28) {  // Most months have at least 28 days
+      // Check that today is not the last day of the month
+      final lastDayOfMonth = DateTime(now.year, now.month + 1, 0).day;
+      if (now.day < lastDayOfMonth) {
         expect(expectedDays, lessThan(31));
         expect(expectedDays, equals(now.day));
       }
@@ -39,10 +41,11 @@ void main() {
     });
 
     test('Average calculation should use full period for past periods', () {
-      // Get a past month (last month) - use DateTime constructor to handle year rollover
+      // Get a past month (last month) - use proper date arithmetic for year rollover
       final now = DateTime.now();
-      // Subtract 1 month properly by going to day 1 of current month, then subtracting 1 day
-      final lastMonthDate = DateTime(now.year, now.month, 1).subtract(const Duration(days: 1));
+      // Get last month by subtracting 1 month using DateTime constructor's month rollover
+      // This properly handles January -> December of previous year
+      final lastMonthDate = DateTime(now.year, now.month - 1, 15);
       final lastMonthPeriod = DatePeriod.monthly(lastMonthDate);
       
       final today = DateTime(now.year, now.month, now.day, 23, 59, 59);
@@ -117,8 +120,8 @@ void main() {
       final today = DateTime(now.year, now.month, now.day, 23, 59, 59);
       
       // Create a period that starts in the future (next month)
-      // Use DateTime constructor to handle year rollover properly
-      final nextMonthDate = DateTime(now.year, now.month + 2, 1).subtract(const Duration(days: 1));
+      // DateTime constructor handles month rollover: month 13 becomes January of next year
+      final nextMonthDate = DateTime(now.year, now.month + 1, 15);
       final futurePeriod = DatePeriod.monthly(nextMonthDate);
       
       // Calculate effective end date

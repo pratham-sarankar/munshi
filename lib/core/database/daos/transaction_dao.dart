@@ -205,6 +205,8 @@ class TransactionsDao extends DatabaseAccessor<AppDatabase>
         : effectiveEndDate;
     
     final periodDays = effectiveEnd.difference(period.startDate).inDays + 1;
+    // Add 1 because inDays returns full 24-hour periods, but we want inclusive day count
+    // (e.g., Jan 1 to Jan 1 should be 1 day, not 0)
     final avgDaily = periodDays > 0 ? totalExpense / periodDays : 0;
 
     return PeriodSummaryData(
