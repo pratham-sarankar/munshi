@@ -197,7 +197,14 @@ class TransactionsDao extends DatabaseAccessor<AppDatabase>
     final now = DateTime.now();
     final today = DateTime(now.year, now.month, now.day, 23, 59, 59);
     final effectiveEndDate = period.endDate.isAfter(today) ? today : period.endDate;
-    final periodDays = effectiveEndDate.difference(period.startDate).inDays + 1;
+    
+    // Handle edge case where period starts in the future
+    // In this case, use period start date as effective end date
+    final effectiveEnd = effectiveEndDate.isBefore(period.startDate) 
+        ? period.startDate 
+        : effectiveEndDate;
+    
+    final periodDays = effectiveEnd.difference(period.startDate).inDays + 1;
     final avgDaily = periodDays > 0 ? totalExpense / periodDays : 0;
 
     return PeriodSummaryData(

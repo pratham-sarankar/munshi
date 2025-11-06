@@ -110,5 +110,32 @@ void main() {
       final avgDaily = periodDays > 0 ? totalExpense / periodDays : 0;
       expect(avgDaily, equals(0.0));
     });
+
+    test('Average calculation should handle future periods (period starts after today)', () {
+      final now = DateTime.now();
+      final today = DateTime(now.year, now.month, now.day, 23, 59, 59);
+      
+      // Create a period that starts in the future (next month)
+      final futureMonth = DateTime(now.year, now.month + 1, 15);
+      final futurePeriod = DatePeriod.monthly(futureMonth);
+      
+      // Calculate effective end date
+      final effectiveEndDate = futurePeriod.endDate.isAfter(today) ? today : futurePeriod.endDate;
+      
+      // Handle edge case where period starts in the future
+      final effectiveEnd = effectiveEndDate.isBefore(futurePeriod.startDate)
+          ? futurePeriod.startDate
+          : effectiveEndDate;
+      
+      final periodDays = effectiveEnd.difference(futurePeriod.startDate).inDays + 1;
+      
+      // For future periods, should use at least 1 day (the start date)
+      expect(periodDays, greaterThanOrEqualTo(1));
+      
+      // Test average calculation doesn't crash
+      const totalExpense = 100.0;
+      final avgDaily = periodDays > 0 ? totalExpense / periodDays : 0;
+      expect(avgDaily, greaterThanOrEqualTo(0));
+    });
   });
 }
