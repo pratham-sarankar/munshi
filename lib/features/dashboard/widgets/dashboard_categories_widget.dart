@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:icons_plus/icons_plus.dart';
 import 'package:munshi/features/dashboard/providers/dashboard_provider.dart';
 import 'package:munshi/features/dashboard/widgets/category_tile.dart';
 import 'package:provider/provider.dart';
@@ -99,7 +100,7 @@ class _DashboardCategoriesWidgetState extends State<DashboardCategoriesWidget>
 
   Widget _buildEmptyCategoriesState(ColorScheme colorScheme) {
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 0, vertical: 8),
+      margin: const EdgeInsets.symmetric(horizontal: 0, vertical: 15),
       child: Material(
         elevation: 2,
         borderRadius: BorderRadius.circular(16),
@@ -132,7 +133,9 @@ class _DashboardCategoriesWidgetState extends State<DashboardCategoriesWidget>
                     width: 72,
                     height: 72,
                     decoration: BoxDecoration(
-                      color: colorScheme.primaryContainer.withValues(alpha: 0.3),
+                      color: colorScheme.primaryContainer.withValues(
+                        alpha: 0.3,
+                      ),
                       borderRadius: BorderRadius.circular(20),
                       border: Border.all(
                         color: colorScheme.primary.withValues(alpha: 0.2),
@@ -140,7 +143,7 @@ class _DashboardCategoriesWidgetState extends State<DashboardCategoriesWidget>
                       ),
                     ),
                     child: Icon(
-                      Icons.category_outlined,
+                      Iconsax.graph_outline,
                       size: 36,
                       color: colorScheme.primary,
                     ),
