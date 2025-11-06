@@ -61,9 +61,14 @@ class _TransactionFormScreenState extends State<TransactionFormScreen>
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
+      floatingActionButton: FloatingActionButton.extended(
         onPressed: _submitForm,
-        child: const Icon(Iconsax.add_outline),
+        label: Text(widget.transaction != null ? 'Update' : 'Save'),
+        icon: Icon(
+          widget.transaction != null
+              ? Iconsax.tick_circle_bold
+              : Iconsax.save_2_bold,
+        ),
       ),
       body: FormBuilder(
         key: _formKey,
