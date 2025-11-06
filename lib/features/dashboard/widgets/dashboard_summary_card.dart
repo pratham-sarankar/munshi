@@ -300,6 +300,8 @@ class _DashboardSummaryCardState extends State<DashboardSummaryCard>
         return 'Weekly Overview';
       case PeriodType.monthly:
         return 'Monthly Overview';
+      case PeriodType.yearly:
+        return 'Yearly Overview';
     }
   }
 
@@ -311,6 +313,8 @@ class _DashboardSummaryCardState extends State<DashboardSummaryCard>
         return 'Total spent this week';
       case PeriodType.monthly:
         return 'Total spent this month';
+      case PeriodType.yearly:
+        return 'Total spent this year';
     }
   }
 

@@ -129,6 +129,7 @@ class TransactionFilter {
   static DatePeriod get thisMonthPeriod => DatePeriod.monthly(DateTime.now());
   static DatePeriod get lastMonthPeriod =>
       DatePeriod.monthly(DateTime.now()).previous();
+  static DatePeriod get thisYearPeriod => DatePeriod.yearly(DateTime.now());
 
   /// Create filter from predefined timeframe using DatePeriod
   factory TransactionFilter.fromTimeframe(String timeframe) {
@@ -141,6 +142,8 @@ class TransactionFilter {
         return TransactionFilter.withDatePeriod(thisMonthPeriod);
       case 'Last Month':
         return TransactionFilter.withDatePeriod(lastMonthPeriod);
+      case 'This Year':
+        return TransactionFilter.withDatePeriod(thisYearPeriod);
       default:
         return TransactionFilter.empty();
     }

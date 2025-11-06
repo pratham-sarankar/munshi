@@ -1,4 +1,4 @@
-enum PeriodType { daily, weekly, monthly }
+enum PeriodType { daily, weekly, monthly, yearly }
 
 extension PeriodTypeExtension on PeriodType {
   String get displayName {
@@ -9,6 +9,8 @@ extension PeriodTypeExtension on PeriodType {
         return 'Weekly';
       case PeriodType.monthly:
         return 'Monthly';
+      case PeriodType.yearly:
+        return 'Yearly';
     }
   }
 }

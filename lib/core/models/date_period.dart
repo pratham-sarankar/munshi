@@ -22,6 +22,8 @@ class DatePeriod {
         return DatePeriod.weekly(date);
       case PeriodType.monthly:
         return DatePeriod.monthly(date);
+      case PeriodType.yearly:
+        return DatePeriod.yearly(date);
     }
   }
 
@@ -75,6 +77,19 @@ class DatePeriod {
     );
   }
 
+  factory DatePeriod.yearly(DateTime date) {
+    final startDate = DateTime(date.year, 1, 1);
+    final endDate = DateTime(date.year, 12, 31, 23, 59, 59);
+    final displayName = date.year.toString();
+
+    return DatePeriod(
+      type: PeriodType.yearly,
+      startDate: startDate,
+      endDate: endDate,
+      displayName: displayName,
+    );
+  }
+
   // Navigation methods
   DatePeriod next() {
     switch (type) {
@@ -87,6 +102,9 @@ class DatePeriod {
       case PeriodType.daily:
         final nextDay = startDate.add(const Duration(days: 1));
         return DatePeriod.daily(nextDay);
+      case PeriodType.yearly:
+        final nextYear = DateTime(startDate.year + 1);
+        return DatePeriod.yearly(nextYear);
     }
   }
 
@@ -101,6 +119,9 @@ class DatePeriod {
       case PeriodType.daily:
         final prevDay = startDate.subtract(const Duration(days: 1));
         return DatePeriod.daily(prevDay);
+      case PeriodType.yearly:
+        final prevYear = DateTime(startDate.year - 1);
+        return DatePeriod.yearly(prevYear);
     }
   }
 

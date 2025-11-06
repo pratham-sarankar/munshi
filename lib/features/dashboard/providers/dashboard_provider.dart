@@ -118,6 +118,9 @@ class DashboardProvider extends ChangeNotifier {
       case PeriodType.monthly:
         newPeriod = DatePeriod.monthly(now);
         break;
+      case PeriodType.yearly:
+        newPeriod = DatePeriod.yearly(now);
+        break;
     }
 
     await setPeriod(newPeriod);
