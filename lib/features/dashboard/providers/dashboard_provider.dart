@@ -48,6 +48,13 @@ class DashboardProvider extends ChangeNotifier {
   int get transactionCount => _summaryData?.transactionCount ?? 0;
   double get biggestSpend => _summaryData?.biggestSpend ?? 0;
 
+  /// Check if the selected period is the current period (today/this week/this month/this year)
+  bool get isCurrentPeriod {
+    final now = DateTime.now();
+    final currentPeriod = DatePeriod.fromPeriodType(_selectedPeriod.type, now);
+    return _selectedPeriod == currentPeriod;
+  }
+
   // Methods
   Future<void> _loadDashboardData() async {
     _isLoading = true;
