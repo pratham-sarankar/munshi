@@ -17,15 +17,6 @@ class MainScreen extends StatefulWidget {
 class _MainScreenState extends State<MainScreen> {
   int _selectedIndex = 0;
 
-  // Cache screens to avoid recreation on every build
-  late final List<Widget> _screens = [
-    const HomeScreen(),
-    const TransactionsScreen(),
-    const SizedBox(),
-    const Scaffold(),
-    const SettingsScreen(),
-  ];
-
   // Cache navigation destinations to avoid recreation
   late final List<Widget> _destinations = [
     const NavigationDestination(
@@ -50,6 +41,15 @@ class _MainScreenState extends State<MainScreen> {
       label: "Settings",
     ),
   ];
+
+  // Build screens dynamically to reflect currency changes
+  List<Widget> get _screens => [
+        const HomeScreen(),
+        const TransactionsScreen(),
+        const SizedBox(),
+        const Scaffold(),
+        const SettingsScreen(),
+      ];
 
   @override
   Widget build(BuildContext context) {

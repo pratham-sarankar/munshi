@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:munshi/core/models/date_period.dart';
 import 'package:munshi/core/models/period_type.dart';
 import 'package:munshi/providers/period_provider.dart';
+import 'package:munshi/providers/currency_provider.dart';
 import 'package:munshi/features/dashboard/services/dashboard_data_service.dart';
 import 'package:munshi/features/transactions/models/transaction_category.dart';
 import 'package:munshi/features/dashboard/models/category_spending_data.dart';
@@ -17,15 +18,34 @@ class DashboardProvider extends ChangeNotifier {
   String? _error;
   final DashboardDataService _dashboardDataService;
   final PeriodProvider _periodProvider;
+  final CurrencyProvider _currencyProvider;
 
   // Constructor
-  DashboardProvider(this._dashboardDataService, this._periodProvider) {
+  DashboardProvider(
+    this._dashboardDataService,
+    this._periodProvider,
+    this._currencyProvider,
+  ) {
     // Initialize with user's preferred default period
     _selectedPeriod = DatePeriod.fromPeriodType(
       _periodProvider.defaultPeriod,
       DateTime.now(),
     );
     _loadDashboardData();
+    
+    // Listen to currency changes and notify listeners to update UI
+    _currencyProvider.addListener(_onCurrencyChanged);
+  }
+  
+  void _onCurrencyChanged() {
+    // Notify listeners so widgets can rebuild with new currency formatting
+    notifyListeners();
+  }
+  
+  @override
+  void dispose() {
+    _currencyProvider.removeListener(_onCurrencyChanged);
+    super.dispose();
   }
 
   // Getters
