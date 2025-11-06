@@ -61,6 +61,10 @@ class _TransactionFormScreenState extends State<TransactionFormScreen>
           ],
         ),
       ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: _submitForm,
+        child: const Icon(Iconsax.add_outline),
+      ),
       body: FormBuilder(
         key: _formKey,
         child: SingleChildScrollView(
@@ -156,22 +160,7 @@ class _TransactionFormScreenState extends State<TransactionFormScreen>
                     checkNullOrEmpty: false,
                   ),
                 ),
-                const SizedBox(height: 20),
-                FilledButton(
-                  onPressed: _submitForm,
-                  style: ButtonStyle(
-                    minimumSize: WidgetStatePropertyAll(
-                      Size(double.infinity, 50),
-                    ),
-                    shape: WidgetStatePropertyAll(
-                      RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(15),
-                      ),
-                    ),
-                  ),
-                  child: Text(widget.transaction != null ? "Update" : "Submit"),
-                ),
-                const SizedBox(height: 20),
+                const SizedBox(height: 80), // Extra space to account for FAB
               ],
             ),
           ),
