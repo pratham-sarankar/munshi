@@ -78,10 +78,14 @@ class HomeScreen extends StatelessWidget {
                       ),
                     ),
                     IconButton(
-                      onPressed: () => dashboardProvider.changePeriod(1),
+                      onPressed: dashboardProvider.isCurrentPeriod
+                          ? null
+                          : () => dashboardProvider.changePeriod(1),
                       icon: Icon(
                         Icons.chevron_right_rounded,
-                        color: colorScheme.onSurfaceVariant,
+                        color: dashboardProvider.isCurrentPeriod
+                            ? colorScheme.onSurfaceVariant.withValues(alpha: 0.3)
+                            : colorScheme.onSurfaceVariant,
                       ),
                       iconSize: 20,
                       visualDensity: VisualDensity.compact,
