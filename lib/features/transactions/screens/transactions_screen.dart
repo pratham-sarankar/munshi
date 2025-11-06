@@ -28,7 +28,9 @@ class _TransactionsScreenState extends State<TransactionsScreen>
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     final transactionProvider = Provider.of<TransactionProvider>(context);
-    // Listen to CurrencyProvider to rebuild when currency changes
+    // Watch CurrencyProvider to rebuild entire screen when currency changes.
+    // This is necessary because currency formatting occurs throughout the widget tree
+    // in transaction tiles, filter displays, and detail modals.
     context.watch<CurrencyProvider>();
     return StreamBuilder<List<GroupedTransactions>>(
       stream: transactionProvider.watchGroupedTransactions,

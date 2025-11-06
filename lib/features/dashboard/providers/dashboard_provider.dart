@@ -34,6 +34,7 @@ class DashboardProvider extends ChangeNotifier {
     _loadDashboardData();
     
     // Listen to currency changes and notify listeners to update UI
+    // This ensures all formatted currency values update when currency changes
     _currencyProvider.addListener(_onCurrencyChanged);
   }
   
