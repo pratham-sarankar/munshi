@@ -17,4 +17,12 @@ class FlutterOcrIOS extends FlutterOcrPlatform {
   Future<String?> getPlatformName() {
     return methodChannel.invokeMethod<String>('getPlatformName');
   }
+
+  @override
+  Future<String?> recognizeTextFromFile(String imagePath) {
+    return methodChannel.invokeMethod<String>(
+      'recognizeTextFromFile',
+      {'imagePath': imagePath},
+    );
+  }
 }
