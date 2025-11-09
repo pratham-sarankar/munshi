@@ -1,0 +1,27 @@
+version: 2
+enable-beta-ecosystems: true
+updates:
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "pub"
+    directory: "/flutter_ocr"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "pub"
+    directory: "/flutter_ocr/example"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "pub"
+    directory: "/flutter_ocr_platform_interface"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "pub"
+    directory: "/flutter_ocr_android"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "pub"
+    directory: "/flutter_ocr_ios"
+    schedule:
+      interval: "daily"
