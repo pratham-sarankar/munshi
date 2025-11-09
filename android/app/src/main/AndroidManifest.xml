@@ -1,5 +1,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Required for internet access -->
     <uses-permission android:name="android.permission.INTERNET" />
+    <!-- Required for adding transactions via receipts -->
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <application android:label="Munshi" android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity android:name=".MainActivity" android:exported="true"
