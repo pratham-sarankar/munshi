@@ -14,7 +14,7 @@ class MethodChannelFlutterOcr extends FlutterOcrPlatform {
   }
 
   @override
-  Future<String?> recognizeTextFromFile(String imagePath) async {
+  Future<String?> recognizeTextFromImage(String imagePath) async {
     final result = await methodChannel.invokeMethod<String>(
       'recognizeText',
       {'imagePath': imagePath},

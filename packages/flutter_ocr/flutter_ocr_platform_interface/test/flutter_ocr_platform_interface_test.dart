@@ -8,8 +8,8 @@ class FlutterOcrMock extends FlutterOcrPlatform {
   Future<String?> getPlatformName() async => mockPlatformName;
 
   @override
-  Future<String> recognizeTextFromFile(String filePath) async {
-    return 'Recognized text from $filePath';
+  Future<String> recognizeTextFromImage(String imagePath) async {
+    return 'Recognized text from $imagePath';
   }
 }
 

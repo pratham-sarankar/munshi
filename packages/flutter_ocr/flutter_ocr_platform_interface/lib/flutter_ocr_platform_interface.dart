@@ -37,5 +37,5 @@ abstract class FlutterOcrPlatform extends PlatformInterface {
   /// Recognize text from an image file at the given [imagePath].
   /// Returns the recognized text as a [String].
   /// Throws an [Exception] if recognition fails.
-  Future<String?> recognizeTextFromFile(String imagePath);
+  Future<String?> recognizeTextFromImage(String imagePath);
 }

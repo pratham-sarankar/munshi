@@ -19,9 +19,9 @@ class FlutterOcrAndroid extends FlutterOcrPlatform {
   }
 
   @override
-  Future<String?> recognizeTextFromFile(String imagePath) {
+  Future<String?> recognizeTextFromImage(String imagePath) {
     return methodChannel.invokeMethod<String>(
-      'recognizeTextFromFile',
+      'recognizeTextFromImage',
       {'imagePath': imagePath},
     );
   }
