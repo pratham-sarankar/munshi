@@ -1,3 +1,7 @@
+import 'dart:async';
+import 'dart:developer';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:icons_plus/icons_plus.dart';
 import 'package:munshi/features/dashboard/screens/home_screen.dart';
@@ -6,6 +10,7 @@ import 'package:munshi/features/transactions/providers/transaction_provider.dart
 import 'package:munshi/features/transactions/screens/transaction_form_screen.dart';
 import 'package:munshi/features/transactions/screens/transactions_screen.dart';
 import 'package:provider/provider.dart';
+import 'package:share_handler/share_handler.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -44,12 +49,41 @@ class _MainScreenState extends State<MainScreen> {
 
   // Build screens dynamically to reflect currency changes
   List<Widget> get _screens => [
-        const HomeScreen(),
-        const TransactionsScreen(),
-        const SizedBox(),
-        const Scaffold(),
-        const SettingsScreen(),
-      ];
+    const HomeScreen(),
+    const TransactionsScreen(),
+    const SizedBox(),
+    const Scaffold(),
+    const SettingsScreen(),
+  ];
+
+  @override
+  void initState() {
+    super.initState();
+    initPlatformState();
+  }
+
+  SharedMedia? media;
+
+  // Platform messages are asynchronous, so we initialize in an async method.
+  Future<void> initPlatformState() async {
+    final handler = ShareHandlerPlatform.instance;
+    media = await handler.getInitialSharedMedia();
+    log("Initially shared media: ${media?.imageFilePath}");
+
+    handler.sharedMediaStream.listen((SharedMedia media) {
+      log("Received shared media: ${media.attachments?.first?.path}");
+      if (mounted) {
+        setState(() {
+          this.media = media;
+        });
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
