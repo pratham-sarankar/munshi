@@ -1,0 +1,32 @@
+name: flutter_ocr
+description: Reads text from image.
+version: 0.1.0+1
+publish_to: none
+
+environment:
+  sdk: ^3.9.0
+
+flutter:
+  plugin:
+    platforms:
+      android:
+        default_package: flutter_ocr_android
+      ios:
+        default_package: flutter_ocr_ios
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_ocr_android:
+    path: ../flutter_ocr_android
+  flutter_ocr_ios:
+    path: ../flutter_ocr_ios
+  flutter_ocr_platform_interface:
+    path: ../flutter_ocr_platform_interface
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  mocktail: ^1.0.4
+  plugin_platform_interface: ^2.1.8
+  very_good_analysis: ^10.0.0
