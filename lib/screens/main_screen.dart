@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -67,8 +68,10 @@ class _MainScreenState extends State<MainScreen> {
   Future<void> initPlatformState() async {
     final handler = ShareHandlerPlatform.instance;
     media = await handler.getInitialSharedMedia();
+    log("Initially shared media: ${media?.imageFilePath}");
 
     handler.sharedMediaStream.listen((SharedMedia media) {
+      log("Received shared media: ${media.attachments?.first?.path}");
       if (mounted) {
         setState(() {
           this.media = media;
