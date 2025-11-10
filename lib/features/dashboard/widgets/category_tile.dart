@@ -12,7 +12,7 @@ class CategoryTile extends StatefulWidget {
     this.animationDelay = const Duration(milliseconds: 0),
   });
 
-  final TransactionCategory category;
+  final TransactionCategory? category;
   final VoidCallback onTap;
   final double spendingAmount;
   final int transactionCount;
@@ -127,16 +127,18 @@ class _CategoryTileState extends State<CategoryTile>
                         width: 48,
                         height: 48,
                         decoration: BoxDecoration(
-                          color: widget.category.color.withValues(alpha: 0.1),
+                          color: (widget.category?.color ?? Colors.grey)
+                              .withValues(alpha: 0.1),
                           borderRadius: BorderRadius.circular(12),
                           border: Border.all(
-                            color: widget.category.color.withValues(alpha: 0.3),
+                            color: (widget.category?.color ?? Colors.grey)
+                                .withValues(alpha: 0.3),
                             width: 1,
                           ),
                         ),
                         child: Icon(
-                          widget.category.icon,
-                          color: widget.category.color,
+                          widget.category?.icon ?? Icons.help_outline,
+                          color: widget.category?.color ?? Colors.grey,
                           size: 24,
                         ),
                       ),
@@ -148,7 +150,7 @@ class _CategoryTileState extends State<CategoryTile>
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             Text(
-                              widget.category.name,
+                              widget.category?.name ?? 'Uncategorized',
                               style: theme.textTheme.titleMedium?.copyWith(
                                 fontWeight: FontWeight.w600,
                                 color: colorScheme.onSurface,

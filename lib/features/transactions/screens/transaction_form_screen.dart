@@ -6,6 +6,7 @@ import 'package:icons_plus/icons_plus.dart';
 import 'package:intl/intl.dart';
 import 'package:munshi/core/database/app_database.dart';
 import 'package:munshi/features/transactions/models/transaction_type.dart';
+import 'package:munshi/features/transactions/models/transaction_with_category.dart';
 import 'package:munshi/features/transactions/widgets/form_builder_category_chips.dart';
 
 class TransactionFormScreen extends StatefulWidget {
@@ -14,7 +15,7 @@ class TransactionFormScreen extends StatefulWidget {
     required this.onSubmit,
     this.transaction,
   });
-  final Transaction? transaction;
+  final TransactionWithCategory? transaction;
   final Function(drift.Insertable<Transaction> transaction) onSubmit;
   @override
   State<TransactionFormScreen> createState() => _TransactionFormScreenState();
@@ -181,7 +182,7 @@ class _TransactionFormScreenState extends State<TransactionFormScreen>
           ? TransactionType.expense
           : TransactionType.income;
       final amount = double.parse(formData['amount']);
-      final category = type == TransactionType.expense
+      final TransactionCategory? category = type == TransactionType.expense
           ? formData['expense_category']
           : formData['income_category'];
       final datetime = formData['datetime'] as DateTime;
@@ -193,14 +194,18 @@ class _TransactionFormScreenState extends State<TransactionFormScreen>
                 widget.transaction!.id,
               ), // Keep existing ID for updates
               amount: drift.Value(amount),
-              category: drift.Value(category),
+              categoryId: category != null
+                  ? drift.Value(category.id)
+                  : const drift.Value.absent(),
               type: drift.Value(type),
               date: drift.Value(datetime),
               note: drift.Value(description),
             )
           : TransactionsCompanion(
               amount: drift.Value(amount),
-              category: drift.Value(category),
+              categoryId: category != null
+                  ? drift.Value(category.id)
+                  : const drift.Value.absent(),
               type: drift.Value(type),
               date: drift.Value(datetime),
               note: drift.Value(description),

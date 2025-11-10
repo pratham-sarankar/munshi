@@ -13,7 +13,7 @@ class DashboardProvider extends ChangeNotifier {
   // Private fields
   late DatePeriod _selectedPeriod;
   PeriodSummaryData? _summaryData;
-  Map<TransactionCategory, CategorySpendingData>? _categorySpending;
+  Map<TransactionCategory?, CategorySpendingData>? _categorySpending;
   bool _isLoading = false;
   String? _error;
   final DashboardDataService _dashboardDataService;
@@ -53,7 +53,7 @@ class DashboardProvider extends ChangeNotifier {
   DatePeriod get selectedPeriod => _selectedPeriod;
   PeriodType get currentPeriodType => _selectedPeriod.type;
   PeriodSummaryData? get summaryData => _summaryData;
-  Map<TransactionCategory, CategorySpendingData>? get categorySpending =>
+  Map<TransactionCategory?, CategorySpendingData>? get categorySpending =>
       _categorySpending;
   bool get isLoading => _isLoading;
   String? get error => _error;
@@ -94,7 +94,7 @@ class DashboardProvider extends ChangeNotifier {
 
       _summaryData = results[0] as PeriodSummaryData;
       _categorySpending =
-          results[1] as Map<TransactionCategory, CategorySpendingData>;
+          results[1] as Map<TransactionCategory?, CategorySpendingData>;
       _error = null;
     } catch (e) {
       _error = e.toString();
@@ -168,17 +168,17 @@ class DashboardProvider extends ChangeNotifier {
   }
 
   /// Get spending amount for a specific category
-  double getCategorySpending(TransactionCategory category) {
+  double getCategorySpending(TransactionCategory? category) {
     return _categorySpending?[category]?.totalAmount ?? 0.0;
   }
 
   /// Get transaction count for a specific category
-  int getCategoryTransactionCount(TransactionCategory category) {
+  int getCategoryTransactionCount(TransactionCategory? category) {
     return _categorySpending?[category]?.transactionCount ?? 0;
   }
 
   /// Get CategorySpendingData for a specific category
-  CategorySpendingData? getCategorySpendingData(TransactionCategory category) {
+  CategorySpendingData? getCategorySpendingData(TransactionCategory? category) {
     return _categorySpending?[category];
   }
 
@@ -191,7 +191,7 @@ class DashboardProvider extends ChangeNotifier {
   String get formattedTransactionCount => transactionCount.toString();
 
   /// Get formatted category spending
-  String getFormattedCategorySpending(TransactionCategory category) {
+  String getFormattedCategorySpending(TransactionCategory? category) {
     return formatCurrency(getCategorySpending(category));
   }
 }

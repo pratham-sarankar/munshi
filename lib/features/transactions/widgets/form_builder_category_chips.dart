@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:munshi/core/database/app_database.dart';
 import 'package:munshi/features/categories/providers/category_provider.dart';
 import 'package:munshi/features/transactions/models/transaction_type.dart';
@@ -30,9 +29,7 @@ class FormBuilderCategoryChips extends StatelessWidget {
             border: InputBorder.none,
             contentPadding: EdgeInsets.zero,
           ),
-          validator: FormBuilderValidators.required(
-            errorText: 'Please select a category',
-          ),
+          validator: null, // Category is now optional: transactions can exist without categories because the foreign key relationship allows null categoryId values (e.g., categories can be deleted while preserving transactions).
           options:
               (type == TransactionType.expense
                       ? categoryProvider.expenseCategories

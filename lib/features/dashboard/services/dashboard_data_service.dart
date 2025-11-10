@@ -47,7 +47,7 @@ class DashboardDataService {
   }
 
   /// Get spending breakdown by category with transaction count for the period
-  Future<Map<TransactionCategory, CategorySpendingData>>
+  Future<Map<TransactionCategory?, CategorySpendingData>>
   getSpendingByCategoryWithCount(DatePeriod period) async {
     return await _transactionsDao.getSpendingByCategoryWithCount(period);
   }

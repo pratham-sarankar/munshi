@@ -1,11 +1,12 @@
 import 'package:drift/drift.dart';
 import 'package:munshi/core/database/app_database.dart';
 import 'package:munshi/core/database/tables/transaction_categories.dart';
+import 'package:munshi/core/database/tables/transactions.dart';
 import 'package:munshi/features/transactions/models/transaction_type.dart';
 
 part 'category_dao.g.dart';
 
-@DriftAccessor(tables: [TransactionCategories])
+@DriftAccessor(tables: [TransactionCategories, Transactions])
 class CategoriesDao extends DatabaseAccessor<AppDatabase>
     with _$CategoriesDaoMixin {
   CategoriesDao(super.db);
@@ -40,9 +41,29 @@ class CategoriesDao extends DatabaseAccessor<AppDatabase>
   Future<bool> updateCategory(TransactionCategory category) =>
       update(transactionCategories).replace(category);
 
-  // Delete category
+  // Delete category (will cascade delete all transactions with this category due to foreign key constraint)
   Future<int> deleteCategory(int id) =>
       (delete(transactionCategories)..where((tbl) => tbl.id.equals(id))).go();
+
+  // Check if category has transactions
+  Future<bool> categoryHasTransactions(int categoryId) async {
+    final count =
+        await (selectOnly(transactions)
+              ..addColumns([transactions.id.count()])
+              ..where(transactions.categoryId.equals(categoryId)))
+            .getSingle();
+    return count.read(transactions.id.count())! > 0;
+  }
+
+  // Get transaction count for category
+  Future<int> getTransactionCountForCategory(int categoryId) async {
+    final count =
+        await (selectOnly(transactions)
+              ..addColumns([transactions.id.count()])
+              ..where(transactions.categoryId.equals(categoryId)))
+            .getSingle();
+    return count.read(transactions.id.count())!;
+  }
 
   // Check if category name exists
   Future<bool> categoryNameExists(

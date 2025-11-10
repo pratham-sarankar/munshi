@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:icons_plus/icons_plus.dart';
-import 'package:munshi/core/database/app_database.dart';
 import 'package:munshi/features/transactions/models/grouped_transactions.dart';
+import 'package:munshi/features/transactions/models/transaction_with_category.dart';
 import 'package:munshi/features/transactions/widgets/grouped_transaction_list.dart';
 import 'package:provider/provider.dart';
 import 'package:munshi/features/transactions/providers/transaction_provider.dart';
@@ -173,7 +173,7 @@ class _TransactionsScreenState extends State<TransactionsScreen>
   }
 
   void _showTransactionDetails(
-    Transaction transaction,
+    TransactionWithCategory transaction,
     ColorScheme colorScheme,
   ) {
     showModalBottomSheet(
@@ -221,20 +221,20 @@ class _TransactionsScreenState extends State<TransactionsScreen>
                           Container(
                             padding: const EdgeInsets.all(18),
                             decoration: BoxDecoration(
-                              color: transaction.category.color.withValues(
+                              color: transaction.categoryColor.withValues(
                                 alpha: 0.12,
                               ),
                               borderRadius: BorderRadius.circular(20),
                               border: Border.all(
-                                color: transaction.category.color.withValues(
+                                color: transaction.categoryColor.withValues(
                                   alpha: 0.2,
                                 ),
                                 width: 1,
                               ),
                             ),
                             child: Icon(
-                              transaction.category.icon,
-                              color: transaction.category.color,
+                              transaction.categoryIcon,
+                              color: transaction.categoryColor,
                               size: 36,
                             ),
                           ),
@@ -290,7 +290,7 @@ class _TransactionsScreenState extends State<TransactionsScreen>
                             const SizedBox(height: 20),
                             _buildModernDetailRow(
                               'Category',
-                              transaction.category.name,
+                              transaction.categoryName,
                               Icons.category,
                               colorScheme,
                             ),

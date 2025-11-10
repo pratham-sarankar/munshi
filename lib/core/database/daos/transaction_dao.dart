@@ -1,27 +1,42 @@
 import 'package:drift/drift.dart';
-import 'package:munshi/core/database/converters/transaction_category_converter.dart';
 import 'package:munshi/core/models/date_period.dart';
 import 'package:munshi/features/dashboard/models/category_spending_data.dart';
 import 'package:munshi/features/dashboard/services/dashboard_data_service.dart';
 import 'package:munshi/features/transactions/models/grouped_transactions.dart';
 import 'package:munshi/features/transactions/models/transaction_type.dart';
+import 'package:munshi/features/transactions/models/transaction_with_category.dart';
 import '../app_database.dart';
 import '../converters/transaction_type_converter.dart';
 import '../tables/transactions.dart';
+import '../tables/transaction_categories.dart';
 
 part 'transaction_dao.g.dart';
 
-@DriftAccessor(tables: [Transactions])
+@DriftAccessor(tables: [Transactions, TransactionCategories])
 class TransactionsDao extends DatabaseAccessor<AppDatabase>
     with _$TransactionsDaoMixin {
   TransactionsDao(super.db);
 
   Future<List<Transaction>> getAllTransactions() => select(transactions).get();
 
-  Stream<List<Transaction>> watchAllTransactions() {
-    final query = select(transactions)
-      ..orderBy([(t) => OrderingTerm.desc(t.date)]);
-    return query.watch();
+  Stream<List<TransactionWithCategory>> watchAllTransactions() {
+    final query = select(transactions).join([
+      leftOuterJoin(
+        transactionCategories,
+        transactions.categoryId.equalsExp(transactionCategories.id),
+      ),
+    ])..orderBy([OrderingTerm.desc(transactions.date)]);
+
+    return query.watch().map((rows) {
+      return rows.map((row) {
+        final transaction = row.readTable(transactions);
+        final category = row.readTableOrNull(transactionCategories);
+        return TransactionWithCategory(
+          transaction: transaction,
+          category: category,
+        );
+      }).toList();
+    });
   }
 
   Future<int> insertTransaction(Insertable<Transaction> transaction) =>
@@ -33,6 +48,27 @@ class TransactionsDao extends DatabaseAccessor<AppDatabase>
   Future<int> deleteTransaction(Insertable<Transaction> transaction) =>
       delete(transactions).delete(transaction);
 
+  /// Get all transactions with their category information
+  Future<List<TransactionWithCategory>>
+  getAllTransactionsWithCategories() async {
+    final query = select(transactions).join([
+      leftOuterJoin(
+        transactionCategories,
+        transactions.categoryId.equalsExp(transactionCategories.id),
+      ),
+    ])..orderBy([OrderingTerm.desc(transactions.date)]);
+
+    final result = await query.get();
+    return result.map((row) {
+      final transaction = row.readTable(transactions);
+      final category = row.readTableOrNull(transactionCategories);
+      return TransactionWithCategory(
+        transaction: transaction,
+        category: category,
+      );
+    }).toList();
+  }
+
   Future<List<Transaction>> getTransactionsByType(TransactionType type) {
     return (select(transactions)..where(
           (tbl) =>
@@ -41,44 +77,33 @@ class TransactionsDao extends DatabaseAccessor<AppDatabase>
         .get();
   }
 
-  /// Get transactions grouped by date using a single query and grouping in Dart
-  Future<List<GroupedTransactions>> getTransactionsGroupedByDate({
-    DateTime? startDate,
-    DateTime? endDate,
-  }) async {
-    final query = select(transactions)
-      ..orderBy([(t) => OrderingTerm.desc(t.date)]);
+  /// Get transactions with categories by type
+  Future<List<TransactionWithCategory>> getTransactionsWithCategoriesByType(
+    TransactionType type,
+  ) async {
+    final query =
+        select(transactions).join([
+            leftOuterJoin(
+              transactionCategories,
+              transactions.categoryId.equalsExp(transactionCategories.id),
+            ),
+          ])
+          ..where(
+            transactions.type.equals(
+              const TransactionTypeConverter().toSql(type),
+            ),
+          )
+          ..orderBy([OrderingTerm.desc(transactions.date)]);
 
-    if (startDate != null && endDate != null) {
-      query.where((t) => t.date.isBetweenValues(startDate, endDate));
-    } else if (startDate != null) {
-      query.where((t) => t.date.isBiggerOrEqualValue(startDate));
-    } else if (endDate != null) {
-      query.where((t) => t.date.isSmallerOrEqualValue(endDate));
-    }
-
-    final allTransactions = await query.get();
-
-    // Group transactions by date (truncated to day)
-    final Map<DateTime, List<Transaction>> groupedMap = {};
-    for (final tx in allTransactions) {
-      final date = DateTime(tx.date.year, tx.date.month, tx.date.day);
-      groupedMap.putIfAbsent(date, () => []).add(tx);
-    }
-
-    // Convert to list of GroupedTransactions, ordered by date descending
-    final groupedTransactions =
-        groupedMap.entries
-            .map(
-              (entry) => GroupedTransactions(
-                date: entry.key,
-                transactions: entry.value
-                  ..sort((a, b) => b.date.compareTo(a.date)),
-              ),
-            )
-            .toList()
-          ..sort((a, b) => b.date.compareTo(a.date));
-    return groupedTransactions;
+    final result = await query.get();
+    return result.map((row) {
+      final transaction = row.readTable(transactions);
+      final category = row.readTableOrNull(transactionCategories);
+      return TransactionWithCategory(
+        transaction: transaction,
+        category: category,
+      );
+    }).toList();
   }
 
   /// Watch transactions grouped by date with real-time updates
@@ -118,7 +143,7 @@ class TransactionsDao extends DatabaseAccessor<AppDatabase>
       }
 
       // Group by date
-      final Map<String, List<Transaction>> groupedMap = {};
+      final Map<String, List<TransactionWithCategory>> groupedMap = {};
       for (final transaction in filteredTransactions) {
         final dateKey = DateTime(
           transaction.date.year,
@@ -222,14 +247,18 @@ class TransactionsDao extends DatabaseAccessor<AppDatabase>
   }
 
   /// Get spending breakdown by category with both amount and transaction count
-  Future<Map<TransactionCategory, CategorySpendingData>>
+  Future<Map<TransactionCategory?, CategorySpendingData>>
   getSpendingByCategoryWithCount(DatePeriod period) async {
-    final result = await customSelect(
+    // Use efficient SQL GROUP BY to calculate aggregations in the database
+    final aggregationResult = await customSelect(
       '''
-      SELECT category, SUM(amount) as total_amount, COUNT(*) as transaction_count
+      SELECT 
+        category_id,
+        SUM(amount) as total_amount,
+        COUNT(*) as transaction_count
       FROM transactions 
       WHERE date BETWEEN ? AND ? AND type = ?
-      GROUP BY category
+      GROUP BY category_id
       ''',
       variables: [
         Variable.withDateTime(period.startDate),
@@ -240,18 +269,42 @@ class TransactionsDao extends DatabaseAccessor<AppDatabase>
       ],
     ).get();
 
-    final Map<TransactionCategory, CategorySpendingData> categorySpending = {};
-    for (final row in result) {
-      final categoryString = row.read<String>('category');
-      final amount = row.read<double>('total_amount');
-      final count = row.read<int>('transaction_count');
-      final category = const TransactionCategoryConverter().fromSql(
-        categoryString,
-      );
+    // If no transactions found, return empty map
+    if (aggregationResult.isEmpty) {
+      return <TransactionCategory?, CategorySpendingData>{};
+    }
+
+    // Get all category IDs from the aggregation result (excluding nulls)
+    final categoryIds = aggregationResult
+        .map((row) => row.readNullable<int>('category_id'))
+        .where((id) => id != null)
+        .cast<int>()
+        .toList();
+
+    // Fetch category details for the relevant categories only
+    final categories = categoryIds.isNotEmpty
+        ? await (select(
+            transactionCategories,
+          )..where((tbl) => tbl.id.isIn(categoryIds))).get()
+        : <TransactionCategory>[];
+
+    // Create a map of category ID to category for efficient lookup
+    final categoryMap = {for (final cat in categories) cat.id: cat};
+
+    // Build the final result map
+    final Map<TransactionCategory?, CategorySpendingData> categorySpending = {};
+
+    for (final row in aggregationResult) {
+      final categoryId = row.readNullable<int>('category_id');
+      final totalAmount = row.read<double>('total_amount');
+      final transactionCount = row.read<int>('transaction_count');
+
+      final category = categoryId != null ? categoryMap[categoryId] : null;
+
       categorySpending[category] = CategorySpendingData(
         category: category,
-        totalAmount: amount,
-        transactionCount: count,
+        totalAmount: totalAmount,
+        transactionCount: transactionCount,
       );
     }
 

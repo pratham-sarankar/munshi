@@ -13,5 +13,7 @@ class TransactionCategoryConverter
   }
 
   @override
-  String toSql(TransactionCategory value) => json.encode(value.toJson());
+  String toSql(TransactionCategory value) {
+    return value.toJsonString();
+  }
 }

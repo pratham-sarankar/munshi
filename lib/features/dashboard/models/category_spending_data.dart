@@ -2,7 +2,7 @@ import 'package:munshi/core/database/app_database.dart';
 
 /// Model to hold both spending amount and transaction count for a category
 class CategorySpendingData {
-  final TransactionCategory category;
+  final TransactionCategory? category;
   final double totalAmount;
   final int transactionCount;
 
@@ -13,7 +13,7 @@ class CategorySpendingData {
   });
 
   /// Create an empty category spending data
-  factory CategorySpendingData.empty(TransactionCategory category) {
+  factory CategorySpendingData.empty(TransactionCategory? category) {
     return CategorySpendingData(
       category: category,
       totalAmount: 0.0,
@@ -41,7 +41,7 @@ class CategorySpendingData {
 
   @override
   String toString() {
-    return 'CategorySpendingData(category: ${category.name}, '
+    return 'CategorySpendingData(category: ${category?.name ?? 'Uncategorized'}, '
         'totalAmount: $totalAmount, transactionCount: $transactionCount)';
   }
 }

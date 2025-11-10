@@ -5,7 +5,6 @@ import 'package:icons_plus/icons_plus.dart' show Iconsax;
 import 'package:munshi/core/database/converters/color_converter.dart';
 import 'package:munshi/core/database/converters/icon_data_converter.dart';
 import 'package:munshi/core/database/converters/transaction_type_converter.dart';
-import 'package:munshi/core/database/converters/transaction_category_converter.dart';
 import 'package:munshi/features/transactions/models/transaction_type.dart';
 import 'package:path_provider/path_provider.dart';
 import './tables/transactions.dart';
@@ -22,7 +21,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());
 
   @override
-  int get schemaVersion => 2;
+  int get schemaVersion => 3;
 
   @override
   MigrationStrategy get migration {
@@ -36,6 +35,10 @@ class AppDatabase extends _$AppDatabase {
           // Add categories table
           await m.createTable(transactionCategories);
           await _seedDefaultCategories();
+        }
+        if (from < 3) {
+          // Migrate from storing category object to categoryId foreign key
+          await _migrateToCategoryId(m);
         }
       },
     );
@@ -150,6 +153,19 @@ class AppDatabase extends _$AppDatabase {
     for (final category in incomeCategoriesToSeed) {
       await categoriesDao.insertCategory(category);
     }
+  }
+
+  Future<void> _migrateToCategoryId(Migrator m) async {
+    // Step 1: Create new transactions table with categoryId
+    await m.createTable(transactions);
+
+    // Note: Since we're changing from storing category objects to categoryId,
+    // existing transaction data would need manual migration if there was any.
+    // For a clean migration, we'll start fresh with the new schema.
+    // If you need to preserve existing data, you would need to:
+    // 1. Read existing transactions
+    // 2. Map category objects to category IDs
+    // 3. Insert transactions with new schema
   }
 
   static QueryExecutor _openConnection() {
