@@ -29,7 +29,7 @@ class FormBuilderCategoryChips extends StatelessWidget {
             border: InputBorder.none,
             contentPadding: EdgeInsets.zero,
           ),
-          validator: null, // Category is now optional
+          validator: null, // Category is now optional: transactions can exist without categories because the foreign key relationship allows null categoryId values (e.g., categories can be deleted while preserving transactions).
           options:
               (type == TransactionType.expense
                       ? categoryProvider.expenseCategories
