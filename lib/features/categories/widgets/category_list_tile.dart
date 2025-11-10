@@ -10,7 +10,7 @@ class CategoryListTile extends StatelessWidget {
     required this.onDelete,
   });
 
-  final Category category;
+  final TransactionCategory category;
   final VoidCallback onTap;
   final VoidCallback onDelete;
 
@@ -18,21 +18,15 @@ class CategoryListTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
-    final categoryIcon = IconData(
-      category.iconCodePoint,
-      fontFamily: category.iconFontFamily,
-      fontPackage: category.iconFontPackage,
-    );
-    final categoryColor = Color(category.colorValue);
+    final categoryIcon = category.icon;
+    final categoryColor = category.color;
 
     return Container(
       margin: const EdgeInsets.only(bottom: 8),
       decoration: BoxDecoration(
         color: colorScheme.surface,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: colorScheme.outline.withValues(alpha: 0.1),
-        ),
+        border: Border.all(color: colorScheme.outline.withValues(alpha: 0.1)),
         boxShadow: [
           BoxShadow(
             color: colorScheme.shadow.withValues(alpha: 0.05),
@@ -62,11 +56,7 @@ class CategoryListTile extends StatelessWidget {
                       width: 1.5,
                     ),
                   ),
-                  child: Icon(
-                    categoryIcon,
-                    color: categoryColor,
-                    size: 24,
-                  ),
+                  child: Icon(categoryIcon, color: categoryColor, size: 24),
                 ),
                 const SizedBox(width: 16),
 

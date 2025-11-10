@@ -1,4 +1,4 @@
-import 'package:munshi/features/transactions/models/transaction_category.dart';
+import 'package:munshi/core/database/app_database.dart';
 
 /// Model to hold both spending amount and transaction count for a category
 class CategorySpendingData {

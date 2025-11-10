@@ -1,17 +1,17 @@
-import 'package:drift/drift.dart' as drift;
 import 'package:flutter/material.dart';
 import 'package:icons_plus/icons_plus.dart';
 import 'package:munshi/core/database/app_database.dart';
 import 'package:munshi/features/categories/widgets/color_picker_dialog.dart';
 import 'package:munshi/features/categories/widgets/icon_picker_dialog.dart';
+import 'package:munshi/features/transactions/models/transaction_type.dart';
 import 'package:provider/provider.dart';
 import '../providers/category_provider.dart';
 
 class AddEditCategoryDialog extends StatefulWidget {
   const AddEditCategoryDialog({super.key, required this.type, this.category});
 
-  final String type; // 'expense' or 'income'
-  final Category? category;
+  final TransactionType type;
+  final TransactionCategory? category;
 
   @override
   State<AddEditCategoryDialog> createState() => _AddEditCategoryDialogState();
@@ -30,12 +30,8 @@ class _AddEditCategoryDialogState extends State<AddEditCategoryDialog> {
     super.initState();
     if (widget.category != null) {
       _nameController.text = widget.category!.name;
-      _selectedIcon = IconData(
-        widget.category!.iconCodePoint,
-        fontFamily: widget.category!.iconFontFamily,
-        fontPackage: widget.category!.iconFontPackage,
-      );
-      _selectedColor = Color(widget.category!.colorValue);
+      _selectedIcon = widget.category!.icon;
+      _selectedColor = widget.category!.color;
     } else {
       _selectedIcon = Iconsax.category_outline;
       _selectedColor = Colors.blue;
@@ -103,20 +99,16 @@ class _AddEditCategoryDialogState extends State<AddEditCategoryDialog> {
         // Update existing category
         final updatedCategory = widget.category!.copyWith(
           name: name,
-          iconCodePoint: _selectedIcon.codePoint,
-          iconFontFamily: drift.Value(_selectedIcon.fontFamily),
-          iconFontPackage: drift.Value(_selectedIcon.fontPackage),
-          colorValue: _selectedColor.value,
+          icon: _selectedIcon,
+          color: _selectedColor,
         );
         await provider.updateCategory(updatedCategory);
       } else {
         // Add new category
-        final newCategory = CategoriesCompanion.insert(
+        final newCategory = TransactionCategoriesCompanion.insert(
           name: name,
-          iconCodePoint: _selectedIcon.codePoint,
-          iconFontFamily: drift.Value(_selectedIcon.fontFamily),
-          iconFontPackage: drift.Value(_selectedIcon.fontPackage),
-          colorValue: _selectedColor.value,
+          icon: _selectedIcon,
+          color: _selectedColor,
           type: widget.type,
         );
         await provider.addCategory(newCategory);

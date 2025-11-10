@@ -2,16 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:munshi/core/database/app_database.dart';
 import 'package:munshi/core/database/daos/category_dao.dart';
 import 'package:munshi/core/service_locator.dart';
+import 'package:munshi/features/transactions/models/transaction_type.dart';
 
 class CategoryProvider extends ChangeNotifier {
   final CategoriesDao _categoriesDao = locator<AppDatabase>().categoriesDao;
 
-  List<Category> _expenseCategories = [];
-  List<Category> _incomeCategories = [];
+  List<TransactionCategory> _expenseCategories = [];
+  List<TransactionCategory> _incomeCategories = [];
   bool _isLoading = false;
 
-  List<Category> get expenseCategories => _expenseCategories;
-  List<Category> get incomeCategories => _incomeCategories;
+  List<TransactionCategory> get expenseCategories => _expenseCategories;
+  List<TransactionCategory> get incomeCategories => _incomeCategories;
   bool get isLoading => _isLoading;
 
   CategoryProvider() {
@@ -33,12 +34,12 @@ class CategoryProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> addCategory(CategoriesCompanion category) async {
+  Future<void> addCategory(TransactionCategoriesCompanion category) async {
     await _categoriesDao.insertCategory(category);
     await loadCategories();
   }
 
-  Future<void> updateCategory(Category category) async {
+  Future<void> updateCategory(TransactionCategory category) async {
     await _categoriesDao.updateCategory(category);
     await loadCategories();
   }
@@ -50,7 +51,7 @@ class CategoryProvider extends ChangeNotifier {
 
   Future<bool> categoryNameExists(
     String name,
-    String type, {
+    TransactionType type, {
     int? excludeId,
   }) async {
     return await _categoriesDao.categoryNameExists(

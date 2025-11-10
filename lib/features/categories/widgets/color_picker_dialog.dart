@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
 
 class ColorPickerDialog extends StatefulWidget {
-  const ColorPickerDialog({
-    super.key,
-    this.selectedColor,
-  });
+  const ColorPickerDialog({super.key, this.selectedColor});
 
   final Color? selectedColor;
 
@@ -120,7 +117,7 @@ class _ColorPickerDialogState extends State<ColorPickerDialog> {
                 itemCount: _colors.length,
                 itemBuilder: (context, index) {
                   final color = _colors[index];
-                  final isSelected = _selectedColor.value == color.value;
+                  final isSelected = _selectedColor == color;
 
                   return InkWell(
                     onTap: () {

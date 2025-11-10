@@ -4,6 +4,7 @@ import 'package:munshi/core/database/app_database.dart';
 import 'package:munshi/features/categories/providers/category_provider.dart';
 import 'package:munshi/features/categories/widgets/add_edit_category_dialog.dart';
 import 'package:munshi/features/categories/widgets/category_list_tile.dart';
+import 'package:munshi/features/transactions/models/transaction_type.dart';
 import 'package:provider/provider.dart';
 
 class CategoriesScreen extends StatefulWidget {
@@ -29,7 +30,7 @@ class _CategoriesScreenState extends State<CategoriesScreen>
     super.dispose();
   }
 
-  Future<void> _showAddCategoryDialog(String type) async {
+  Future<void> _showAddCategoryDialog(TransactionType type) async {
     final result = await showDialog<bool>(
       context: context,
       builder: (context) => AddEditCategoryDialog(type: type),
@@ -44,7 +45,10 @@ class _CategoriesScreenState extends State<CategoriesScreen>
     }
   }
 
-  Future<void> _showEditCategoryDialog(Category category, String type) async {
+  Future<void> _showEditCategoryDialog(
+    TransactionCategory category,
+    TransactionType type,
+  ) async {
     final result = await showDialog<bool>(
       context: context,
       builder: (context) =>
@@ -126,7 +130,9 @@ class _CategoriesScreenState extends State<CategoriesScreen>
       floatingActionButton: FloatingActionButton.extended(
         heroTag: 'add_category_fab',
         onPressed: () {
-          final type = _tabController.index == 0 ? 'expense' : 'income';
+          final type = _tabController.index == 0
+              ? TransactionType.expense
+              : TransactionType.income;
           _showAddCategoryDialog(type);
         },
         icon: const Icon(Iconsax.add_outline),
@@ -137,14 +143,16 @@ class _CategoriesScreenState extends State<CategoriesScreen>
         children: [
           // Expense categories
           _CategoryList(
-            type: 'expense',
-            onEdit: (category) => _showEditCategoryDialog(category, 'expense'),
+            type: TransactionType.expense,
+            onEdit: (category) =>
+                _showEditCategoryDialog(category, TransactionType.expense),
             onDelete: (category) => _deleteCategory(category.id, category.name),
           ),
           // Income categories
           _CategoryList(
-            type: 'income',
-            onEdit: (category) => _showEditCategoryDialog(category, 'income'),
+            type: TransactionType.income,
+            onEdit: (category) =>
+                _showEditCategoryDialog(category, TransactionType.income),
             onDelete: (category) => _deleteCategory(category.id, category.name),
           ),
         ],
@@ -160,7 +168,7 @@ class _CategoryList extends StatelessWidget {
     required this.onDelete,
   });
 
-  final String type;
+  final TransactionType type;
   final Function(dynamic category) onEdit;
   final Function(dynamic category) onDelete;
 
@@ -175,7 +183,7 @@ class _CategoryList extends StatelessWidget {
           return const Center(child: CircularProgressIndicator());
         }
 
-        final categories = type == 'expense'
+        final categories = type == TransactionType.expense
             ? provider.expenseCategories
             : provider.incomeCategories;
 

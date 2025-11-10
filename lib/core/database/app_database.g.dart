@@ -32,14 +32,14 @@ class $TransactionsTable extends Transactions
     requiredDuringInsert: true,
   );
   @override
-  late final GeneratedColumnWithTypeConverter<TransactionCategory, String>
-  category = GeneratedColumn<String>(
-    'category',
-    aliasedName,
-    false,
-    type: DriftSqlType.string,
-    requiredDuringInsert: true,
-  ).withConverter<TransactionCategory>($TransactionsTable.$convertercategory);
+  late final GeneratedColumnWithTypeConverter<dynamic, String> category =
+      GeneratedColumn<String>(
+        'category',
+        aliasedName,
+        false,
+        type: DriftSqlType.string,
+        requiredDuringInsert: true,
+      ).withConverter<dynamic>($TransactionsTable.$convertercategory);
   static const VerificationMeta _dateMeta = const VerificationMeta('date');
   @override
   late final GeneratedColumn<DateTime> date = GeneratedColumn<DateTime>(
@@ -158,7 +158,7 @@ class $TransactionsTable extends Transactions
     return $TransactionsTable(attachedDatabase, alias);
   }
 
-  static TypeConverter<TransactionCategory, String> $convertercategory =
+  static TypeConverter<dynamic, String> $convertercategory =
       const TransactionCategoryConverter();
   static TypeConverter<TransactionType, String> $convertertype =
       const TransactionTypeConverter();
@@ -167,14 +167,14 @@ class $TransactionsTable extends Transactions
 class Transaction extends DataClass implements Insertable<Transaction> {
   final int id;
   final double amount;
-  final TransactionCategory category;
+  final dynamic category;
   final DateTime date;
   final String? note;
   final TransactionType type;
   const Transaction({
     required this.id,
     required this.amount,
-    required this.category,
+    this.category,
     required this.date,
     this.note,
     required this.type,
@@ -184,7 +184,7 @@ class Transaction extends DataClass implements Insertable<Transaction> {
     final map = <String, Expression>{};
     map['id'] = Variable<int>(id);
     map['amount'] = Variable<double>(amount);
-    {
+    if (!nullToAbsent || category != null) {
       map['category'] = Variable<String>(
         $TransactionsTable.$convertercategory.toSql(category),
       );
@@ -205,7 +205,9 @@ class Transaction extends DataClass implements Insertable<Transaction> {
     return TransactionsCompanion(
       id: Value(id),
       amount: Value(amount),
-      category: Value(category),
+      category: category == null && nullToAbsent
+          ? const Value.absent()
+          : Value(category),
       date: Value(date),
       note: note == null && nullToAbsent ? const Value.absent() : Value(note),
       type: Value(type),
@@ -220,7 +222,7 @@ class Transaction extends DataClass implements Insertable<Transaction> {
     return Transaction(
       id: serializer.fromJson<int>(json['id']),
       amount: serializer.fromJson<double>(json['amount']),
-      category: serializer.fromJson<TransactionCategory>(json['category']),
+      category: serializer.fromJson<dynamic>(json['category']),
       date: serializer.fromJson<DateTime>(json['date']),
       note: serializer.fromJson<String?>(json['note']),
       type: serializer.fromJson<TransactionType>(json['type']),
@@ -232,7 +234,7 @@ class Transaction extends DataClass implements Insertable<Transaction> {
     return <String, dynamic>{
       'id': serializer.toJson<int>(id),
       'amount': serializer.toJson<double>(amount),
-      'category': serializer.toJson<TransactionCategory>(category),
+      'category': serializer.toJson<dynamic>(category),
       'date': serializer.toJson<DateTime>(date),
       'note': serializer.toJson<String?>(note),
       'type': serializer.toJson<TransactionType>(type),
@@ -242,14 +244,14 @@ class Transaction extends DataClass implements Insertable<Transaction> {
   Transaction copyWith({
     int? id,
     double? amount,
-    TransactionCategory? category,
+    Value<dynamic> category = const Value.absent(),
     DateTime? date,
     Value<String?> note = const Value.absent(),
     TransactionType? type,
   }) => Transaction(
     id: id ?? this.id,
     amount: amount ?? this.amount,
-    category: category ?? this.category,
+    category: category.present ? category.value : this.category,
     date: date ?? this.date,
     note: note.present ? note.value : this.note,
     type: type ?? this.type,
@@ -295,7 +297,7 @@ class Transaction extends DataClass implements Insertable<Transaction> {
 class TransactionsCompanion extends UpdateCompanion<Transaction> {
   final Value<int> id;
   final Value<double> amount;
-  final Value<TransactionCategory> category;
+  final Value<dynamic> category;
   final Value<DateTime> date;
   final Value<String?> note;
   final Value<TransactionType> type;
@@ -310,7 +312,7 @@ class TransactionsCompanion extends UpdateCompanion<Transaction> {
   TransactionsCompanion.insert({
     this.id = const Value.absent(),
     required double amount,
-    required TransactionCategory category,
+    required dynamic category,
     required DateTime date,
     this.note = const Value.absent(),
     required TransactionType type,
@@ -339,7 +341,7 @@ class TransactionsCompanion extends UpdateCompanion<Transaction> {
   TransactionsCompanion copyWith({
     Value<int>? id,
     Value<double>? amount,
-    Value<TransactionCategory>? category,
+    Value<dynamic>? category,
     Value<DateTime>? date,
     Value<String?>? note,
     Value<TransactionType>? type,
@@ -396,12 +398,12 @@ class TransactionsCompanion extends UpdateCompanion<Transaction> {
   }
 }
 
-class $CategoriesTable extends Categories
-    with TableInfo<$CategoriesTable, Category> {
+class $TransactionCategoriesTable extends TransactionCategories
+    with TableInfo<$TransactionCategoriesTable, TransactionCategory> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
-  $CategoriesTable(this.attachedDatabase, [this._alias]);
+  $TransactionCategoriesTable(this.attachedDatabase, [this._alias]);
   static const VerificationMeta _idMeta = const VerificationMeta('id');
   @override
   late final GeneratedColumn<int> id = GeneratedColumn<int>(
@@ -424,59 +426,35 @@ class $CategoriesTable extends Categories
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
-  static const VerificationMeta _iconCodePointMeta = const VerificationMeta(
-    'iconCodePoint',
-  );
   @override
-  late final GeneratedColumn<int> iconCodePoint = GeneratedColumn<int>(
-    'icon_code_point',
-    aliasedName,
-    false,
-    type: DriftSqlType.int,
-    requiredDuringInsert: true,
-  );
-  static const VerificationMeta _iconFontFamilyMeta = const VerificationMeta(
-    'iconFontFamily',
-  );
+  late final GeneratedColumnWithTypeConverter<IconData, String> icon =
+      GeneratedColumn<String>(
+        'icon',
+        aliasedName,
+        false,
+        type: DriftSqlType.string,
+        requiredDuringInsert: true,
+      ).withConverter<IconData>($TransactionCategoriesTable.$convertericon);
   @override
-  late final GeneratedColumn<String> iconFontFamily = GeneratedColumn<String>(
-    'icon_font_family',
-    aliasedName,
-    true,
-    type: DriftSqlType.string,
-    requiredDuringInsert: false,
-  );
-  static const VerificationMeta _iconFontPackageMeta = const VerificationMeta(
-    'iconFontPackage',
-  );
+  late final GeneratedColumnWithTypeConverter<Color, int> color =
+      GeneratedColumn<int>(
+        'color',
+        aliasedName,
+        false,
+        type: DriftSqlType.int,
+        requiredDuringInsert: true,
+      ).withConverter<Color>($TransactionCategoriesTable.$convertercolor);
   @override
-  late final GeneratedColumn<String> iconFontPackage = GeneratedColumn<String>(
-    'icon_font_package',
-    aliasedName,
-    true,
-    type: DriftSqlType.string,
-    requiredDuringInsert: false,
-  );
-  static const VerificationMeta _colorValueMeta = const VerificationMeta(
-    'colorValue',
-  );
-  @override
-  late final GeneratedColumn<int> colorValue = GeneratedColumn<int>(
-    'color_value',
-    aliasedName,
-    false,
-    type: DriftSqlType.int,
-    requiredDuringInsert: true,
-  );
-  static const VerificationMeta _typeMeta = const VerificationMeta('type');
-  @override
-  late final GeneratedColumn<String> type = GeneratedColumn<String>(
-    'type',
-    aliasedName,
-    false,
-    type: DriftSqlType.string,
-    requiredDuringInsert: true,
-  );
+  late final GeneratedColumnWithTypeConverter<TransactionType, String> type =
+      GeneratedColumn<String>(
+        'type',
+        aliasedName,
+        false,
+        type: DriftSqlType.string,
+        requiredDuringInsert: true,
+      ).withConverter<TransactionType>(
+        $TransactionCategoriesTable.$convertertype,
+      );
   static const VerificationMeta _isDefaultMeta = const VerificationMeta(
     'isDefault',
   );
@@ -508,10 +486,8 @@ class $CategoriesTable extends Categories
   List<GeneratedColumn> get $columns => [
     id,
     name,
-    iconCodePoint,
-    iconFontFamily,
-    iconFontPackage,
-    colorValue,
+    icon,
+    color,
     type,
     isDefault,
     createdAt,
@@ -520,10 +496,10 @@ class $CategoriesTable extends Categories
   String get aliasedName => _alias ?? actualTableName;
   @override
   String get actualTableName => $name;
-  static const String $name = 'categories';
+  static const String $name = 'transaction_categories';
   @override
   VerificationContext validateIntegrity(
-    Insertable<Category> instance, {
+    Insertable<TransactionCategory> instance, {
     bool isInserting = false,
   }) {
     final context = VerificationContext();
@@ -538,51 +514,6 @@ class $CategoriesTable extends Categories
       );
     } else if (isInserting) {
       context.missing(_nameMeta);
-    }
-    if (data.containsKey('icon_code_point')) {
-      context.handle(
-        _iconCodePointMeta,
-        iconCodePoint.isAcceptableOrUnknown(
-          data['icon_code_point']!,
-          _iconCodePointMeta,
-        ),
-      );
-    } else if (isInserting) {
-      context.missing(_iconCodePointMeta);
-    }
-    if (data.containsKey('icon_font_family')) {
-      context.handle(
-        _iconFontFamilyMeta,
-        iconFontFamily.isAcceptableOrUnknown(
-          data['icon_font_family']!,
-          _iconFontFamilyMeta,
-        ),
-      );
-    }
-    if (data.containsKey('icon_font_package')) {
-      context.handle(
-        _iconFontPackageMeta,
-        iconFontPackage.isAcceptableOrUnknown(
-          data['icon_font_package']!,
-          _iconFontPackageMeta,
-        ),
-      );
-    }
-    if (data.containsKey('color_value')) {
-      context.handle(
-        _colorValueMeta,
-        colorValue.isAcceptableOrUnknown(data['color_value']!, _colorValueMeta),
-      );
-    } else if (isInserting) {
-      context.missing(_colorValueMeta);
-    }
-    if (data.containsKey('type')) {
-      context.handle(
-        _typeMeta,
-        type.isAcceptableOrUnknown(data['type']!, _typeMeta),
-      );
-    } else if (isInserting) {
-      context.missing(_typeMeta);
     }
     if (data.containsKey('is_default')) {
       context.handle(
@@ -602,9 +533,9 @@ class $CategoriesTable extends Categories
   @override
   Set<GeneratedColumn> get $primaryKey => {id};
   @override
-  Category map(Map<String, dynamic> data, {String? tablePrefix}) {
+  TransactionCategory map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return Category(
+    return TransactionCategory(
       id: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
         data['${effectivePrefix}id'],
@@ -613,26 +544,24 @@ class $CategoriesTable extends Categories
         DriftSqlType.string,
         data['${effectivePrefix}name'],
       )!,
-      iconCodePoint: attachedDatabase.typeMapping.read(
-        DriftSqlType.int,
-        data['${effectivePrefix}icon_code_point'],
-      )!,
-      iconFontFamily: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}icon_font_family'],
+      icon: $TransactionCategoriesTable.$convertericon.fromSql(
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.string,
+          data['${effectivePrefix}icon'],
+        )!,
       ),
-      iconFontPackage: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}icon_font_package'],
+      color: $TransactionCategoriesTable.$convertercolor.fromSql(
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.int,
+          data['${effectivePrefix}color'],
+        )!,
       ),
-      colorValue: attachedDatabase.typeMapping.read(
-        DriftSqlType.int,
-        data['${effectivePrefix}color_value'],
-      )!,
-      type: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}type'],
-      )!,
+      type: $TransactionCategoriesTable.$convertertype.fromSql(
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.string,
+          data['${effectivePrefix}type'],
+        )!,
+      ),
       isDefault: attachedDatabase.typeMapping.read(
         DriftSqlType.bool,
         data['${effectivePrefix}is_default'],
@@ -645,28 +574,31 @@ class $CategoriesTable extends Categories
   }
 
   @override
-  $CategoriesTable createAlias(String alias) {
-    return $CategoriesTable(attachedDatabase, alias);
+  $TransactionCategoriesTable createAlias(String alias) {
+    return $TransactionCategoriesTable(attachedDatabase, alias);
   }
+
+  static TypeConverter<IconData, String> $convertericon =
+      const IconDataConverter();
+  static TypeConverter<Color, int> $convertercolor = const ColorConverter();
+  static TypeConverter<TransactionType, String> $convertertype =
+      const TransactionTypeConverter();
 }
 
-class Category extends DataClass implements Insertable<Category> {
+class TransactionCategory extends DataClass
+    implements Insertable<TransactionCategory> {
   final int id;
   final String name;
-  final int iconCodePoint;
-  final String? iconFontFamily;
-  final String? iconFontPackage;
-  final int colorValue;
-  final String type;
+  final IconData icon;
+  final Color color;
+  final TransactionType type;
   final bool isDefault;
   final DateTime createdAt;
-  const Category({
+  const TransactionCategory({
     required this.id,
     required this.name,
-    required this.iconCodePoint,
-    this.iconFontFamily,
-    this.iconFontPackage,
-    required this.colorValue,
+    required this.icon,
+    required this.color,
     required this.type,
     required this.isDefault,
     required this.createdAt,
@@ -676,51 +608,49 @@ class Category extends DataClass implements Insertable<Category> {
     final map = <String, Expression>{};
     map['id'] = Variable<int>(id);
     map['name'] = Variable<String>(name);
-    map['icon_code_point'] = Variable<int>(iconCodePoint);
-    if (!nullToAbsent || iconFontFamily != null) {
-      map['icon_font_family'] = Variable<String>(iconFontFamily);
+    {
+      map['icon'] = Variable<String>(
+        $TransactionCategoriesTable.$convertericon.toSql(icon),
+      );
     }
-    if (!nullToAbsent || iconFontPackage != null) {
-      map['icon_font_package'] = Variable<String>(iconFontPackage);
+    {
+      map['color'] = Variable<int>(
+        $TransactionCategoriesTable.$convertercolor.toSql(color),
+      );
     }
-    map['color_value'] = Variable<int>(colorValue);
-    map['type'] = Variable<String>(type);
+    {
+      map['type'] = Variable<String>(
+        $TransactionCategoriesTable.$convertertype.toSql(type),
+      );
+    }
     map['is_default'] = Variable<bool>(isDefault);
     map['created_at'] = Variable<DateTime>(createdAt);
     return map;
   }
 
-  CategoriesCompanion toCompanion(bool nullToAbsent) {
-    return CategoriesCompanion(
+  TransactionCategoriesCompanion toCompanion(bool nullToAbsent) {
+    return TransactionCategoriesCompanion(
       id: Value(id),
       name: Value(name),
-      iconCodePoint: Value(iconCodePoint),
-      iconFontFamily: iconFontFamily == null && nullToAbsent
-          ? const Value.absent()
-          : Value(iconFontFamily),
-      iconFontPackage: iconFontPackage == null && nullToAbsent
-          ? const Value.absent()
-          : Value(iconFontPackage),
-      colorValue: Value(colorValue),
+      icon: Value(icon),
+      color: Value(color),
       type: Value(type),
       isDefault: Value(isDefault),
       createdAt: Value(createdAt),
     );
   }
 
-  factory Category.fromJson(
+  factory TransactionCategory.fromJson(
     Map<String, dynamic> json, {
     ValueSerializer? serializer,
   }) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
-    return Category(
+    return TransactionCategory(
       id: serializer.fromJson<int>(json['id']),
       name: serializer.fromJson<String>(json['name']),
-      iconCodePoint: serializer.fromJson<int>(json['iconCodePoint']),
-      iconFontFamily: serializer.fromJson<String?>(json['iconFontFamily']),
-      iconFontPackage: serializer.fromJson<String?>(json['iconFontPackage']),
-      colorValue: serializer.fromJson<int>(json['colorValue']),
-      type: serializer.fromJson<String>(json['type']),
+      icon: serializer.fromJson<IconData>(json['icon']),
+      color: serializer.fromJson<Color>(json['color']),
+      type: serializer.fromJson<TransactionType>(json['type']),
       isDefault: serializer.fromJson<bool>(json['isDefault']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
     );
@@ -731,57 +661,37 @@ class Category extends DataClass implements Insertable<Category> {
     return <String, dynamic>{
       'id': serializer.toJson<int>(id),
       'name': serializer.toJson<String>(name),
-      'iconCodePoint': serializer.toJson<int>(iconCodePoint),
-      'iconFontFamily': serializer.toJson<String?>(iconFontFamily),
-      'iconFontPackage': serializer.toJson<String?>(iconFontPackage),
-      'colorValue': serializer.toJson<int>(colorValue),
-      'type': serializer.toJson<String>(type),
+      'icon': serializer.toJson<IconData>(icon),
+      'color': serializer.toJson<Color>(color),
+      'type': serializer.toJson<TransactionType>(type),
       'isDefault': serializer.toJson<bool>(isDefault),
       'createdAt': serializer.toJson<DateTime>(createdAt),
     };
   }
 
-  Category copyWith({
+  TransactionCategory copyWith({
     int? id,
     String? name,
-    int? iconCodePoint,
-    Value<String?> iconFontFamily = const Value.absent(),
-    Value<String?> iconFontPackage = const Value.absent(),
-    int? colorValue,
-    String? type,
+    IconData? icon,
+    Color? color,
+    TransactionType? type,
     bool? isDefault,
     DateTime? createdAt,
-  }) => Category(
+  }) => TransactionCategory(
     id: id ?? this.id,
     name: name ?? this.name,
-    iconCodePoint: iconCodePoint ?? this.iconCodePoint,
-    iconFontFamily: iconFontFamily.present
-        ? iconFontFamily.value
-        : this.iconFontFamily,
-    iconFontPackage: iconFontPackage.present
-        ? iconFontPackage.value
-        : this.iconFontPackage,
-    colorValue: colorValue ?? this.colorValue,
+    icon: icon ?? this.icon,
+    color: color ?? this.color,
     type: type ?? this.type,
     isDefault: isDefault ?? this.isDefault,
     createdAt: createdAt ?? this.createdAt,
   );
-  Category copyWithCompanion(CategoriesCompanion data) {
-    return Category(
+  TransactionCategory copyWithCompanion(TransactionCategoriesCompanion data) {
+    return TransactionCategory(
       id: data.id.present ? data.id.value : this.id,
       name: data.name.present ? data.name.value : this.name,
-      iconCodePoint: data.iconCodePoint.present
-          ? data.iconCodePoint.value
-          : this.iconCodePoint,
-      iconFontFamily: data.iconFontFamily.present
-          ? data.iconFontFamily.value
-          : this.iconFontFamily,
-      iconFontPackage: data.iconFontPackage.present
-          ? data.iconFontPackage.value
-          : this.iconFontPackage,
-      colorValue: data.colorValue.present
-          ? data.colorValue.value
-          : this.colorValue,
+      icon: data.icon.present ? data.icon.value : this.icon,
+      color: data.color.present ? data.color.value : this.color,
       type: data.type.present ? data.type.value : this.type,
       isDefault: data.isDefault.present ? data.isDefault.value : this.isDefault,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
@@ -790,13 +700,11 @@ class Category extends DataClass implements Insertable<Category> {
 
   @override
   String toString() {
-    return (StringBuffer('Category(')
+    return (StringBuffer('TransactionCategory(')
           ..write('id: $id, ')
           ..write('name: $name, ')
-          ..write('iconCodePoint: $iconCodePoint, ')
-          ..write('iconFontFamily: $iconFontFamily, ')
-          ..write('iconFontPackage: $iconFontPackage, ')
-          ..write('colorValue: $colorValue, ')
+          ..write('icon: $icon, ')
+          ..write('color: $color, ')
           ..write('type: $type, ')
           ..write('isDefault: $isDefault, ')
           ..write('createdAt: $createdAt')
@@ -805,74 +713,56 @@ class Category extends DataClass implements Insertable<Category> {
   }
 
   @override
-  int get hashCode => Object.hash(
-    id,
-    name,
-    iconCodePoint,
-    iconFontFamily,
-    iconFontPackage,
-    colorValue,
-    type,
-    isDefault,
-    createdAt,
-  );
+  int get hashCode =>
+      Object.hash(id, name, icon, color, type, isDefault, createdAt);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is Category &&
+      (other is TransactionCategory &&
           other.id == this.id &&
           other.name == this.name &&
-          other.iconCodePoint == this.iconCodePoint &&
-          other.iconFontFamily == this.iconFontFamily &&
-          other.iconFontPackage == this.iconFontPackage &&
-          other.colorValue == this.colorValue &&
+          other.icon == this.icon &&
+          other.color == this.color &&
           other.type == this.type &&
           other.isDefault == this.isDefault &&
           other.createdAt == this.createdAt);
 }
 
-class CategoriesCompanion extends UpdateCompanion<Category> {
+class TransactionCategoriesCompanion
+    extends UpdateCompanion<TransactionCategory> {
   final Value<int> id;
   final Value<String> name;
-  final Value<int> iconCodePoint;
-  final Value<String?> iconFontFamily;
-  final Value<String?> iconFontPackage;
-  final Value<int> colorValue;
-  final Value<String> type;
+  final Value<IconData> icon;
+  final Value<Color> color;
+  final Value<TransactionType> type;
   final Value<bool> isDefault;
   final Value<DateTime> createdAt;
-  const CategoriesCompanion({
+  const TransactionCategoriesCompanion({
     this.id = const Value.absent(),
     this.name = const Value.absent(),
-    this.iconCodePoint = const Value.absent(),
-    this.iconFontFamily = const Value.absent(),
-    this.iconFontPackage = const Value.absent(),
-    this.colorValue = const Value.absent(),
+    this.icon = const Value.absent(),
+    this.color = const Value.absent(),
     this.type = const Value.absent(),
     this.isDefault = const Value.absent(),
     this.createdAt = const Value.absent(),
   });
-  CategoriesCompanion.insert({
+  TransactionCategoriesCompanion.insert({
     this.id = const Value.absent(),
     required String name,
-    required int iconCodePoint,
-    this.iconFontFamily = const Value.absent(),
-    this.iconFontPackage = const Value.absent(),
-    required int colorValue,
-    required String type,
+    required IconData icon,
+    required Color color,
+    required TransactionType type,
     this.isDefault = const Value.absent(),
     this.createdAt = const Value.absent(),
   }) : name = Value(name),
-       iconCodePoint = Value(iconCodePoint),
-       colorValue = Value(colorValue),
+       icon = Value(icon),
+       color = Value(color),
        type = Value(type);
-  static Insertable<Category> custom({
+  static Insertable<TransactionCategory> custom({
     Expression<int>? id,
     Expression<String>? name,
-    Expression<int>? iconCodePoint,
-    Expression<String>? iconFontFamily,
-    Expression<String>? iconFontPackage,
-    Expression<int>? colorValue,
+    Expression<String>? icon,
+    Expression<int>? color,
     Expression<String>? type,
     Expression<bool>? isDefault,
     Expression<DateTime>? createdAt,
@@ -880,34 +770,28 @@ class CategoriesCompanion extends UpdateCompanion<Category> {
     return RawValuesInsertable({
       if (id != null) 'id': id,
       if (name != null) 'name': name,
-      if (iconCodePoint != null) 'icon_code_point': iconCodePoint,
-      if (iconFontFamily != null) 'icon_font_family': iconFontFamily,
-      if (iconFontPackage != null) 'icon_font_package': iconFontPackage,
-      if (colorValue != null) 'color_value': colorValue,
+      if (icon != null) 'icon': icon,
+      if (color != null) 'color': color,
       if (type != null) 'type': type,
       if (isDefault != null) 'is_default': isDefault,
       if (createdAt != null) 'created_at': createdAt,
     });
   }
 
-  CategoriesCompanion copyWith({
+  TransactionCategoriesCompanion copyWith({
     Value<int>? id,
     Value<String>? name,
-    Value<int>? iconCodePoint,
-    Value<String?>? iconFontFamily,
-    Value<String?>? iconFontPackage,
-    Value<int>? colorValue,
-    Value<String>? type,
+    Value<IconData>? icon,
+    Value<Color>? color,
+    Value<TransactionType>? type,
     Value<bool>? isDefault,
     Value<DateTime>? createdAt,
   }) {
-    return CategoriesCompanion(
+    return TransactionCategoriesCompanion(
       id: id ?? this.id,
       name: name ?? this.name,
-      iconCodePoint: iconCodePoint ?? this.iconCodePoint,
-      iconFontFamily: iconFontFamily ?? this.iconFontFamily,
-      iconFontPackage: iconFontPackage ?? this.iconFontPackage,
-      colorValue: colorValue ?? this.colorValue,
+      icon: icon ?? this.icon,
+      color: color ?? this.color,
       type: type ?? this.type,
       isDefault: isDefault ?? this.isDefault,
       createdAt: createdAt ?? this.createdAt,
@@ -923,20 +807,20 @@ class CategoriesCompanion extends UpdateCompanion<Category> {
     if (name.present) {
       map['name'] = Variable<String>(name.value);
     }
-    if (iconCodePoint.present) {
-      map['icon_code_point'] = Variable<int>(iconCodePoint.value);
+    if (icon.present) {
+      map['icon'] = Variable<String>(
+        $TransactionCategoriesTable.$convertericon.toSql(icon.value),
+      );
     }
-    if (iconFontFamily.present) {
-      map['icon_font_family'] = Variable<String>(iconFontFamily.value);
-    }
-    if (iconFontPackage.present) {
-      map['icon_font_package'] = Variable<String>(iconFontPackage.value);
-    }
-    if (colorValue.present) {
-      map['color_value'] = Variable<int>(colorValue.value);
+    if (color.present) {
+      map['color'] = Variable<int>(
+        $TransactionCategoriesTable.$convertercolor.toSql(color.value),
+      );
     }
     if (type.present) {
-      map['type'] = Variable<String>(type.value);
+      map['type'] = Variable<String>(
+        $TransactionCategoriesTable.$convertertype.toSql(type.value),
+      );
     }
     if (isDefault.present) {
       map['is_default'] = Variable<bool>(isDefault.value);
@@ -949,13 +833,11 @@ class CategoriesCompanion extends UpdateCompanion<Category> {
 
   @override
   String toString() {
-    return (StringBuffer('CategoriesCompanion(')
+    return (StringBuffer('TransactionCategoriesCompanion(')
           ..write('id: $id, ')
           ..write('name: $name, ')
-          ..write('iconCodePoint: $iconCodePoint, ')
-          ..write('iconFontFamily: $iconFontFamily, ')
-          ..write('iconFontPackage: $iconFontPackage, ')
-          ..write('colorValue: $colorValue, ')
+          ..write('icon: $icon, ')
+          ..write('color: $color, ')
           ..write('type: $type, ')
           ..write('isDefault: $isDefault, ')
           ..write('createdAt: $createdAt')
@@ -968,7 +850,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
   late final $TransactionsTable transactions = $TransactionsTable(this);
-  late final $CategoriesTable categories = $CategoriesTable(this);
+  late final $TransactionCategoriesTable transactionCategories =
+      $TransactionCategoriesTable(this);
   late final TransactionsDao transactionsDao = TransactionsDao(
     this as AppDatabase,
   );
@@ -979,7 +862,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   @override
   List<DatabaseSchemaEntity> get allSchemaEntities => [
     transactions,
-    categories,
+    transactionCategories,
   ];
 }
 
@@ -987,7 +870,7 @@ typedef $$TransactionsTableCreateCompanionBuilder =
     TransactionsCompanion Function({
       Value<int> id,
       required double amount,
-      required TransactionCategory category,
+      required dynamic category,
       required DateTime date,
       Value<String?> note,
       required TransactionType type,
@@ -996,7 +879,7 @@ typedef $$TransactionsTableUpdateCompanionBuilder =
     TransactionsCompanion Function({
       Value<int> id,
       Value<double> amount,
-      Value<TransactionCategory> category,
+      Value<dynamic> category,
       Value<DateTime> date,
       Value<String?> note,
       Value<TransactionType> type,
@@ -1021,15 +904,11 @@ class $$TransactionsTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnWithTypeConverterFilters<
-    TransactionCategory,
-    TransactionCategory,
-    String
-  >
-  get category => $composableBuilder(
-    column: $table.category,
-    builder: (column) => ColumnWithTypeConverterFilters(column),
-  );
+  ColumnWithTypeConverterFilters<dynamic, dynamic, String> get category =>
+      $composableBuilder(
+        column: $table.category,
+        builder: (column) => ColumnWithTypeConverterFilters(column),
+      );
 
   ColumnFilters<DateTime> get date => $composableBuilder(
     column: $table.date,
@@ -1103,7 +982,7 @@ class $$TransactionsTableAnnotationComposer
   GeneratedColumn<double> get amount =>
       $composableBuilder(column: $table.amount, builder: (column) => column);
 
-  GeneratedColumnWithTypeConverter<TransactionCategory, String> get category =>
+  GeneratedColumnWithTypeConverter<dynamic, String> get category =>
       $composableBuilder(column: $table.category, builder: (column) => column);
 
   GeneratedColumn<DateTime> get date =>
@@ -1149,7 +1028,7 @@ class $$TransactionsTableTableManager
               ({
                 Value<int> id = const Value.absent(),
                 Value<double> amount = const Value.absent(),
-                Value<TransactionCategory> category = const Value.absent(),
+                Value<dynamic> category = const Value.absent(),
                 Value<DateTime> date = const Value.absent(),
                 Value<String?> note = const Value.absent(),
                 Value<TransactionType> type = const Value.absent(),
@@ -1165,7 +1044,7 @@ class $$TransactionsTableTableManager
               ({
                 Value<int> id = const Value.absent(),
                 required double amount,
-                required TransactionCategory category,
+                required dynamic category,
                 required DateTime date,
                 Value<String?> note = const Value.absent(),
                 required TransactionType type,
@@ -1202,34 +1081,30 @@ typedef $$TransactionsTableProcessedTableManager =
       Transaction,
       PrefetchHooks Function()
     >;
-typedef $$CategoriesTableCreateCompanionBuilder =
-    CategoriesCompanion Function({
+typedef $$TransactionCategoriesTableCreateCompanionBuilder =
+    TransactionCategoriesCompanion Function({
       Value<int> id,
       required String name,
-      required int iconCodePoint,
-      Value<String?> iconFontFamily,
-      Value<String?> iconFontPackage,
-      required int colorValue,
-      required String type,
+      required IconData icon,
+      required Color color,
+      required TransactionType type,
       Value<bool> isDefault,
       Value<DateTime> createdAt,
     });
-typedef $$CategoriesTableUpdateCompanionBuilder =
-    CategoriesCompanion Function({
+typedef $$TransactionCategoriesTableUpdateCompanionBuilder =
+    TransactionCategoriesCompanion Function({
       Value<int> id,
       Value<String> name,
-      Value<int> iconCodePoint,
-      Value<String?> iconFontFamily,
-      Value<String?> iconFontPackage,
-      Value<int> colorValue,
-      Value<String> type,
+      Value<IconData> icon,
+      Value<Color> color,
+      Value<TransactionType> type,
       Value<bool> isDefault,
       Value<DateTime> createdAt,
     });
 
-class $$CategoriesTableFilterComposer
-    extends Composer<_$AppDatabase, $CategoriesTable> {
-  $$CategoriesTableFilterComposer({
+class $$TransactionCategoriesTableFilterComposer
+    extends Composer<_$AppDatabase, $TransactionCategoriesTable> {
+  $$TransactionCategoriesTableFilterComposer({
     required super.$db,
     required super.$table,
     super.joinBuilder,
@@ -1246,29 +1121,22 @@ class $$CategoriesTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnFilters<int> get iconCodePoint => $composableBuilder(
-    column: $table.iconCodePoint,
-    builder: (column) => ColumnFilters(column),
-  );
+  ColumnWithTypeConverterFilters<IconData, IconData, String> get icon =>
+      $composableBuilder(
+        column: $table.icon,
+        builder: (column) => ColumnWithTypeConverterFilters(column),
+      );
 
-  ColumnFilters<String> get iconFontFamily => $composableBuilder(
-    column: $table.iconFontFamily,
-    builder: (column) => ColumnFilters(column),
-  );
+  ColumnWithTypeConverterFilters<Color, Color, int> get color =>
+      $composableBuilder(
+        column: $table.color,
+        builder: (column) => ColumnWithTypeConverterFilters(column),
+      );
 
-  ColumnFilters<String> get iconFontPackage => $composableBuilder(
-    column: $table.iconFontPackage,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<int> get colorValue => $composableBuilder(
-    column: $table.colorValue,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<String> get type => $composableBuilder(
+  ColumnWithTypeConverterFilters<TransactionType, TransactionType, String>
+  get type => $composableBuilder(
     column: $table.type,
-    builder: (column) => ColumnFilters(column),
+    builder: (column) => ColumnWithTypeConverterFilters(column),
   );
 
   ColumnFilters<bool> get isDefault => $composableBuilder(
@@ -1282,9 +1150,9 @@ class $$CategoriesTableFilterComposer
   );
 }
 
-class $$CategoriesTableOrderingComposer
-    extends Composer<_$AppDatabase, $CategoriesTable> {
-  $$CategoriesTableOrderingComposer({
+class $$TransactionCategoriesTableOrderingComposer
+    extends Composer<_$AppDatabase, $TransactionCategoriesTable> {
+  $$TransactionCategoriesTableOrderingComposer({
     required super.$db,
     required super.$table,
     super.joinBuilder,
@@ -1301,23 +1169,13 @@ class $$CategoriesTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
-  ColumnOrderings<int> get iconCodePoint => $composableBuilder(
-    column: $table.iconCodePoint,
+  ColumnOrderings<String> get icon => $composableBuilder(
+    column: $table.icon,
     builder: (column) => ColumnOrderings(column),
   );
 
-  ColumnOrderings<String> get iconFontFamily => $composableBuilder(
-    column: $table.iconFontFamily,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<String> get iconFontPackage => $composableBuilder(
-    column: $table.iconFontPackage,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<int> get colorValue => $composableBuilder(
-    column: $table.colorValue,
+  ColumnOrderings<int> get color => $composableBuilder(
+    column: $table.color,
     builder: (column) => ColumnOrderings(column),
   );
 
@@ -1337,9 +1195,9 @@ class $$CategoriesTableOrderingComposer
   );
 }
 
-class $$CategoriesTableAnnotationComposer
-    extends Composer<_$AppDatabase, $CategoriesTable> {
-  $$CategoriesTableAnnotationComposer({
+class $$TransactionCategoriesTableAnnotationComposer
+    extends Composer<_$AppDatabase, $TransactionCategoriesTable> {
+  $$TransactionCategoriesTableAnnotationComposer({
     required super.$db,
     required super.$table,
     super.joinBuilder,
@@ -1352,27 +1210,13 @@ class $$CategoriesTableAnnotationComposer
   GeneratedColumn<String> get name =>
       $composableBuilder(column: $table.name, builder: (column) => column);
 
-  GeneratedColumn<int> get iconCodePoint => $composableBuilder(
-    column: $table.iconCodePoint,
-    builder: (column) => column,
-  );
+  GeneratedColumnWithTypeConverter<IconData, String> get icon =>
+      $composableBuilder(column: $table.icon, builder: (column) => column);
 
-  GeneratedColumn<String> get iconFontFamily => $composableBuilder(
-    column: $table.iconFontFamily,
-    builder: (column) => column,
-  );
+  GeneratedColumnWithTypeConverter<Color, int> get color =>
+      $composableBuilder(column: $table.color, builder: (column) => column);
 
-  GeneratedColumn<String> get iconFontPackage => $composableBuilder(
-    column: $table.iconFontPackage,
-    builder: (column) => column,
-  );
-
-  GeneratedColumn<int> get colorValue => $composableBuilder(
-    column: $table.colorValue,
-    builder: (column) => column,
-  );
-
-  GeneratedColumn<String> get type =>
+  GeneratedColumnWithTypeConverter<TransactionType, String> get type =>
       $composableBuilder(column: $table.type, builder: (column) => column);
 
   GeneratedColumn<bool> get isDefault =>
@@ -1382,50 +1226,64 @@ class $$CategoriesTableAnnotationComposer
       $composableBuilder(column: $table.createdAt, builder: (column) => column);
 }
 
-class $$CategoriesTableTableManager
+class $$TransactionCategoriesTableTableManager
     extends
         RootTableManager<
           _$AppDatabase,
-          $CategoriesTable,
-          Category,
-          $$CategoriesTableFilterComposer,
-          $$CategoriesTableOrderingComposer,
-          $$CategoriesTableAnnotationComposer,
-          $$CategoriesTableCreateCompanionBuilder,
-          $$CategoriesTableUpdateCompanionBuilder,
-          (Category, BaseReferences<_$AppDatabase, $CategoriesTable, Category>),
-          Category,
+          $TransactionCategoriesTable,
+          TransactionCategory,
+          $$TransactionCategoriesTableFilterComposer,
+          $$TransactionCategoriesTableOrderingComposer,
+          $$TransactionCategoriesTableAnnotationComposer,
+          $$TransactionCategoriesTableCreateCompanionBuilder,
+          $$TransactionCategoriesTableUpdateCompanionBuilder,
+          (
+            TransactionCategory,
+            BaseReferences<
+              _$AppDatabase,
+              $TransactionCategoriesTable,
+              TransactionCategory
+            >,
+          ),
+          TransactionCategory,
           PrefetchHooks Function()
         > {
-  $$CategoriesTableTableManager(_$AppDatabase db, $CategoriesTable table)
-    : super(
+  $$TransactionCategoriesTableTableManager(
+    _$AppDatabase db,
+    $TransactionCategoriesTable table,
+  ) : super(
         TableManagerState(
           db: db,
           table: table,
           createFilteringComposer: () =>
-              $$CategoriesTableFilterComposer($db: db, $table: table),
+              $$TransactionCategoriesTableFilterComposer(
+                $db: db,
+                $table: table,
+              ),
           createOrderingComposer: () =>
-              $$CategoriesTableOrderingComposer($db: db, $table: table),
+              $$TransactionCategoriesTableOrderingComposer(
+                $db: db,
+                $table: table,
+              ),
           createComputedFieldComposer: () =>
-              $$CategoriesTableAnnotationComposer($db: db, $table: table),
+              $$TransactionCategoriesTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
           updateCompanionCallback:
               ({
                 Value<int> id = const Value.absent(),
                 Value<String> name = const Value.absent(),
-                Value<int> iconCodePoint = const Value.absent(),
-                Value<String?> iconFontFamily = const Value.absent(),
-                Value<String?> iconFontPackage = const Value.absent(),
-                Value<int> colorValue = const Value.absent(),
-                Value<String> type = const Value.absent(),
+                Value<IconData> icon = const Value.absent(),
+                Value<Color> color = const Value.absent(),
+                Value<TransactionType> type = const Value.absent(),
                 Value<bool> isDefault = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
-              }) => CategoriesCompanion(
+              }) => TransactionCategoriesCompanion(
                 id: id,
                 name: name,
-                iconCodePoint: iconCodePoint,
-                iconFontFamily: iconFontFamily,
-                iconFontPackage: iconFontPackage,
-                colorValue: colorValue,
+                icon: icon,
+                color: color,
                 type: type,
                 isDefault: isDefault,
                 createdAt: createdAt,
@@ -1434,20 +1292,16 @@ class $$CategoriesTableTableManager
               ({
                 Value<int> id = const Value.absent(),
                 required String name,
-                required int iconCodePoint,
-                Value<String?> iconFontFamily = const Value.absent(),
-                Value<String?> iconFontPackage = const Value.absent(),
-                required int colorValue,
-                required String type,
+                required IconData icon,
+                required Color color,
+                required TransactionType type,
                 Value<bool> isDefault = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
-              }) => CategoriesCompanion.insert(
+              }) => TransactionCategoriesCompanion.insert(
                 id: id,
                 name: name,
-                iconCodePoint: iconCodePoint,
-                iconFontFamily: iconFontFamily,
-                iconFontPackage: iconFontPackage,
-                colorValue: colorValue,
+                icon: icon,
+                color: color,
                 type: type,
                 isDefault: isDefault,
                 createdAt: createdAt,
@@ -1460,18 +1314,25 @@ class $$CategoriesTableTableManager
       );
 }
 
-typedef $$CategoriesTableProcessedTableManager =
+typedef $$TransactionCategoriesTableProcessedTableManager =
     ProcessedTableManager<
       _$AppDatabase,
-      $CategoriesTable,
-      Category,
-      $$CategoriesTableFilterComposer,
-      $$CategoriesTableOrderingComposer,
-      $$CategoriesTableAnnotationComposer,
-      $$CategoriesTableCreateCompanionBuilder,
-      $$CategoriesTableUpdateCompanionBuilder,
-      (Category, BaseReferences<_$AppDatabase, $CategoriesTable, Category>),
-      Category,
+      $TransactionCategoriesTable,
+      TransactionCategory,
+      $$TransactionCategoriesTableFilterComposer,
+      $$TransactionCategoriesTableOrderingComposer,
+      $$TransactionCategoriesTableAnnotationComposer,
+      $$TransactionCategoriesTableCreateCompanionBuilder,
+      $$TransactionCategoriesTableUpdateCompanionBuilder,
+      (
+        TransactionCategory,
+        BaseReferences<
+          _$AppDatabase,
+          $TransactionCategoriesTable,
+          TransactionCategory
+        >,
+      ),
+      TransactionCategory,
       PrefetchHooks Function()
     >;
 
@@ -1480,6 +1341,6 @@ class $AppDatabaseManager {
   $AppDatabaseManager(this._db);
   $$TransactionsTableTableManager get transactions =>
       $$TransactionsTableTableManager(_db, _db.transactions);
-  $$CategoriesTableTableManager get categories =>
-      $$CategoriesTableTableManager(_db, _db.categories);
+  $$TransactionCategoriesTableTableManager get transactionCategories =>
+      $$TransactionCategoriesTableTableManager(_db, _db.transactionCategories);
 }

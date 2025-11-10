@@ -1,0 +1,21 @@
+import 'package:drift/drift.dart';
+import 'package:flutter/material.dart';
+
+class IconDataConverter extends TypeConverter<IconData, String> {
+  const IconDataConverter();
+
+  @override
+  IconData fromSql(String fromDb) {
+    final parts = fromDb.split(',');
+    return IconData(
+      int.parse(parts[0]),
+      fontFamily: parts[1],
+      fontPackage: parts[2],
+    );
+  }
+
+  @override
+  String toSql(IconData value) {
+    return '${value.codePoint},${value.fontFamily ?? ''},${value.fontPackage ?? ''}';
+  }
+}
