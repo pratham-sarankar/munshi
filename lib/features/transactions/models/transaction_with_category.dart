@@ -3,7 +3,7 @@ import '../../../core/database/app_database.dart';
 import 'transaction_type.dart';
 
 /// A transaction with its associated category information.
-/// 
+///
 /// The category is guaranteed to be non-null due to the foreign key constraint
 /// with cascade deletion in the database schema. All transactions must have
 /// a valid category reference.
