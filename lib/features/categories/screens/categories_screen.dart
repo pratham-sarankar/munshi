@@ -126,18 +126,19 @@ class _CategoriesScreenState extends State<CategoriesScreen>
             Tab(icon: Icon(Iconsax.add_circle_outline), text: 'Income'),
           ],
         ),
+        actions: [
+          IconButton(
+            onPressed: () {
+              final type = _tabController.index == 0
+                  ? TransactionType.expense
+                  : TransactionType.income;
+              _showAddCategoryDialog(type);
+            },
+            icon: const Icon(Iconsax.add_outline),
+          ),
+        ],
       ),
-      floatingActionButton: FloatingActionButton.extended(
-        heroTag: 'add_category_fab',
-        onPressed: () {
-          final type = _tabController.index == 0
-              ? TransactionType.expense
-              : TransactionType.income;
-          _showAddCategoryDialog(type);
-        },
-        icon: const Icon(Iconsax.add_outline),
-        label: const Text('Add Category'),
-      ),
+
       body: TabBarView(
         controller: _tabController,
         children: [
