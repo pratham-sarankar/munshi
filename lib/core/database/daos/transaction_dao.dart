@@ -249,38 +249,58 @@ class TransactionsDao extends DatabaseAccessor<AppDatabase>
   /// Get spending breakdown by category with both amount and transaction count
   Future<Map<TransactionCategory, CategorySpendingData>>
   getSpendingByCategoryWithCount(DatePeriod period) async {
-    final query =
-        select(transactions).join([
-          innerJoin(
-            transactionCategories,
-            transactions.categoryId.equalsExp(transactionCategories.id),
-          ),
-        ])..where(
-          transactions.date.isBetweenValues(period.startDate, period.endDate) &
-              transactions.type.equals(
-                const TransactionTypeConverter().toSql(TransactionType.expense),
-              ),
-        );
+    // Use efficient SQL GROUP BY to calculate aggregations in the database
+    final aggregationResult = await customSelect(
+      '''
+      SELECT 
+        category_id,
+        SUM(amount) as total_amount,
+        COUNT(*) as transaction_count
+      FROM transactions 
+      WHERE date BETWEEN ? AND ? AND type = ?
+      GROUP BY category_id
+      ''',
+      variables: [
+        Variable.withDateTime(period.startDate),
+        Variable.withDateTime(period.endDate),
+        Variable.withString(
+          const TransactionTypeConverter().toSql(TransactionType.expense),
+        ),
+      ],
+    ).get();
 
-    final result = await query.get();
+    // If no transactions found, return empty map
+    if (aggregationResult.isEmpty) {
+      return <TransactionCategory, CategorySpendingData>{};
+    }
+
+    // Get all category IDs from the aggregation result
+    final categoryIds = aggregationResult
+        .map((row) => row.read<int>('category_id'))
+        .toList();
+
+    // Fetch category details for the relevant categories only
+    final categories = await (select(
+      transactionCategories,
+    )..where((tbl) => tbl.id.isIn(categoryIds))).get();
+
+    // Create a map of category ID to category for efficient lookup
+    final categoryMap = {for (final cat in categories) cat.id: cat};
+
+    // Build the final result map
     final Map<TransactionCategory, CategorySpendingData> categorySpending = {};
 
-    for (final row in result) {
-      final transaction = row.readTable(transactions);
-      final category = row.readTable(transactionCategories);
+    for (final row in aggregationResult) {
+      final categoryId = row.read<int>('category_id');
+      final totalAmount = row.read<double>('total_amount');
+      final transactionCount = row.read<int>('transaction_count');
 
-      if (categorySpending.containsKey(category)) {
-        final existing = categorySpending[category]!;
+      final category = categoryMap[categoryId];
+      if (category != null) {
         categorySpending[category] = CategorySpendingData(
           category: category,
-          totalAmount: existing.totalAmount + transaction.amount,
-          transactionCount: existing.transactionCount + 1,
-        );
-      } else {
-        categorySpending[category] = CategorySpendingData(
-          category: category,
-          totalAmount: transaction.amount,
-          transactionCount: 1,
+          totalAmount: totalAmount,
+          transactionCount: transactionCount,
         );
       }
     }
