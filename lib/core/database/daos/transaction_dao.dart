@@ -21,7 +21,7 @@ class TransactionsDao extends DatabaseAccessor<AppDatabase>
 
   Stream<List<TransactionWithCategory>> watchAllTransactions() {
     final query = select(transactions).join([
-      leftOuterJoin(
+      innerJoin(
         transactionCategories,
         transactions.categoryId.equalsExp(transactionCategories.id),
       ),
@@ -52,7 +52,7 @@ class TransactionsDao extends DatabaseAccessor<AppDatabase>
   Future<List<TransactionWithCategory>>
   getAllTransactionsWithCategories() async {
     final query = select(transactions).join([
-      leftOuterJoin(
+      innerJoin(
         transactionCategories,
         transactions.categoryId.equalsExp(transactionCategories.id),
       ),
@@ -83,7 +83,7 @@ class TransactionsDao extends DatabaseAccessor<AppDatabase>
   ) async {
     final query =
         select(transactions).join([
-            leftOuterJoin(
+            innerJoin(
               transactionCategories,
               transactions.categoryId.equalsExp(transactionCategories.id),
             ),
@@ -251,7 +251,7 @@ class TransactionsDao extends DatabaseAccessor<AppDatabase>
   getSpendingByCategoryWithCount(DatePeriod period) async {
     final query =
         select(transactions).join([
-          leftOuterJoin(
+          innerJoin(
             transactionCategories,
             transactions.categoryId.equalsExp(transactionCategories.id),
           ),
