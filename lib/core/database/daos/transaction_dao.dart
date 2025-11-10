@@ -69,27 +69,6 @@ class TransactionsDao extends DatabaseAccessor<AppDatabase>
     }).toList();
   }
 
-  /// Stream all transactions with their category information
-  Stream<List<TransactionWithCategory>> watchAllTransactionsWithCategories() {
-    final query = select(transactions).join([
-      leftOuterJoin(
-        transactionCategories,
-        transactions.categoryId.equalsExp(transactionCategories.id),
-      ),
-    ])..orderBy([OrderingTerm.desc(transactions.date)]);
-
-    return query.watch().map((rows) {
-      return rows.map((row) {
-        final transaction = row.readTable(transactions);
-        final category = row.readTable(transactionCategories);
-        return TransactionWithCategory(
-          transaction: transaction,
-          category: category,
-        );
-      }).toList();
-    });
-  }
-
   Future<List<Transaction>> getTransactionsByType(TransactionType type) {
     return (select(transactions)..where(
           (tbl) =>
