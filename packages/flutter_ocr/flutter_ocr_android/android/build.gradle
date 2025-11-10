@@ -41,6 +41,7 @@ android {
     dependencies {
         testImplementation 'org.jetbrains.kotlin:kotlin-test'
         testImplementation 'org.mockito:mockito-core:5.20.0'
+        implementation 'com.google.mlkit:text-recognition:16.0.1'
     }
 
     testOptions {
@@ -54,8 +55,4 @@ android {
             }
         }
     }
-}
-
-dependencies {
-    implementation 'com.google.mlkit:text-recognition:16.0.1'
 }

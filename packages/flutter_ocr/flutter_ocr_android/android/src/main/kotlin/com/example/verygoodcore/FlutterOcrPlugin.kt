@@ -24,7 +24,7 @@ class FlutterOcrPlugin : FlutterPlugin, MethodCallHandler {
 
     override fun onMethodCall(call: MethodCall, result: Result) {
         when (call.method) {
-            
+
             "getPlatformName" -> {
                 result.success("Android ML Kit")
             }
@@ -63,9 +63,11 @@ class FlutterOcrPlugin : FlutterPlugin, MethodCallHandler {
             recognizer.process(image)
                 .addOnSuccessListener { recognizedText ->
                     result.success(recognizedText.text)
+                    recognizer.close()
                 }
                 .addOnFailureListener { e ->
                     result.error("OCR_FAILED", e.localizedMessage ?: "Unknown error", null)
+                    recognizer.close()
                 }
 
         } catch (e: Exception) {
