@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:icons_plus/icons_plus.dart';
-import 'package:munshi/core/database/app_database.dart';
 import 'package:munshi/features/transactions/models/grouped_transactions.dart';
+import 'package:munshi/features/transactions/models/transaction_with_category.dart';
 import 'package:munshi/features/transactions/widgets/grouped_transaction_list.dart';
 import 'package:provider/provider.dart';
 import 'package:munshi/features/transactions/providers/transaction_provider.dart';
@@ -173,7 +173,7 @@ class _TransactionsScreenState extends State<TransactionsScreen>
   }
 
   void _showTransactionDetails(
-    Transaction transaction,
+    TransactionWithCategory transaction,
     ColorScheme colorScheme,
   ) {
     showModalBottomSheet(

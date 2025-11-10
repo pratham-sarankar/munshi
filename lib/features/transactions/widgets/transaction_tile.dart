@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:icons_plus/icons_plus.dart';
 import 'package:intl/intl.dart';
-import 'package:munshi/core/database/app_database.dart';
 import 'package:munshi/features/transactions/models/transaction_type.dart';
 import 'package:munshi/core/extensions/currency_extensions.dart';
+import 'package:munshi/features/transactions/models/transaction_with_category.dart';
 
 class TransactionTile extends StatefulWidget {
   const TransactionTile({
@@ -15,9 +15,9 @@ class TransactionTile extends StatefulWidget {
     this.onEdit,
   });
   final VoidCallback onTap;
-  final Transaction transaction;
-  final Future<void> Function(Transaction transaction)? onDelete;
-  final Future<void> Function(Transaction transaction)? onEdit;
+  final TransactionWithCategory transaction;
+  final Future<void> Function(TransactionWithCategory transaction)? onDelete;
+  final Future<void> Function(TransactionWithCategory transaction)? onEdit;
 
   @override
   State<TransactionTile> createState() => _TransactionTileState();

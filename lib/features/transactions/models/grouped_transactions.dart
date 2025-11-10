@@ -1,8 +1,8 @@
-import '../../../core/database/app_database.dart';
+import 'package:munshi/features/transactions/models/transaction_with_category.dart';
 
 class GroupedTransactions {
   final DateTime date;
-  final List<Transaction> transactions;
+  final List<TransactionWithCategory> transactions;
 
   const GroupedTransactions({required this.date, required this.transactions});
 
