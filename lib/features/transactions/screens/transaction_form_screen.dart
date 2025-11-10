@@ -182,7 +182,7 @@ class _TransactionFormScreenState extends State<TransactionFormScreen>
           ? TransactionType.expense
           : TransactionType.income;
       final amount = double.parse(formData['amount']);
-      final TransactionCategory category = type == TransactionType.expense
+      final TransactionCategory? category = type == TransactionType.expense
           ? formData['expense_category']
           : formData['income_category'];
       final datetime = formData['datetime'] as DateTime;
@@ -194,14 +194,18 @@ class _TransactionFormScreenState extends State<TransactionFormScreen>
                 widget.transaction!.id,
               ), // Keep existing ID for updates
               amount: drift.Value(amount),
-              categoryId: drift.Value(category.id),
+              categoryId: category != null
+                  ? drift.Value(category.id)
+                  : const drift.Value.absent(),
               type: drift.Value(type),
               date: drift.Value(datetime),
               note: drift.Value(description),
             )
           : TransactionsCompanion(
               amount: drift.Value(amount),
-              categoryId: drift.Value(category.id),
+              categoryId: category != null
+                  ? drift.Value(category.id)
+                  : const drift.Value.absent(),
               type: drift.Value(type),
               date: drift.Value(datetime),
               note: drift.Value(description),

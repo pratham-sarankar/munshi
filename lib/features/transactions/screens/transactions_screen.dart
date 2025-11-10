@@ -221,20 +221,20 @@ class _TransactionsScreenState extends State<TransactionsScreen>
                           Container(
                             padding: const EdgeInsets.all(18),
                             decoration: BoxDecoration(
-                              color: transaction.category.color.withValues(
+                              color: transaction.categoryColor.withValues(
                                 alpha: 0.12,
                               ),
                               borderRadius: BorderRadius.circular(20),
                               border: Border.all(
-                                color: transaction.category.color.withValues(
+                                color: transaction.categoryColor.withValues(
                                   alpha: 0.2,
                                 ),
                                 width: 1,
                               ),
                             ),
                             child: Icon(
-                              transaction.category.icon,
-                              color: transaction.category.color,
+                              transaction.categoryIcon,
+                              color: transaction.categoryColor,
                               size: 36,
                             ),
                           ),
@@ -290,7 +290,7 @@ class _TransactionsScreenState extends State<TransactionsScreen>
                             const SizedBox(height: 20),
                             _buildModernDetailRow(
                               'Category',
-                              transaction.category.name,
+                              transaction.categoryName,
                               Icons.category,
                               colorScheme,
                             ),

@@ -21,7 +21,7 @@ class TransactionsDao extends DatabaseAccessor<AppDatabase>
 
   Stream<List<TransactionWithCategory>> watchAllTransactions() {
     final query = select(transactions).join([
-      innerJoin(
+      leftOuterJoin(
         transactionCategories,
         transactions.categoryId.equalsExp(transactionCategories.id),
       ),
@@ -30,7 +30,7 @@ class TransactionsDao extends DatabaseAccessor<AppDatabase>
     return query.watch().map((rows) {
       return rows.map((row) {
         final transaction = row.readTable(transactions);
-        final category = row.readTable(transactionCategories);
+        final category = row.readTableOrNull(transactionCategories);
         return TransactionWithCategory(
           transaction: transaction,
           category: category,
@@ -52,7 +52,7 @@ class TransactionsDao extends DatabaseAccessor<AppDatabase>
   Future<List<TransactionWithCategory>>
   getAllTransactionsWithCategories() async {
     final query = select(transactions).join([
-      innerJoin(
+      leftOuterJoin(
         transactionCategories,
         transactions.categoryId.equalsExp(transactionCategories.id),
       ),
@@ -61,7 +61,7 @@ class TransactionsDao extends DatabaseAccessor<AppDatabase>
     final result = await query.get();
     return result.map((row) {
       final transaction = row.readTable(transactions);
-      final category = row.readTable(transactionCategories);
+      final category = row.readTableOrNull(transactionCategories);
       return TransactionWithCategory(
         transaction: transaction,
         category: category,
@@ -83,7 +83,7 @@ class TransactionsDao extends DatabaseAccessor<AppDatabase>
   ) async {
     final query =
         select(transactions).join([
-            innerJoin(
+            leftOuterJoin(
               transactionCategories,
               transactions.categoryId.equalsExp(transactionCategories.id),
             ),
@@ -98,7 +98,7 @@ class TransactionsDao extends DatabaseAccessor<AppDatabase>
     final result = await query.get();
     return result.map((row) {
       final transaction = row.readTable(transactions);
-      final category = row.readTable(transactionCategories);
+      final category = row.readTableOrNull(transactionCategories);
       return TransactionWithCategory(
         transaction: transaction,
         category: category,
@@ -247,7 +247,7 @@ class TransactionsDao extends DatabaseAccessor<AppDatabase>
   }
 
   /// Get spending breakdown by category with both amount and transaction count
-  Future<Map<TransactionCategory, CategorySpendingData>>
+  Future<Map<TransactionCategory?, CategorySpendingData>>
   getSpendingByCategoryWithCount(DatePeriod period) async {
     // Use efficient SQL GROUP BY to calculate aggregations in the database
     final aggregationResult = await customSelect(
@@ -271,38 +271,41 @@ class TransactionsDao extends DatabaseAccessor<AppDatabase>
 
     // If no transactions found, return empty map
     if (aggregationResult.isEmpty) {
-      return <TransactionCategory, CategorySpendingData>{};
+      return <TransactionCategory?, CategorySpendingData>{};
     }
 
-    // Get all category IDs from the aggregation result
+    // Get all category IDs from the aggregation result (excluding nulls)
     final categoryIds = aggregationResult
-        .map((row) => row.read<int>('category_id'))
+        .map((row) => row.readNullable<int>('category_id'))
+        .where((id) => id != null)
+        .cast<int>()
         .toList();
 
     // Fetch category details for the relevant categories only
-    final categories = await (select(
-      transactionCategories,
-    )..where((tbl) => tbl.id.isIn(categoryIds))).get();
+    final categories = categoryIds.isNotEmpty
+        ? await (select(
+            transactionCategories,
+          )..where((tbl) => tbl.id.isIn(categoryIds))).get()
+        : <TransactionCategory>[];
 
     // Create a map of category ID to category for efficient lookup
     final categoryMap = {for (final cat in categories) cat.id: cat};
 
     // Build the final result map
-    final Map<TransactionCategory, CategorySpendingData> categorySpending = {};
+    final Map<TransactionCategory?, CategorySpendingData> categorySpending = {};
 
     for (final row in aggregationResult) {
-      final categoryId = row.read<int>('category_id');
+      final categoryId = row.readNullable<int>('category_id');
       final totalAmount = row.read<double>('total_amount');
       final transactionCount = row.read<int>('transaction_count');
 
-      final category = categoryMap[categoryId];
-      if (category != null) {
-        categorySpending[category] = CategorySpendingData(
-          category: category,
-          totalAmount: totalAmount,
-          transactionCount: transactionCount,
-        );
-      }
+      final category = categoryId != null ? categoryMap[categoryId] : null;
+
+      categorySpending[category] = CategorySpendingData(
+        category: category,
+        totalAmount: totalAmount,
+        transactionCount: transactionCount,
+      );
     }
 
     return categorySpending;

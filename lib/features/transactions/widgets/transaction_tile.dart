@@ -80,16 +80,16 @@ class _TransactionTileState extends State<TransactionTile>
         leading: Container(
           padding: const EdgeInsets.all(10),
           decoration: BoxDecoration(
-            color: widget.transaction.category.color.withValues(alpha: 0.12),
+            color: widget.transaction.categoryColor.withValues(alpha: 0.12),
             borderRadius: BorderRadius.circular(12),
           ),
           child: Icon(
-            widget.transaction.category.icon,
-            color: widget.transaction.category.color,
+            widget.transaction.categoryIcon,
+            color: widget.transaction.categoryColor,
             size: 22,
           ),
         ),
-        title: Text(widget.transaction.category.name),
+        title: Text(widget.transaction.categoryName),
         subtitle: Text(
           DateFormat('d MMM • h:mm a').format(widget.transaction.date),
         ),
