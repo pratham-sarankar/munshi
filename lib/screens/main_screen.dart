@@ -5,6 +5,7 @@ import 'package:munshi/features/settings/screens/settings_screen.dart';
 import 'package:munshi/features/transactions/providers/transaction_provider.dart';
 import 'package:munshi/features/transactions/screens/transaction_form_screen.dart';
 import 'package:munshi/features/transactions/screens/transactions_screen.dart';
+import 'package:munshi/features/categories/screens/categories_screen.dart';
 import 'package:provider/provider.dart';
 
 class MainScreen extends StatefulWidget {
@@ -47,7 +48,7 @@ class _MainScreenState extends State<MainScreen> {
         const HomeScreen(),
         const TransactionsScreen(),
         const SizedBox(),
-        const Scaffold(),
+        const CategoriesScreen(),
         const SettingsScreen(),
       ];
 

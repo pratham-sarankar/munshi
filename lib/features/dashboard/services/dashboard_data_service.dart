@@ -1,6 +1,6 @@
+import 'package:munshi/core/database/app_database.dart';
 import 'package:munshi/core/models/date_period.dart';
 import 'package:munshi/core/database/daos/transaction_dao.dart';
-import 'package:munshi/features/transactions/models/transaction_category.dart';
 import 'package:munshi/features/dashboard/models/category_spending_data.dart';
 
 class PeriodSummaryData {

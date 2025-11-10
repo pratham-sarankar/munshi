@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:munshi/features/transactions/models/transaction_category.dart';
+import 'package:munshi/core/database/app_database.dart';
 import 'package:munshi/core/extensions/currency_extensions.dart';
 
 class CategoryTile extends StatefulWidget {
