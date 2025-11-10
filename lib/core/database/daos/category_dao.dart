@@ -7,7 +7,7 @@ part 'category_dao.g.dart';
 @DriftAccessor(tables: [Categories])
 class CategoriesDao extends DatabaseAccessor<AppDatabase>
     with _$CategoriesDaoMixin {
-  CategoriesDao(AppDatabase db) : super(db);
+  CategoriesDao(super.db);
 
   // Get all categories
   Future<List<Category>> getAllCategories() => select(categories).get();
@@ -21,13 +21,11 @@ class CategoriesDao extends DatabaseAccessor<AppDatabase>
       getCategoriesByType('expense');
 
   // Get income categories
-  Future<List<Category>> getIncomeCategories() =>
-      getCategoriesByType('income');
+  Future<List<Category>> getIncomeCategories() => getCategoriesByType('income');
 
   // Get category by id
   Future<Category?> getCategoryById(int id) =>
-      (select(categories)..where((tbl) => tbl.id.equals(id)))
-          .getSingleOrNull();
+      (select(categories)..where((tbl) => tbl.id.equals(id))).getSingleOrNull();
 
   // Insert category
   Future<int> insertCategory(CategoriesCompanion category) =>
@@ -42,8 +40,11 @@ class CategoriesDao extends DatabaseAccessor<AppDatabase>
       (delete(categories)..where((tbl) => tbl.id.equals(id))).go();
 
   // Check if category name exists
-  Future<bool> categoryNameExists(String name, String type,
-      {int? excludeId}) async {
+  Future<bool> categoryNameExists(
+    String name,
+    String type, {
+    int? excludeId,
+  }) async {
     final query = select(categories)
       ..where((tbl) => tbl.name.equals(name) & tbl.type.equals(type));
 

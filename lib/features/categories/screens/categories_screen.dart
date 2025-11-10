@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:icons_plus/icons_plus.dart';
+import 'package:munshi/core/database/app_database.dart';
 import 'package:munshi/features/categories/providers/category_provider.dart';
 import 'package:munshi/features/categories/widgets/add_edit_category_dialog.dart';
 import 'package:munshi/features/categories/widgets/category_list_tile.dart';
@@ -43,7 +44,7 @@ class _CategoriesScreenState extends State<CategoriesScreen>
     }
   }
 
-  Future<void> _showEditCategoryDialog(category, String type) async {
+  Future<void> _showEditCategoryDialog(Category category, String type) async {
     final result = await showDialog<bool>(
       context: context,
       builder: (context) =>
@@ -111,9 +112,6 @@ class _CategoriesScreenState extends State<CategoriesScreen>
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
-
     return Scaffold(
       appBar: AppBar(
         title: const Text('Categories'),
