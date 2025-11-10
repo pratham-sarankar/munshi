@@ -9,8 +9,8 @@ class IconDataConverter extends TypeConverter<IconData, String> {
     final parts = fromDb.split(',');
     return IconData(
       int.parse(parts[0]),
-      fontFamily: parts[1],
-      fontPackage: parts[2],
+      fontFamily: parts[1].isEmpty ? null : parts[1],
+      fontPackage: parts[2].isEmpty ? null : parts[2],
     );
   }
 
