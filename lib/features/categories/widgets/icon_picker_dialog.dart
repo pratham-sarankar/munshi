@@ -2,10 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:icons_plus/icons_plus.dart';
 
 class IconPickerDialog extends StatefulWidget {
-  const IconPickerDialog({
-    super.key,
-    this.selectedIcon,
-  });
+  const IconPickerDialog({super.key, this.selectedIcon});
 
   final IconData? selectedIcon;
 
@@ -25,91 +22,91 @@ class _IconPickerDialogState extends State<IconPickerDialog> {
     Iconsax.card_outline,
     Iconsax.dollar_circle_outline,
     Iconsax.coin_outline,
-    
+
     // Food & Dining
     Iconsax.reserve_outline,
     Iconsax.coffee_outline,
     Iconsax.cake_outline,
-    
+
     // Transportation
     Iconsax.car_outline,
     Iconsax.bus_outline,
     Iconsax.airplane_outline,
     Iconsax.ship_outline,
     Iconsax.gas_station_outline,
-    
+
     // Shopping
     Iconsax.shopping_bag_outline,
     Iconsax.shopping_cart_outline,
     Iconsax.tag_outline,
     Iconsax.bag_outline,
-    
+
     // Entertainment
     Iconsax.music_outline,
     Iconsax.video_play_outline,
     Iconsax.game_outline,
     Iconsax.ticket_outline,
     Iconsax.headphone_outline,
-    
+
     // Healthcare
     Iconsax.health_outline,
     Iconsax.heart_outline,
     Iconsax.hospital_outline,
     Iconsax.activity_outline,
-    
+
     // Work & Business
     Iconsax.briefcase_outline,
     Iconsax.shop_outline,
     Iconsax.code_outline,
     Iconsax.chart_outline,
     Iconsax.bank_outline,
-    
+
     // Home & Living
     Iconsax.home_outline,
     Iconsax.lamp_outline,
     Iconsax.building_outline,
     Iconsax.electricity_outline,
-    
+
     // Education
     Iconsax.book_outline,
     Iconsax.teacher_outline,
     Iconsax.award_outline,
-    
+
     // Gifts & Others
     Iconsax.gift_outline,
     Iconsax.more_outline,
     Iconsax.star_outline,
     Iconsax.crown_outline,
-    
+
     // Bills & Utilities
     Iconsax.receipt_outline,
     Iconsax.document_outline,
     Iconsax.receipt_item_outline,
-    
+
     // Sports & Fitness
     Iconsax.weight_outline,
     Iconsax.flag_outline,
-    
+
     // Pets & Animals
     Iconsax.pet_outline,
-    
+
     // Beauty & Personal Care
     Iconsax.scissor_outline,
     Iconsax.brush_outline,
-    
+
     // Communication
     Iconsax.call_outline,
     Iconsax.message_outline,
     Iconsax.sms_outline,
-    
+
     // Technology
     Iconsax.mobile_outline,
     Iconsax.monitor_outline,
     Iconsax.wifi_outline,
-    
+
     // Clothing
-    Iconsax.shirt_outline,
-    
+    Iconsax.shopping_cart_outline,
+
     // Additional
     Iconsax.trend_up_outline,
     Iconsax.trend_down_outline,

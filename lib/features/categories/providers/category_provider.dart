@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:munshi/core/database/app_database.dart';
+import 'package:munshi/core/database/daos/category_dao.dart';
 import 'package:munshi/core/service_locator.dart';
 
 class CategoryProvider extends ChangeNotifier {
@@ -47,9 +48,15 @@ class CategoryProvider extends ChangeNotifier {
     await loadCategories();
   }
 
-  Future<bool> categoryNameExists(String name, String type,
-      {int? excludeId}) async {
-    return await _categoriesDao.categoryNameExists(name, type,
-        excludeId: excludeId);
+  Future<bool> categoryNameExists(
+    String name,
+    String type, {
+    int? excludeId,
+  }) async {
+    return await _categoriesDao.categoryNameExists(
+      name,
+      type,
+      excludeId: excludeId,
+    );
   }
 }

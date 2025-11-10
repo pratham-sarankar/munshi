@@ -8,11 +8,7 @@ import 'package:provider/provider.dart';
 import '../providers/category_provider.dart';
 
 class AddEditCategoryDialog extends StatefulWidget {
-  const AddEditCategoryDialog({
-    super.key,
-    required this.type,
-    this.category,
-  });
+  const AddEditCategoryDialog({super.key, required this.type, this.category});
 
   final String type; // 'expense' or 'income'
   final Category? category;
@@ -24,7 +20,7 @@ class AddEditCategoryDialog extends StatefulWidget {
 class _AddEditCategoryDialogState extends State<AddEditCategoryDialog> {
   final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
-  
+
   late IconData _selectedIcon;
   late Color _selectedColor;
   bool _isLoading = false;
@@ -228,10 +224,7 @@ class _AddEditCategoryDialogState extends State<AddEditCategoryDialog> {
                                 color: _selectedColor.withValues(alpha: 0.1),
                                 borderRadius: BorderRadius.circular(12),
                               ),
-                              child: Icon(
-                                _selectedIcon,
-                                color: _selectedColor,
-                              ),
+                              child: Icon(_selectedIcon, color: _selectedColor),
                             ),
                             const SizedBox(width: 16),
                             Expanded(
@@ -268,8 +261,9 @@ class _AddEditCategoryDialogState extends State<AddEditCategoryDialog> {
                                 color: _selectedColor,
                                 borderRadius: BorderRadius.circular(12),
                                 border: Border.all(
-                                  color: colorScheme.outline
-                                      .withValues(alpha: 0.2),
+                                  color: colorScheme.outline.withValues(
+                                    alpha: 0.2,
+                                  ),
                                   width: 2,
                                 ),
                               ),

@@ -46,10 +46,8 @@ class _CategoriesScreenState extends State<CategoriesScreen>
   Future<void> _showEditCategoryDialog(category, String type) async {
     final result = await showDialog<bool>(
       context: context,
-      builder: (context) => AddEditCategoryDialog(
-        type: type,
-        category: category,
-      ),
+      builder: (context) =>
+          AddEditCategoryDialog(type: type, category: category),
     );
     if (result == true && mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -122,18 +120,13 @@ class _CategoriesScreenState extends State<CategoriesScreen>
         bottom: TabBar(
           controller: _tabController,
           tabs: const [
-            Tab(
-              icon: Icon(Iconsax.minus_cirlce_outline),
-              text: 'Expense',
-            ),
-            Tab(
-              icon: Icon(Iconsax.add_circle_outline),
-              text: 'Income',
-            ),
+            Tab(icon: Icon(Iconsax.minus_cirlce_outline), text: 'Expense'),
+            Tab(icon: Icon(Iconsax.add_circle_outline), text: 'Income'),
           ],
         ),
       ),
       floatingActionButton: FloatingActionButton.extended(
+        heroTag: 'add_category_fab',
         onPressed: () {
           final type = _tabController.index == 0 ? 'expense' : 'income';
           _showAddCategoryDialog(type);
@@ -148,15 +141,13 @@ class _CategoriesScreenState extends State<CategoriesScreen>
           _CategoryList(
             type: 'expense',
             onEdit: (category) => _showEditCategoryDialog(category, 'expense'),
-            onDelete: (category) =>
-                _deleteCategory(category.id, category.name),
+            onDelete: (category) => _deleteCategory(category.id, category.name),
           ),
           // Income categories
           _CategoryList(
             type: 'income',
             onEdit: (category) => _showEditCategoryDialog(category, 'income'),
-            onDelete: (category) =>
-                _deleteCategory(category.id, category.name),
+            onDelete: (category) => _deleteCategory(category.id, category.name),
           ),
         ],
       ),
@@ -183,9 +174,7 @@ class _CategoryList extends StatelessWidget {
     return Consumer<CategoryProvider>(
       builder: (context, provider, child) {
         if (provider.isLoading) {
-          return const Center(
-            child: CircularProgressIndicator(),
-          );
+          return const Center(child: CircularProgressIndicator());
         }
 
         final categories = type == 'expense'

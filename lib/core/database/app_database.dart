@@ -1,6 +1,6 @@
 import 'package:drift/drift.dart';
 import 'package:drift_flutter/drift_flutter.dart';
-import 'package:flutter/material.dart' show Colors, Color, IconData;
+import 'package:flutter/material.dart' show Colors;
 import 'package:icons_plus/icons_plus.dart' show Iconsax;
 import 'package:munshi/core/database/converters/transaction_type_converter.dart';
 import 'package:munshi/core/database/converters/transaction_category_converter.dart';
@@ -13,7 +13,10 @@ import './daos/transaction_dao.dart';
 import './daos/category_dao.dart';
 part 'app_database.g.dart';
 
-@DriftDatabase(tables: [Transactions, Categories], daos: [TransactionsDao, CategoriesDao])
+@DriftDatabase(
+  tables: [Transactions, Categories],
+  daos: [TransactionsDao, CategoriesDao],
+)
 class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());
 
