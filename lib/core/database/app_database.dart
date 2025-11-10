@@ -75,13 +75,6 @@ class AppDatabase extends _$AppDatabase {
         isDefault: const Value(true),
       ),
       TransactionCategoriesCompanion.insert(
-        name: 'Entertainment',
-        icon: Iconsax.music_outline,
-        color: Colors.orangeAccent,
-        type: TransactionType.expense,
-        isDefault: const Value(true),
-      ),
-      TransactionCategoriesCompanion.insert(
         name: 'Healthcare',
         icon: Iconsax.health_outline,
         color: Colors.greenAccent,
