@@ -80,14 +80,14 @@ class AppDatabase extends _$AppDatabase {
       TransactionCategoriesCompanion.insert(
         name: 'Healthcare',
         icon: Iconsax.health_outline,
-        color: Colors.greenAccent,
+        color: Colors.green,
         type: TransactionType.expense,
         isDefault: const Value(true),
       ),
       TransactionCategoriesCompanion.insert(
         name: 'Utilities',
         icon: Iconsax.electricity_outline,
-        color: Colors.tealAccent,
+        color: Colors.teal,
         type: TransactionType.expense,
         isDefault: const Value(true),
       ),
