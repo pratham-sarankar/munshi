@@ -20,8 +20,10 @@ part 'app_database.g.dart';
 class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());
 
+  AppDatabase.forTesting(super.executor);
+
   @override
-  int get schemaVersion => 3;
+  int get schemaVersion => 4;
 
   @override
   MigrationStrategy get migration {
@@ -39,6 +41,10 @@ class AppDatabase extends _$AppDatabase {
         if (from < 3) {
           // Migrate from storing category object to categoryId foreign key
           await _migrateToCategoryId(m);
+        }
+        if (from < 4) {
+          // Update default colors for Healthcare and Utilities categories
+          await _updateCategoryColors();
         }
       },
     );
@@ -166,6 +172,28 @@ class AppDatabase extends _$AppDatabase {
     // 1. Read existing transactions
     // 2. Map category objects to category IDs
     // 3. Insert transactions with new schema
+  }
+
+  Future<void> _updateCategoryColors() async {
+    // Update Healthcare category color from greenAccent (0xFF69F0AE) to green (0xFF4CAF50)
+    await customStatement(
+      '''
+      UPDATE transaction_categories 
+      SET color = ? 
+      WHERE name = 'Healthcare' AND is_default = 1 AND color = ?
+    ''',
+      [Colors.green.toARGB32(), const Color(0xFF69F0AE).toARGB32()],
+    );
+
+    // Update Utilities category color from tealAccent (0xFF64FFDA) to teal (0xFF009688)
+    await customStatement(
+      '''
+      UPDATE transaction_categories 
+      SET color = ? 
+      WHERE name = 'Utilities' AND is_default = 1 AND color = ?
+    ''',
+      [Colors.teal.toARGB32(), const Color(0xFF64FFDA).toARGB32()],
+    );
   }
 
   static QueryExecutor _openConnection() {

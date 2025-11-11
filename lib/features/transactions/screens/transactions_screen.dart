@@ -12,7 +12,6 @@ import 'package:munshi/features/transactions/models/transaction_filter.dart';
 import 'package:munshi/providers/currency_provider.dart';
 import 'package:munshi/features/categories/providers/category_provider.dart';
 import 'package:munshi/features/transactions/widgets/category_selection_bottom_sheet.dart';
-import 'package:munshi/core/database/app_database.dart';
 import 'package:drift/drift.dart' as drift;
 
 class TransactionsScreen extends StatefulWidget {
@@ -167,7 +166,10 @@ class _TransactionsScreenState extends State<TransactionsScreen>
                     );
                   },
                   onCategoryTap: (transaction) {
-                    _showCategorySelectionSheet(transaction, transactionProvider);
+                    _showCategorySelectionSheet(
+                      transaction,
+                      transactionProvider,
+                    );
                   },
                   groupedTransactions: groupedTransactions,
                 ),
@@ -517,9 +519,11 @@ class _TransactionsScreenState extends State<TransactionsScreen>
     TransactionWithCategory transaction,
     TransactionProvider transactionProvider,
   ) {
-    final categoryProvider =
-        Provider.of<CategoryProvider>(context, listen: false);
-    
+    final categoryProvider = Provider.of<CategoryProvider>(
+      context,
+      listen: false,
+    );
+
     // Get categories based on transaction type
     final categories = transaction.type.name == 'expense'
         ? categoryProvider.expenseCategories
@@ -538,15 +542,13 @@ class _TransactionsScreenState extends State<TransactionsScreen>
           final updatedTransaction = transaction.transaction.copyWith(
             categoryId: drift.Value(selectedCategory.id),
           );
-          
+
           await transactionProvider.updateTransaction(updatedTransaction);
-          
+
           if (mounted) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
-                content: Text(
-                  'Category changed to ${selectedCategory.name}',
-                ),
+                content: Text('Category changed to ${selectedCategory.name}'),
                 behavior: SnackBarBehavior.floating,
               ),
             );
