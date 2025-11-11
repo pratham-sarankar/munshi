@@ -45,12 +45,12 @@ class _MainScreenState extends State<MainScreen> {
 
   // Build screens dynamically to reflect currency changes
   List<Widget> get _screens => [
-        const HomeScreen(),
-        const TransactionsScreen(),
-        const SizedBox(),
-        const CategoriesScreen(),
-        const SettingsScreen(),
-      ];
+    const HomeScreen(),
+    const TransactionsScreen(),
+    const SizedBox(),
+    const CategoriesScreen(),
+    const SettingsScreen(),
+  ];
 
   @override
   Widget build(BuildContext context) {
