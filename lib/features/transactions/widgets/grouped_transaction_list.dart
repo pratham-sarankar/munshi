@@ -15,6 +15,7 @@ class GroupedTransactionList extends StatefulWidget {
     required this.onTap,
     this.onDelete,
     this.onEdit,
+    this.onCategoryTap,
     this.controller,
   });
 
@@ -22,6 +23,7 @@ class GroupedTransactionList extends StatefulWidget {
   final Function(TransactionWithCategory) onTap;
   final Future<void> Function(TransactionWithCategory transaction)? onDelete;
   final Future<void> Function(TransactionWithCategory transaction)? onEdit;
+  final Function(TransactionWithCategory)? onCategoryTap;
   final ScrollController? controller;
 
   @override
@@ -211,6 +213,9 @@ class _GroupedTransactionListState extends State<GroupedTransactionList>
                 },
                 onDelete: widget.onDelete,
                 onEdit: widget.onEdit,
+                onCategoryTap: widget.onCategoryTap != null
+                    ? () => widget.onCategoryTap!(transaction)
+                    : null,
               ),
             ),
           ),

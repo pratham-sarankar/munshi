@@ -10,6 +10,10 @@ import 'package:munshi/core/extensions/currency_extensions.dart';
 import 'package:munshi/features/transactions/widgets/transaction_filter_bottom_sheet.dart';
 import 'package:munshi/features/transactions/models/transaction_filter.dart';
 import 'package:munshi/providers/currency_provider.dart';
+import 'package:munshi/features/categories/providers/category_provider.dart';
+import 'package:munshi/features/transactions/widgets/category_selection_bottom_sheet.dart';
+import 'package:munshi/core/database/app_database.dart';
+import 'package:drift/drift.dart' as drift;
 
 class TransactionsScreen extends StatefulWidget {
   const TransactionsScreen({super.key});
@@ -161,6 +165,9 @@ class _TransactionsScreenState extends State<TransactionsScreen>
                         ),
                       ),
                     );
+                  },
+                  onCategoryTap: (transaction) {
+                    _showCategorySelectionSheet(transaction, transactionProvider);
                   },
                   groupedTransactions: groupedTransactions,
                 ),
@@ -504,5 +511,48 @@ class _TransactionsScreenState extends State<TransactionsScreen>
     }
 
     return activeFilters.join(' • ');
+  }
+
+  void _showCategorySelectionSheet(
+    TransactionWithCategory transaction,
+    TransactionProvider transactionProvider,
+  ) {
+    final categoryProvider =
+        Provider.of<CategoryProvider>(context, listen: false);
+    
+    // Get categories based on transaction type
+    final categories = transaction.type.name == 'expense'
+        ? categoryProvider.expenseCategories
+        : categoryProvider.incomeCategories;
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => CategorySelectionBottomSheet(
+        categories: categories,
+        currentCategoryId: transaction.categoryId,
+        transactionType: transaction.type,
+        onCategorySelected: (selectedCategory) async {
+          // Update the transaction with the new category
+          final updatedTransaction = transaction.transaction.copyWith(
+            categoryId: drift.Value(selectedCategory.id),
+          );
+          
+          await transactionProvider.updateTransaction(updatedTransaction);
+          
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(
+                  'Category changed to ${selectedCategory.name}',
+                ),
+                behavior: SnackBarBehavior.floating,
+              ),
+            );
+          }
+        },
+      ),
+    );
   }
 }
