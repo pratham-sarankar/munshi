@@ -196,7 +196,9 @@ class _TransactionFormScreenState extends State<TransactionFormScreen>
               amount: drift.Value(amount),
               categoryId: category != null
                   ? drift.Value(category.id)
-                  : const drift.Value.absent(),
+                  : const drift.Value(
+                      null,
+                    ), // Explicitly set to null for updates
               type: drift.Value(type),
               date: drift.Value(datetime),
               note: drift.Value(description),
@@ -205,7 +207,7 @@ class _TransactionFormScreenState extends State<TransactionFormScreen>
               amount: drift.Value(amount),
               categoryId: category != null
                   ? drift.Value(category.id)
-                  : const drift.Value.absent(),
+                  : const drift.Value(null), // Use absent for new transactions
               type: drift.Value(type),
               date: drift.Value(datetime),
               note: drift.Value(description),
