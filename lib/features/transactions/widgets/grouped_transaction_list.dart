@@ -7,7 +7,9 @@ import 'package:munshi/features/transactions/widgets/transaction_tile.dart';
 
 class GroupedTransactionList extends StatefulWidget {
   const GroupedTransactionList({
-    required this.groupedTransactions, required this.onTap, super.key,
+    required this.groupedTransactions,
+    required this.onTap,
+    super.key,
     this.onDelete,
     this.onEdit,
     this.onCategoryTap,
@@ -18,10 +20,10 @@ class GroupedTransactionList extends StatefulWidget {
   static const double _kDividerIndent = 72;
 
   final List<GroupedTransactions> groupedTransactions;
-  final Function(TransactionWithCategory) onTap;
+  final void Function(TransactionWithCategory) onTap;
   final Future<void> Function(TransactionWithCategory transaction)? onDelete;
   final Future<void> Function(TransactionWithCategory transaction)? onEdit;
-  final Function(TransactionWithCategory)? onCategoryTap;
+  final void Function(TransactionWithCategory)? onCategoryTap;
   final ScrollController? controller;
 
   @override

@@ -10,12 +10,13 @@ import 'package:munshi/providers/currency_provider.dart';
 import 'package:provider/provider.dart';
 
 class TransactionFilterBottomSheet extends StatefulWidget {
-
   const TransactionFilterBottomSheet({
-    required this.initialFilter, required this.onApplyFilter, super.key,
+    required this.initialFilter,
+    required this.onApplyFilter,
+    super.key,
   });
   final TransactionFilter initialFilter;
-  final Function(TransactionFilter) onApplyFilter;
+  final void Function(TransactionFilter) onApplyFilter;
 
   @override
   State<TransactionFilterBottomSheet> createState() =>

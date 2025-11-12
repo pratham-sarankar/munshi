@@ -16,7 +16,7 @@ class TransactionFormScreen extends StatefulWidget {
     this.transaction,
   });
   final TransactionWithCategory? transaction;
-  final Function(drift.Insertable<Transaction> transaction) onSubmit;
+  final void Function(drift.Insertable<Transaction> transaction) onSubmit;
   @override
   State<TransactionFormScreen> createState() => _TransactionFormScreenState();
 }

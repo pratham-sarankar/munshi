@@ -129,9 +129,9 @@ class _LoginScreenState extends State<LoginScreen>
   Future<void> _handleGoogleSignIn() async {
     final result = await locator<AuthService>().signInWithGoogle();
     if (result && mounted) {
-      Navigator.pushReplacement(
+      await Navigator.pushReplacement(
         context,
-        MaterialPageRoute(
+        MaterialPageRoute<void>(
           builder: (context) {
             return const MainScreen();
           },

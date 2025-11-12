@@ -89,17 +89,17 @@ class _SettingsScreenState extends State<SettingsScreen>
       ),
     );
 
-    if (result ?? false && mounted) {
+    if (mounted && (result ?? false)) {
       try {
         await locator<AuthService>().signOut();
         if (mounted) {
-          Navigator.pushAndRemoveUntil(
+          await Navigator.pushAndRemoveUntil(
             context,
-            MaterialPageRoute(builder: (_) => const LoginScreen()),
+            MaterialPageRoute<void>(builder: (_) => const LoginScreen()),
             (route) => false,
           );
         }
-      } catch (e) {
+      } on Exception catch (e) {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
@@ -293,7 +293,7 @@ Best regards,
                               onTap: () {
                                 HapticFeedback.lightImpact();
                                 Navigator.of(context).push(
-                                  MaterialPageRoute(
+                                  MaterialPageRoute<void>(
                                     builder: (_) =>
                                         const CurrencySelectionScreen(),
                                   ),
@@ -458,7 +458,7 @@ Best regards,
                                   'https://munshi.sarankar.com/privacy.html',
                             );
                             Navigator.of(context).push(
-                              MaterialPageRoute(
+                              MaterialPageRoute<void>(
                                 builder: (context) => const WebViewScreen(
                                   url: privacyPolicyUrl,
                                   title: 'Privacy Policy',
@@ -499,9 +499,11 @@ Best regards,
                                   'https://munshi.sarankar.com/faq.html',
                             );
                             Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (context) =>
-                                    const WebViewScreen(url: faqUrl, title: 'FAQ'),
+                              MaterialPageRoute<void>(
+                                builder: (context) => const WebViewScreen(
+                                  url: faqUrl,
+                                  title: 'FAQ',
+                                ),
                               ),
                             );
                           },
@@ -702,7 +704,6 @@ Best regards,
 }
 
 class _SettingsTile extends StatelessWidget {
-
   const _SettingsTile({
     required this.title,
     this.subtitle,

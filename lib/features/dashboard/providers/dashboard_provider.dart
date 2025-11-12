@@ -10,7 +10,6 @@ import 'package:munshi/providers/currency_provider.dart';
 import 'package:munshi/providers/period_provider.dart';
 
 class DashboardProvider extends ChangeNotifier {
-
   // Constructor
   DashboardProvider(
     this._dashboardDataService,
@@ -83,7 +82,7 @@ class DashboardProvider extends ChangeNotifier {
     notifyListeners();
 
     // Add 300ms delay for smoother UX
-    await Future.delayed(const Duration(milliseconds: 300));
+    await Future<void>.delayed(const Duration(milliseconds: 300));
 
     try {
       // Load both summary data and category spending in parallel

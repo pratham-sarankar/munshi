@@ -156,7 +156,7 @@ class _TransactionsScreenState extends State<TransactionsScreen>
                   },
                   onEdit: (transaction) async {
                     Navigator.of(context).push(
-                      MaterialPageRoute(
+                      MaterialPageRoute<void>(
                         builder: (context) => TransactionFormScreen(
                           transaction: transaction,
                           onSubmit: transactionProvider.updateTransaction,
@@ -180,11 +180,11 @@ class _TransactionsScreenState extends State<TransactionsScreen>
     );
   }
 
-  void _showTransactionDetails(
+  Future<void> _showTransactionDetails(
     TransactionWithCategory transaction,
     ColorScheme colorScheme,
-  ) {
-    showModalBottomSheet(
+  ) async {
+    await showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
@@ -459,11 +459,11 @@ class _TransactionsScreenState extends State<TransactionsScreen>
     );
   }
 
-  void _showFilterBottomSheet(
+  Future<void> _showFilterBottomSheet(
     BuildContext context,
     TransactionProvider provider,
-  ) {
-    showModalBottomSheet(
+  ) async {
+    await showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
@@ -513,10 +513,10 @@ class _TransactionsScreenState extends State<TransactionsScreen>
     return activeFilters.join(' • ');
   }
 
-  void _showCategorySelectionSheet(
+  Future<void> _showCategorySelectionSheet(
     TransactionWithCategory transaction,
     TransactionProvider transactionProvider,
-  ) {
+  ) async {
     final categoryProvider = Provider.of<CategoryProvider>(
       context,
       listen: false,
@@ -527,7 +527,7 @@ class _TransactionsScreenState extends State<TransactionsScreen>
         ? categoryProvider.expenseCategories
         : categoryProvider.incomeCategories;
 
-    showModalBottomSheet(
+    await showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,

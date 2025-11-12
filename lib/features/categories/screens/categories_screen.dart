@@ -35,7 +35,7 @@ class _CategoriesScreenState extends State<CategoriesScreen>
       context: context,
       builder: (context) => AddEditCategoryDialog(type: type),
     );
-    if (result ?? false && mounted) {
+    if (mounted && (result ?? false)) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Category added successfully'),
@@ -54,7 +54,7 @@ class _CategoriesScreenState extends State<CategoriesScreen>
       builder: (context) =>
           AddEditCategoryDialog(type: type, category: category),
     );
-    if (result ?? false && mounted) {
+    if (mounted && (result ?? false)) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Category updated successfully'),
@@ -89,7 +89,7 @@ class _CategoriesScreenState extends State<CategoriesScreen>
       ),
     );
 
-    if (confirmed ?? false && mounted) {
+    if (mounted && (confirmed ?? false)) {
       try {
         await context.read<CategoryProvider>().deleteCategory(categoryId);
         if (mounted) {

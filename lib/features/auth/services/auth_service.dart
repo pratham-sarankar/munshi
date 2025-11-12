@@ -54,18 +54,20 @@ class AuthService extends ChangeNotifier {
       await _loadCachedUserData();
 
       // Then fetch fresh user profile in background to update cache
-      getUserProfile()
-          .then((user) async {
-            if (user != null) {
-              _currentUser = user;
-              await _cacheUserData(user); // Cache the fresh data
-              notifyListeners();
-            }
-          })
-          .catchError((error) async {
-            // Don't emit null here - keep existing cached user if any
-            log('Failed to fetch user profile in background: $error');
-          });
+      unawaited(
+        getUserProfile()
+            .then((user) async {
+              if (user != null) {
+                _currentUser = user;
+                await _cacheUserData(user); // Cache the fresh data
+                notifyListeners();
+              }
+            })
+            .catchError((Object error) async {
+              // Don't emit null here - keep existing cached user if any
+              log('Failed to fetch user profile in background: $error');
+            }),
+      );
     }
     return this;
   }
