@@ -1,14 +1,14 @@
-import 'dart:async';
 import 'dart:developer';
-import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_ocr/flutter_ocr.dart';
 import 'package:icons_plus/icons_plus.dart';
 import 'package:munshi/features/dashboard/screens/home_screen.dart';
 import 'package:munshi/features/settings/screens/settings_screen.dart';
 import 'package:munshi/features/transactions/providers/transaction_provider.dart';
 import 'package:munshi/features/transactions/screens/transaction_form_screen.dart';
 import 'package:munshi/features/transactions/screens/transactions_screen.dart';
+import 'package:munshi/widgets/share_handler_widget.dart';
 import 'package:munshi/features/categories/screens/categories_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:share_handler/share_handler.dart';
@@ -59,48 +59,60 @@ class _MainScreenState extends State<MainScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (context) {
-                return TransactionFormScreen(
-                  onSubmit: (transaction) {
-                    final provider = context.read<TransactionProvider>();
-                    provider.addTransaction(transaction);
-                  },
-                );
-              },
-            ),
-          );
-          // Handle floating action button press
-        },
-        shape: const CircleBorder(),
-        elevation: 2,
-        child: const Icon(Iconsax.add_outline),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      bottomNavigationBar: BottomAppBar(
-        notchMargin: 10,
-        shape: const CircularNotchedRectangle(),
-        elevation: 10,
-        child: NavigationBar(
-          backgroundColor: Colors.transparent,
-          selectedIndex: _selectedIndex,
-          onDestinationSelected: (value) {
-            setState(() {
-              _selectedIndex = value;
-            });
+    return ShareHandlerWidget(
+      onMediaReceived: (SharedMedia value) async {
+        try {
+          final path = value.attachments?.first?.path;
+          if (path == null) return;
+          final text = await FlutterOcr.recognizeTextFromImage(path);
+          log('Recognized text: $text');
+        } catch (e) {
+          log('OCR Error: $e');
+        }
+      },
+      child: Scaffold(
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) {
+                  return TransactionFormScreen(
+                    onSubmit: (transaction) {
+                      final provider = context.read<TransactionProvider>();
+                      provider.addTransaction(transaction);
+                    },
+                  );
+                },
+              ),
+            );
+            // Handle floating action button press
           },
-          labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
-          destinations: _destinations,
+          shape: const CircleBorder(),
+          elevation: 2,
+          child: const Icon(Iconsax.add_outline),
         ),
-      ),
-      body: IndexedStack(
-        alignment: Alignment.topCenter,
-        index: _selectedIndex,
-        children: _screens,
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+        bottomNavigationBar: BottomAppBar(
+          notchMargin: 10,
+          shape: const CircularNotchedRectangle(),
+          elevation: 10,
+          child: NavigationBar(
+            backgroundColor: Colors.transparent,
+            selectedIndex: _selectedIndex,
+            onDestinationSelected: (value) {
+              setState(() {
+                _selectedIndex = value;
+              });
+            },
+            labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
+            destinations: _destinations,
+          ),
+        ),
+        body: IndexedStack(
+          alignment: Alignment.topCenter,
+          index: _selectedIndex,
+          children: _screens,
+        ),
       ),
     );
   }

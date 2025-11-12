@@ -379,6 +379,34 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.4.6"
+  flutter_ocr:
+    dependency: "direct main"
+    description:
+      path: "packages/flutter_ocr/flutter_ocr"
+      relative: true
+    source: path
+    version: "0.1.0+1"
+  flutter_ocr_android:
+    dependency: transitive
+    description:
+      path: "packages/flutter_ocr/flutter_ocr_android"
+      relative: true
+    source: path
+    version: "0.1.0+1"
+  flutter_ocr_ios:
+    dependency: transitive
+    description:
+      path: "packages/flutter_ocr/flutter_ocr_ios"
+      relative: true
+    source: path
+    version: "0.1.0+1"
+  flutter_ocr_platform_interface:
+    dependency: transitive
+    description:
+      path: "packages/flutter_ocr/flutter_ocr_platform_interface"
+      relative: true
+    source: path
+    version: "0.1.0+1"
   flutter_secure_storage:
     dependency: "direct main"
     description:
