@@ -9,7 +9,9 @@ import 'package:munshi/features/transactions/providers/transaction_provider.dart
 import 'package:munshi/features/transactions/screens/transaction_form_screen.dart';
 import 'package:munshi/features/transactions/screens/transactions_screen.dart';
 import 'package:munshi/widgets/share_handler_widget.dart';
+import 'package:munshi/features/categories/screens/categories_screen.dart';
 import 'package:provider/provider.dart';
+import 'package:share_handler/share_handler.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -51,14 +53,14 @@ class _MainScreenState extends State<MainScreen> {
     const HomeScreen(),
     const TransactionsScreen(),
     const SizedBox(),
-    const Scaffold(),
+    const CategoriesScreen(),
     const SettingsScreen(),
   ];
 
   @override
   Widget build(BuildContext context) {
     return ShareHandlerWidget(
-      onMediaReceived: (value) async {
+      onMediaReceived: (SharedMedia value) async {
         try {
           final path = value.attachments?.first?.path;
           if (path == null) return;

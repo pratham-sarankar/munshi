@@ -84,7 +84,9 @@ class HomeScreen extends StatelessWidget {
                       icon: Icon(
                         Icons.chevron_right_rounded,
                         color: dashboardProvider.isCurrentPeriod
-                            ? colorScheme.onSurfaceVariant.withValues(alpha: 0.3)
+                            ? colorScheme.onSurfaceVariant.withValues(
+                                alpha: 0.3,
+                              )
                             : colorScheme.onSurfaceVariant,
                       ),
                       iconSize: 20,

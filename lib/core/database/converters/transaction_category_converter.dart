@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:drift/drift.dart';
-import 'package:munshi/features/transactions/models/transaction_category.dart';
+import 'package:munshi/core/database/app_database.dart';
 
 class TransactionCategoryConverter
     extends TypeConverter<TransactionCategory, String> {
@@ -13,5 +13,7 @@ class TransactionCategoryConverter
   }
 
   @override
-  String toSql(TransactionCategory value) => json.encode(value.toJson());
+  String toSql(TransactionCategory value) {
+    return value.toJsonString();
+  }
 }

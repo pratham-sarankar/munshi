@@ -1,5 +1,5 @@
+import 'package:munshi/core/database/app_database.dart';
 import 'package:munshi/core/models/date_period.dart';
-import 'package:munshi/features/transactions/models/transaction_category.dart';
 import 'package:munshi/features/transactions/models/transaction_type.dart';
 
 class TransactionFilter {

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:icons_plus/icons_plus.dart';
-import 'package:munshi/core/database/app_database.dart';
 import 'package:munshi/features/transactions/models/grouped_transactions.dart';
+import 'package:munshi/features/transactions/models/transaction_with_category.dart';
 import 'package:munshi/features/transactions/widgets/grouped_transaction_list.dart';
 import 'package:provider/provider.dart';
 import 'package:munshi/features/transactions/providers/transaction_provider.dart';
@@ -10,6 +10,9 @@ import 'package:munshi/core/extensions/currency_extensions.dart';
 import 'package:munshi/features/transactions/widgets/transaction_filter_bottom_sheet.dart';
 import 'package:munshi/features/transactions/models/transaction_filter.dart';
 import 'package:munshi/providers/currency_provider.dart';
+import 'package:munshi/features/categories/providers/category_provider.dart';
+import 'package:munshi/features/transactions/widgets/category_selection_bottom_sheet.dart';
+import 'package:drift/drift.dart' as drift;
 
 class TransactionsScreen extends StatefulWidget {
   const TransactionsScreen({super.key});
@@ -162,6 +165,12 @@ class _TransactionsScreenState extends State<TransactionsScreen>
                       ),
                     );
                   },
+                  onCategoryTap: (transaction) {
+                    _showCategorySelectionSheet(
+                      transaction,
+                      transactionProvider,
+                    );
+                  },
                   groupedTransactions: groupedTransactions,
                 ),
               ),
@@ -173,7 +182,7 @@ class _TransactionsScreenState extends State<TransactionsScreen>
   }
 
   void _showTransactionDetails(
-    Transaction transaction,
+    TransactionWithCategory transaction,
     ColorScheme colorScheme,
   ) {
     showModalBottomSheet(
@@ -221,20 +230,20 @@ class _TransactionsScreenState extends State<TransactionsScreen>
                           Container(
                             padding: const EdgeInsets.all(18),
                             decoration: BoxDecoration(
-                              color: transaction.category.color.withValues(
+                              color: transaction.categoryColor.withValues(
                                 alpha: 0.12,
                               ),
                               borderRadius: BorderRadius.circular(20),
                               border: Border.all(
-                                color: transaction.category.color.withValues(
+                                color: transaction.categoryColor.withValues(
                                   alpha: 0.2,
                                 ),
                                 width: 1,
                               ),
                             ),
                             child: Icon(
-                              transaction.category.icon,
-                              color: transaction.category.color,
+                              transaction.categoryIcon,
+                              color: transaction.categoryColor,
                               size: 36,
                             ),
                           ),
@@ -290,7 +299,7 @@ class _TransactionsScreenState extends State<TransactionsScreen>
                             const SizedBox(height: 20),
                             _buildModernDetailRow(
                               'Category',
-                              transaction.category.name,
+                              transaction.categoryName,
                               Icons.category,
                               colorScheme,
                             ),
@@ -504,5 +513,48 @@ class _TransactionsScreenState extends State<TransactionsScreen>
     }
 
     return activeFilters.join(' • ');
+  }
+
+  void _showCategorySelectionSheet(
+    TransactionWithCategory transaction,
+    TransactionProvider transactionProvider,
+  ) {
+    final categoryProvider = Provider.of<CategoryProvider>(
+      context,
+      listen: false,
+    );
+
+    // Get categories based on transaction type
+    final categories = transaction.type.name == 'expense'
+        ? categoryProvider.expenseCategories
+        : categoryProvider.incomeCategories;
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => CategorySelectionBottomSheet(
+        categories: categories,
+        currentCategoryId: transaction.categoryId,
+        transactionType: transaction.type,
+        onCategorySelected: (selectedCategory) async {
+          // Update the transaction with the new category
+          final updatedTransaction = transaction.transaction.copyWith(
+            categoryId: drift.Value(selectedCategory.id),
+          );
+
+          await transactionProvider.updateTransaction(updatedTransaction);
+
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text('Category changed to ${selectedCategory.name}'),
+                behavior: SnackBarBehavior.floating,
+              ),
+            );
+          }
+        },
+      ),
+    );
   }
 }
