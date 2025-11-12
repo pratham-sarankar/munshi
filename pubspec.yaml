@@ -59,6 +59,7 @@ dependencies:
   share_handler: ^0.0.25
   flutter_ocr:
     path: packages/flutter_ocr/flutter_ocr
+  firebase_ai: ^3.5.0
 
 dev_dependencies:
   flutter_test:
