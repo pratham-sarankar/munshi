@@ -9,7 +9,9 @@ class TransactionCategoryConverter
 
   @override
   TransactionCategory fromSql(String jsonString) {
-    return TransactionCategory.fromJson(json.decode(jsonString));
+    return TransactionCategory.fromJson(
+      json.decode(jsonString) as Map<String, dynamic>,
+    );
   }
 
   @override

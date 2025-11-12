@@ -145,9 +145,10 @@ class _CategoriesScreenState extends State<CategoriesScreen>
           // Expense categories
           _CategoryList(
             type: TransactionType.expense,
-            onEdit: (category) =>
+            onEdit: (TransactionCategory category) =>
                 _showEditCategoryDialog(category, TransactionType.expense),
-            onDelete: (category) => _deleteCategory(category.id, category.name),
+            onDelete: (TransactionCategory category) =>
+                _deleteCategory(category.id, category.name),
           ),
           // Income categories
           _CategoryList(
@@ -170,8 +171,8 @@ class _CategoryList extends StatelessWidget {
   });
 
   final TransactionType type;
-  final Function(dynamic category) onEdit;
-  final Function(dynamic category) onDelete;
+  final ValueChanged<TransactionCategory> onEdit;
+  final ValueChanged<TransactionCategory> onDelete;
 
   @override
   Widget build(BuildContext context) {

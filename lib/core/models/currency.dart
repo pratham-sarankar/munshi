@@ -1,5 +1,4 @@
 class Currency {
-
   const Currency({
     required this.code,
     required this.symbol,
@@ -8,7 +7,7 @@ class Currency {
     required this.locale,
   });
 
-  factory Currency.fromMap(Map<String, dynamic> map) {
+  factory Currency.fromMap(Map<String, String> map) {
     return Currency(
       code: map['code'] ?? '',
       symbol: map['symbol'] ?? '',

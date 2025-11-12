@@ -1,5 +1,4 @@
 class User {
-
   const User({
     required this.sub,
     required this.name,

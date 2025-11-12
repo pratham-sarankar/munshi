@@ -233,7 +233,7 @@ class TransactionsDao extends DatabaseAccessor<AppDatabase>
     // Calculate period days with inclusive counting
     // (inDays returns full 24-hour periods, so we add 1 for inclusive count)
     final periodDays = effectiveEnd.difference(period.startDate).inDays + 1;
-    final avgDaily = periodDays > 0 ? totalExpense / periodDays : 0;
+    final avgDaily = periodDays > 0 ? totalExpense / periodDays : 0.0;
 
     return PeriodSummaryData(
       totalSpent: totalExpense,

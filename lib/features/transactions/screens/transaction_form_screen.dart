@@ -11,7 +11,8 @@ import 'package:munshi/features/transactions/widgets/form_builder_category_chips
 
 class TransactionFormScreen extends StatefulWidget {
   const TransactionFormScreen({
-    required this.onSubmit, super.key,
+    required this.onSubmit,
+    super.key,
     this.transaction,
   });
   final TransactionWithCategory? transaction;
@@ -179,10 +180,12 @@ class _TransactionFormScreenState extends State<TransactionFormScreen>
       final type = _tabController.index == 0
           ? TransactionType.expense
           : TransactionType.income;
-      final amount = double.parse(formData['amount']);
-      final TransactionCategory? category = type == TransactionType.expense
-          ? formData['expense_category']
-          : formData['income_category'];
+      final amount = double.parse(formData['amount'] as String);
+      final category =
+          (type == TransactionType.expense
+                  ? formData['expense_category']
+                  : formData['income_category'])
+              as TransactionCategory?;
       final datetime = formData['datetime'] as DateTime;
       final description = formData['description'] as String?;
 
