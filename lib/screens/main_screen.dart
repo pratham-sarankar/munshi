@@ -1,3 +1,7 @@
+import 'dart:async';
+import 'dart:developer';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:icons_plus/icons_plus.dart';
 import 'package:munshi/features/categories/screens/categories_screen.dart';
@@ -7,6 +11,7 @@ import 'package:munshi/features/transactions/providers/transaction_provider.dart
 import 'package:munshi/features/transactions/screens/transaction_form_screen.dart';
 import 'package:munshi/features/transactions/screens/transactions_screen.dart';
 import 'package:provider/provider.dart';
+import 'package:share_handler/share_handler.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
