@@ -101,8 +101,6 @@ class HomeScreen extends StatelessWidget {
                 builder: (context, value, child) {
                   return CachedProfileAvatar(
                     imageUrl: value.currentUser?.picture,
-                    radius: 20,
-                    iconSize: 20,
                   );
                 },
               ),
@@ -111,34 +109,34 @@ class HomeScreen extends StatelessWidget {
           ),
           body: RefreshIndicator(
             onRefresh: () => dashboardProvider.refresh(),
-            child: SingleChildScrollView(
-              physics: const AlwaysScrollableScrollPhysics(),
-              padding: const EdgeInsets.fromLTRB(20, 0, 20, 100),
+            child: const SingleChildScrollView(
+              physics: AlwaysScrollableScrollPhysics(),
+              padding: EdgeInsets.fromLTRB(20, 0, 20, 100),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const SizedBox(height: 10),
+                  SizedBox(height: 10),
                   DashboardSummaryCard(),
-                  const SizedBox(height: 15),
+                  SizedBox(height: 15),
                   // Quick Stats Row
                   Row(
                     children: [
                       Expanded(
                         child: DashboardStatsWidget(
                           statType: DashboardStatType.transactions,
-                          animationDelay: const Duration(milliseconds: 200),
+                          animationDelay: Duration(milliseconds: 200),
                         ),
                       ),
-                      const SizedBox(width: 15),
+                      SizedBox(width: 15),
                       Expanded(
                         child: DashboardStatsWidget(
                           statType: DashboardStatType.biggestSpend,
-                          animationDelay: const Duration(milliseconds: 350),
+                          animationDelay: Duration(milliseconds: 350),
                         ),
                       ),
                     ],
                   ),
-                  const SizedBox(height: 25),
+                  SizedBox(height: 25),
 
                   // Recent Transactions
                   DashboardCategoriesWidget(),

@@ -3,13 +3,6 @@ import 'package:munshi/core/models/date_period.dart';
 import 'package:munshi/features/transactions/models/transaction_type.dart';
 
 class TransactionFilter {
-  final double? minAmount;
-  final double? maxAmount;
-  final Set<TransactionType>? types;
-  final Set<TransactionCategory>? categories;
-  final DatePeriod? datePeriod;
-  final DateTime? customStartDate;
-  final DateTime? customEndDate;
 
   const TransactionFilter({
     this.minAmount,
@@ -42,6 +35,31 @@ class TransactionFilter {
     );
   }
 
+  /// Create filter from predefined timeframe using DatePeriod
+  factory TransactionFilter.fromTimeframe(String timeframe) {
+    switch (timeframe) {
+      case 'Today':
+        return TransactionFilter.withDatePeriod(todayPeriod);
+      case 'This Week':
+        return TransactionFilter.withDatePeriod(thisWeekPeriod);
+      case 'This Month':
+        return TransactionFilter.withDatePeriod(thisMonthPeriod);
+      case 'Last Month':
+        return TransactionFilter.withDatePeriod(lastMonthPeriod);
+      case 'This Year':
+        return TransactionFilter.withDatePeriod(thisYearPeriod);
+      default:
+        return TransactionFilter.empty();
+    }
+  }
+  final double? minAmount;
+  final double? maxAmount;
+  final Set<TransactionType>? types;
+  final Set<TransactionCategory>? categories;
+  final DatePeriod? datePeriod;
+  final DateTime? customStartDate;
+  final DateTime? customEndDate;
+
   /// Get effective start date (from datePeriod or customStartDate)
   DateTime? get effectiveStartDate {
     if (datePeriod != null) return datePeriod!.startDate;
@@ -67,7 +85,7 @@ class TransactionFilter {
 
   /// Get the number of active filters
   int get activeFilterCount {
-    int count = 0;
+    var count = 0;
     if (minAmount != null || maxAmount != null) count++;
     if (types != null && types!.isNotEmpty) count++;
     if (categories != null && categories!.isNotEmpty) count++;
@@ -130,24 +148,6 @@ class TransactionFilter {
   static DatePeriod get lastMonthPeriod =>
       DatePeriod.monthly(DateTime.now()).previous();
   static DatePeriod get thisYearPeriod => DatePeriod.yearly(DateTime.now());
-
-  /// Create filter from predefined timeframe using DatePeriod
-  factory TransactionFilter.fromTimeframe(String timeframe) {
-    switch (timeframe) {
-      case 'Today':
-        return TransactionFilter.withDatePeriod(todayPeriod);
-      case 'This Week':
-        return TransactionFilter.withDatePeriod(thisWeekPeriod);
-      case 'This Month':
-        return TransactionFilter.withDatePeriod(thisMonthPeriod);
-      case 'Last Month':
-        return TransactionFilter.withDatePeriod(lastMonthPeriod);
-      case 'This Year':
-        return TransactionFilter.withDatePeriod(thisYearPeriod);
-      default:
-        return TransactionFilter.empty();
-    }
-  }
 
   @override
   bool operator ==(Object other) {

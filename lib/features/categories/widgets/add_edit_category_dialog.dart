@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:icons_plus/icons_plus.dart';
 import 'package:munshi/core/database/app_database.dart';
+import 'package:munshi/features/categories/providers/category_provider.dart';
 import 'package:munshi/features/categories/widgets/color_picker_dialog.dart';
 import 'package:munshi/features/categories/widgets/icon_picker_dialog.dart';
 import 'package:munshi/features/transactions/models/transaction_type.dart';
 import 'package:provider/provider.dart';
-import '../providers/category_provider.dart';
 
 class AddEditCategoryDialog extends StatefulWidget {
-  const AddEditCategoryDialog({super.key, required this.type, this.category});
+  const AddEditCategoryDialog({required this.type, super.key, this.category});
 
   final TransactionType type;
   final TransactionCategory? category;
@@ -147,7 +147,7 @@ class _AddEditCategoryDialogState extends State<AddEditCategoryDialog> {
           children: [
             // Header
             Padding(
-              padding: const EdgeInsets.all(16.0),
+              padding: const EdgeInsets.all(16),
               child: Row(
                 children: [
                   Expanded(
@@ -169,7 +169,7 @@ class _AddEditCategoryDialogState extends State<AddEditCategoryDialog> {
 
             // Form
             Padding(
-              padding: const EdgeInsets.all(16.0),
+              padding: const EdgeInsets.all(16),
               child: Form(
                 key: _formKey,
                 child: Column(

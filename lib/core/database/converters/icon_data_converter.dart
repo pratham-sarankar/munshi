@@ -7,7 +7,7 @@ class IconDataConverter extends TypeConverter<IconData, String> {
   @override
   IconData fromSql(String fromDb) {
     final parts = fromDb.split(',');
-    if (parts.length != 3) throw FormatException('Invalid icon data format');
+    if (parts.length != 3) throw const FormatException('Invalid icon data format');
     return IconData(
       int.parse(parts[0]),
       fontFamily: parts[1].isEmpty ? null : parts[1],

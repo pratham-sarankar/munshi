@@ -127,7 +127,7 @@ void main() {
         const totalExpense = 100.0;
         const periodDays = 0;
 
-        final avgDaily = periodDays > 0 ? totalExpense / periodDays : 0;
+        const avgDaily = periodDays > 0 ? totalExpense / periodDays : 0;
         expect(avgDaily, equals(0.0));
       },
     );

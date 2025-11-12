@@ -2,6 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ThemeProvider extends ChangeNotifier {
+
+  /// Creates a ThemeProvider and loads the theme synchronously from SharedPreferences.
+  ThemeProvider(this.prefs) {
+    _loadThemeFromPrefs();
+  }
   static const String _themeKey = 'theme_mode';
 
   ThemeMode _themeMode = ThemeMode.light;
@@ -21,23 +26,15 @@ class ThemeProvider extends ChangeNotifier {
 
   final SharedPreferences prefs;
 
-  /// Creates a ThemeProvider and loads the theme synchronously from SharedPreferences.
-  ThemeProvider(this.prefs) {
-    _loadThemeFromPrefs();
-  }
-
   void setThemeMode(String themeString) {
     ThemeMode newThemeMode;
     switch (themeString) {
       case 'Light':
         newThemeMode = ThemeMode.light;
-        break;
       case 'Dark':
         newThemeMode = ThemeMode.dark;
-        break;
       case 'Auto':
         newThemeMode = ThemeMode.system;
-        break;
       default:
         newThemeMode = ThemeMode.light;
     }

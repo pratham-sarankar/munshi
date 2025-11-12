@@ -2,14 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:munshi/core/models/period_type.dart';
 
 class PeriodSelectorBottomSheet extends StatelessWidget {
-  final PeriodType currentPeriodType;
-  final ValueChanged<PeriodType> onPeriodTypeChanged;
 
   const PeriodSelectorBottomSheet({
-    super.key,
-    required this.currentPeriodType,
-    required this.onPeriodTypeChanged,
+    required this.currentPeriodType, required this.onPeriodTypeChanged, super.key,
   });
+  final PeriodType currentPeriodType;
+  final ValueChanged<PeriodType> onPeriodTypeChanged;
 
   @override
   Widget build(BuildContext context) {

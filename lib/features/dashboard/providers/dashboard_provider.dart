@@ -1,25 +1,15 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:munshi/core/database/app_database.dart';
+import 'package:munshi/core/extensions/currency_extensions.dart';
 import 'package:munshi/core/models/date_period.dart';
 import 'package:munshi/core/models/period_type.dart';
-import 'package:munshi/providers/period_provider.dart';
-import 'package:munshi/providers/currency_provider.dart';
-import 'package:munshi/features/dashboard/services/dashboard_data_service.dart';
 import 'package:munshi/features/dashboard/models/category_spending_data.dart';
-import 'package:munshi/core/extensions/currency_extensions.dart';
+import 'package:munshi/features/dashboard/services/dashboard_data_service.dart';
+import 'package:munshi/providers/currency_provider.dart';
+import 'package:munshi/providers/period_provider.dart';
 
 class DashboardProvider extends ChangeNotifier {
-  // Private fields
-  late DatePeriod _selectedPeriod;
-  PeriodSummaryData? _summaryData;
-  Map<TransactionCategory?, CategorySpendingData>? _categorySpending;
-  bool _isLoading = false;
-  String? _error;
-  final DashboardDataService _dashboardDataService;
-  final PeriodProvider _periodProvider;
-  final CurrencyProvider _currencyProvider;
-
   // Constructor
   DashboardProvider(
     this._dashboardDataService,
@@ -37,6 +27,15 @@ class DashboardProvider extends ChangeNotifier {
     // This ensures all formatted currency values update when currency changes
     _currencyProvider.addListener(_onCurrencyChanged);
   }
+  // Private fields
+  late DatePeriod _selectedPeriod;
+  PeriodSummaryData? _summaryData;
+  Map<TransactionCategory?, CategorySpendingData>? _categorySpending;
+  bool _isLoading = false;
+  String? _error;
+  final DashboardDataService _dashboardDataService;
+  final PeriodProvider _periodProvider;
+  final CurrencyProvider _currencyProvider;
 
   void _onCurrencyChanged() {
     // Notify listeners so widgets can rebuild with new currency formatting
@@ -83,7 +82,7 @@ class DashboardProvider extends ChangeNotifier {
     notifyListeners();
 
     // Add 300ms delay for smoother UX
-    await Future.delayed(const Duration(milliseconds: 300));
+    await Future<void>.delayed(const Duration(milliseconds: 300));
 
     try {
       // Load both summary data and category spending in parallel
@@ -139,16 +138,12 @@ class DashboardProvider extends ChangeNotifier {
     switch (newType) {
       case PeriodType.daily:
         newPeriod = DatePeriod.daily(now);
-        break;
       case PeriodType.weekly:
         newPeriod = DatePeriod.weekly(now);
-        break;
       case PeriodType.monthly:
         newPeriod = DatePeriod.monthly(now);
-        break;
       case PeriodType.yearly:
         newPeriod = DatePeriod.yearly(now);
-        break;
     }
 
     await setPeriod(newPeriod);

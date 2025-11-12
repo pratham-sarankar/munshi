@@ -54,18 +54,20 @@ class AuthService extends ChangeNotifier {
       await _loadCachedUserData();
 
       // Then fetch fresh user profile in background to update cache
-      getUserProfile()
-          .then((user) {
-            if (user != null) {
-              _currentUser = user;
-              _cacheUserData(user); // Cache the fresh data
-              notifyListeners();
-            }
-          })
-          .catchError((error) {
-            // Don't emit null here - keep existing cached user if any
-            log('Failed to fetch user profile in background: $error');
-          });
+      unawaited(
+        getUserProfile()
+            .then((user) async {
+              if (user != null) {
+                _currentUser = user;
+                await _cacheUserData(user); // Cache the fresh data
+                notifyListeners();
+              }
+            })
+            .catchError((Object error) async {
+              // Don't emit null here - keep existing cached user if any
+              log('Failed to fetch user profile in background: $error');
+            }),
+      );
     }
     return this;
   }
@@ -75,11 +77,11 @@ class AuthService extends ChangeNotifier {
     try {
       final cachedUserJson = await _secureStorage.read(key: _kCachedUser);
       if (cachedUserJson != null) {
-        final Map<String, dynamic> userMap = jsonDecode(cachedUserJson);
+        final userMap = jsonDecode(cachedUserJson) as Map<String, dynamic>;
         _currentUser = User.fromJson(userMap);
         notifyListeners();
       }
-    } catch (e) {
+    } on Exception catch (e) {
       log('Failed to load cached user data: $e');
       // Clear corrupted cache
       await _secureStorage.delete(key: _kCachedUser);
@@ -162,8 +164,8 @@ class AuthService extends ChangeNotifier {
 
   /// Get the stored access token (auto-refresh if expired)
   Future<String?> getAccessToken() async {
-    String? accessToken = await _secureStorage.read(key: _kAccessToken);
-    String? refreshToken = await _secureStorage.read(key: _kRefreshToken);
+    var accessToken = await _secureStorage.read(key: _kAccessToken);
+    final refreshToken = await _secureStorage.read(key: _kRefreshToken);
     // Return null if tokens are missing.
     if (accessToken == null || refreshToken == null) {
       return null;
@@ -203,15 +205,15 @@ class AuthService extends ChangeNotifier {
       );
 
       if (response.statusCode == 200) {
-        final data = jsonDecode(response.body);
-        final newAccessToken = data['access_token'];
+        final data = jsonDecode(response.body) as Map<String, dynamic>;
+        final newAccessToken = data['access_token'] as String?;
         await _secureStorage.write(key: _kAccessToken, value: newAccessToken);
         return newAccessToken;
       } else {
         log('Failed to refresh token: ${response.body}');
         return null;
       }
-    } catch (e) {
+    } on Exception catch (e) {
       log('Token refresh error: $e');
       return null;
     }
@@ -228,7 +230,9 @@ class AuthService extends ChangeNotifier {
     );
 
     if (response.statusCode == 200) {
-      final user = User.fromJson(jsonDecode(response.body));
+      final user = User.fromJson(
+        jsonDecode(response.body) as Map<String, dynamic>,
+      );
       // Return the user data; caching is handled by the caller
       return user;
     } else {

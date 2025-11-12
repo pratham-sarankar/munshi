@@ -141,7 +141,7 @@ class _IconPickerDialogState extends State<IconPickerDialog> {
           children: [
             // Header
             Padding(
-              padding: const EdgeInsets.all(16.0),
+              padding: const EdgeInsets.all(16),
               child: Row(
                 children: [
                   Expanded(
@@ -163,7 +163,7 @@ class _IconPickerDialogState extends State<IconPickerDialog> {
 
             // Search bar
             Padding(
-              padding: const EdgeInsets.all(16.0),
+              padding: const EdgeInsets.all(16),
               child: TextField(
                 decoration: InputDecoration(
                   hintText: 'Search icons...',
@@ -183,7 +183,7 @@ class _IconPickerDialogState extends State<IconPickerDialog> {
             // Icons grid
             Expanded(
               child: GridView.builder(
-                padding: const EdgeInsets.all(16.0),
+                padding: const EdgeInsets.all(16),
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 5,
                   crossAxisSpacing: 8,
@@ -229,7 +229,7 @@ class _IconPickerDialogState extends State<IconPickerDialog> {
             // Action buttons
             const Divider(height: 1),
             Padding(
-              padding: const EdgeInsets.all(16.0),
+              padding: const EdgeInsets.all(16),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [

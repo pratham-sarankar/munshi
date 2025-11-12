@@ -1,16 +1,17 @@
 import 'package:drift/drift.dart';
 import 'package:drift_flutter/drift_flutter.dart';
-import 'package:flutter/material.dart' show IconData, Color, Colors;
+import 'package:flutter/material.dart' show Color, Colors, IconData;
 import 'package:icons_plus/icons_plus.dart' show Iconsax;
 import 'package:munshi/core/database/converters/color_converter.dart';
 import 'package:munshi/core/database/converters/icon_data_converter.dart';
 import 'package:munshi/core/database/converters/transaction_type_converter.dart';
+import 'package:munshi/core/database/daos/category_dao.dart';
+import 'package:munshi/core/database/daos/transaction_dao.dart';
+import 'package:munshi/core/database/tables/transaction_categories.dart';
+import 'package:munshi/core/database/tables/transactions.dart';
 import 'package:munshi/features/transactions/models/transaction_type.dart';
 import 'package:path_provider/path_provider.dart';
-import './tables/transactions.dart';
-import 'tables/transaction_categories.dart';
-import './daos/transaction_dao.dart';
-import './daos/category_dao.dart';
+
 part 'app_database.g.dart';
 
 @DriftDatabase(

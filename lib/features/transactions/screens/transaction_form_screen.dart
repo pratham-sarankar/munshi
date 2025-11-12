@@ -11,12 +11,12 @@ import 'package:munshi/features/transactions/widgets/form_builder_category_chips
 
 class TransactionFormScreen extends StatefulWidget {
   const TransactionFormScreen({
-    super.key,
     required this.onSubmit,
+    super.key,
     this.transaction,
   });
   final TransactionWithCategory? transaction;
-  final Function(drift.Insertable<Transaction> transaction) onSubmit;
+  final void Function(drift.Insertable<Transaction> transaction) onSubmit;
   @override
   State<TransactionFormScreen> createState() => _TransactionFormScreenState();
 }
@@ -49,16 +49,16 @@ class _TransactionFormScreenState extends State<TransactionFormScreen>
           onPressed: () {
             Navigator.of(context).pop();
           },
-          icon: Icon(Iconsax.arrow_left_outline),
+          icon: const Icon(Iconsax.arrow_left_outline),
         ),
         title: Text(
-          widget.transaction != null ? "Edit Transaction" : "Add Transaction",
+          widget.transaction != null ? 'Edit Transaction' : 'Add Transaction',
         ),
         bottom: TabBar(
           controller: _tabController,
-          tabs: [
-            Tab(text: "Expense"),
-            Tab(text: "Income"),
+          tabs: const [
+            Tab(text: 'Expense'),
+            Tab(text: 'Income'),
           ],
         ),
       ),
@@ -76,8 +76,8 @@ class _TransactionFormScreenState extends State<TransactionFormScreen>
         child: SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.symmetric(
-              horizontal: 20.0,
-              vertical: 20.0,
+              horizontal: 20,
+              vertical: 20,
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -119,8 +119,8 @@ class _TransactionFormScreenState extends State<TransactionFormScreen>
                   child: FormBuilderCategoryChips(
                     key: ValueKey(_tabController.index),
                     name: _tabController.index == 0
-                        ? "expense_category"
-                        : "income_category",
+                        ? 'expense_category'
+                        : 'income_category',
                     type: _tabController.index == 0
                         ? TransactionType.expense
                         : TransactionType.income,
@@ -134,7 +134,6 @@ class _TransactionFormScreenState extends State<TransactionFormScreen>
                 FormBuilderDateTimePicker(
                   name: 'datetime',
                   format: DateFormat('d MMM, h:mm a'),
-                  inputType: InputType.both,
                   initialValue: widget.transaction?.date ?? DateTime.now(),
                   decoration: const InputDecoration(
                     prefixIcon: Icon(Iconsax.calendar_edit_outline),
@@ -181,10 +180,12 @@ class _TransactionFormScreenState extends State<TransactionFormScreen>
       final type = _tabController.index == 0
           ? TransactionType.expense
           : TransactionType.income;
-      final amount = double.parse(formData['amount']);
-      final TransactionCategory? category = type == TransactionType.expense
-          ? formData['expense_category']
-          : formData['income_category'];
+      final amount = double.parse(formData['amount'] as String);
+      final category =
+          (type == TransactionType.expense
+                  ? formData['expense_category']
+                  : formData['income_category'])
+              as TransactionCategory?;
       final datetime = formData['datetime'] as DateTime;
       final description = formData['description'] as String?;
 

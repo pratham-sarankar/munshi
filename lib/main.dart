@@ -2,21 +2,21 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:munshi/core/database/daos/transaction_dao.dart';
+import 'package:munshi/core/service_locator.dart';
 import 'package:munshi/core/theme.dart';
 import 'package:munshi/features/auth/screens/login_screen.dart';
 import 'package:munshi/features/auth/services/auth_service.dart';
-import 'package:munshi/firebase_options.dart';
-import 'package:munshi/providers/theme_provider.dart';
-import 'package:munshi/providers/currency_provider.dart';
-import 'package:munshi/providers/period_provider.dart';
-import 'package:munshi/features/transactions/providers/transaction_provider.dart';
+import 'package:munshi/features/categories/providers/category_provider.dart';
 import 'package:munshi/features/dashboard/providers/dashboard_provider.dart';
 import 'package:munshi/features/dashboard/services/dashboard_data_service.dart';
-import 'package:munshi/features/categories/providers/category_provider.dart';
-import 'package:munshi/core/database/daos/transaction_dao.dart';
+import 'package:munshi/features/transactions/providers/transaction_provider.dart';
+import 'package:munshi/firebase_options.dart';
+import 'package:munshi/providers/currency_provider.dart';
+import 'package:munshi/providers/period_provider.dart';
+import 'package:munshi/providers/theme_provider.dart';
 import 'package:munshi/screens/main_screen.dart';
 import 'package:provider/provider.dart';
-import 'package:munshi/core/service_locator.dart';
 
 /// Main entry point for the Munshi app.
 ///
@@ -28,7 +28,7 @@ import 'package:munshi/core/service_locator.dart';
 /// This guarantees the theme is loaded from persistent storage before the UI is shown, preventing flicker.
 void main() async {
   // Ensure Flutter engine and widget binding is initialized before any async or plugin code.
-  WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+  final widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
 
   // Preserve the native splash screen until initialization is complete.
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
@@ -95,8 +95,8 @@ class Munshi extends StatelessWidget {
           themeMode: themeProvider
               .themeMode, // Uses the current theme mode from provider
           home: locator<AuthService>().isSignedIn
-              ? MainScreen()
-              : LoginScreen(), // Main navigation and dashboard
+              ? const MainScreen()
+              : const LoginScreen(), // Main navigation and dashboard
         );
       },
     );
