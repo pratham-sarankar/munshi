@@ -61,9 +61,7 @@ void main() async {
             locator<CurrencyProvider>(),
           ),
         ),
-        ChangeNotifierProvider(
-          create: (_) => CategoryProvider(),
-        ),
+        ChangeNotifierProvider(create: (_) => CategoryProvider()),
       ],
       child: const Munshi(),
     ),

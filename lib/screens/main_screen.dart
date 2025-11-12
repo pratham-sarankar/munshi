@@ -58,35 +58,6 @@ class _MainScreenState extends State<MainScreen> {
   ];
 
   @override
-  void initState() {
-    super.initState();
-    initPlatformState();
-  }
-
-  SharedMedia? media;
-
-  // Platform messages are asynchronous, so we initialize in an async method.
-  Future<void> initPlatformState() async {
-    final handler = ShareHandlerPlatform.instance;
-    media = await handler.getInitialSharedMedia();
-    log("Initially shared media: ${media?.imageFilePath}");
-
-    handler.sharedMediaStream.listen((SharedMedia media) {
-      log("Received shared media: ${media.attachments?.first?.path}");
-      if (mounted) {
-        setState(() {
-          this.media = media;
-        });
-      }
-    });
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       floatingActionButton: FloatingActionButton(

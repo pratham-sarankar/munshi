@@ -77,9 +77,9 @@ class _CategorySelectionBottomSheetState
                   child: Text(
                     'Select Category',
                     style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                          fontWeight: FontWeight.bold,
-                          color: colorScheme.onSurface,
-                        ),
+                      fontWeight: FontWeight.bold,
+                      color: colorScheme.onSurface,
+                    ),
                   ),
                 ),
                 IconButton(
@@ -146,9 +146,7 @@ class _CategorySelectionBottomSheetState
                             Expanded(
                               child: Text(
                                 category.name,
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyLarge
+                                style: Theme.of(context).textTheme.bodyLarge
                                     ?.copyWith(
                                       fontWeight: isSelected
                                           ? FontWeight.bold
