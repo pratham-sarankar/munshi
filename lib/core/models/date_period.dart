@@ -2,10 +2,6 @@ import 'package:intl/intl.dart';
 import 'package:munshi/core/models/period_type.dart';
 
 class DatePeriod {
-  final PeriodType type;
-  final DateTime startDate;
-  final DateTime endDate;
-  final String displayName;
 
   const DatePeriod({
     required this.type,
@@ -29,7 +25,7 @@ class DatePeriod {
 
   // Factory constructors for different period types
   factory DatePeriod.monthly(DateTime date) {
-    final startDate = DateTime(date.year, date.month, 1);
+    final startDate = DateTime(date.year, date.month);
     final endDate = DateTime(date.year, date.month + 1, 0, 23, 59, 59);
     final displayName = _getMonthName(date);
 
@@ -78,7 +74,7 @@ class DatePeriod {
   }
 
   factory DatePeriod.yearly(DateTime date) {
-    final startDate = DateTime(date.year, 1, 1);
+    final startDate = DateTime(date.year);
     final endDate = DateTime(date.year, 12, 31, 23, 59, 59);
     final displayName = date.year.toString();
 
@@ -89,6 +85,10 @@ class DatePeriod {
       displayName: displayName,
     );
   }
+  final PeriodType type;
+  final DateTime startDate;
+  final DateTime endDate;
+  final String displayName;
 
   // Navigation methods
   DatePeriod next() {
@@ -146,7 +146,7 @@ class DatePeriod {
       'Nov',
       'Dec',
     ];
-    return "${months[date.month - 1]} ${date.year}";
+    return '${months[date.month - 1]} ${date.year}';
   }
 
   static String _getDailyDisplayName(DateTime date) {

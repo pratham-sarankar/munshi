@@ -6,18 +6,16 @@ import 'package:munshi/features/transactions/models/transaction_with_category.da
 import 'package:munshi/features/transactions/widgets/transaction_tile.dart';
 
 class GroupedTransactionList extends StatefulWidget {
-  // Indent for dividers to align with ListTile title text
-  // Accounts for leading widget (56dp) + horizontal padding (16dp)
-  static const double _kDividerIndent = 72.0;
   const GroupedTransactionList({
-    super.key,
-    required this.groupedTransactions,
-    required this.onTap,
+    required this.groupedTransactions, required this.onTap, super.key,
     this.onDelete,
     this.onEdit,
     this.onCategoryTap,
     this.controller,
   });
+  // Indent for dividers to align with ListTile title text
+  // Accounts for leading widget (56dp) + horizontal padding (16dp)
+  static const double _kDividerIndent = 72;
 
   final List<GroupedTransactions> groupedTransactions;
   final Function(TransactionWithCategory) onTap;
@@ -42,13 +40,13 @@ class _GroupedTransactionListState extends State<GroupedTransactionList>
       duration: const Duration(milliseconds: 1000),
       vsync: this,
     );
-    _slideAnimation = Tween<double>(begin: 40.0, end: 0.0).animate(
+    _slideAnimation = Tween<double>(begin: 40, end: 0).animate(
       CurvedAnimation(parent: _animationController, curve: Curves.easeOutCubic),
     );
-    _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+    _fadeAnimation = Tween<double>(begin: 0, end: 1).animate(
       CurvedAnimation(
         parent: _animationController,
-        curve: const Interval(0.0, 0.7, curve: Curves.easeOut),
+        curve: const Interval(0, 0.7, curve: Curves.easeOut),
       ),
     );
     _animationController.forward();
@@ -86,8 +84,8 @@ class _GroupedTransactionListState extends State<GroupedTransactionList>
   }
 
   List<Widget> _buildGroupedTransactionWidgets() {
-    final List<Widget> widgets = [];
-    int globalIndex = 0;
+    final widgets = <Widget>[];
+    var globalIndex = 0;
 
     for (final (groupIndex, group) in widget.groupedTransactions.indexed) {
       // Add date divider
@@ -96,7 +94,7 @@ class _GroupedTransactionListState extends State<GroupedTransactionList>
 
       // Add transactions for this date
       for (
-        int transactionIndex = 0;
+        var transactionIndex = 0;
         transactionIndex < group.transactions.length;
         transactionIndex++
       ) {
@@ -142,7 +140,7 @@ class _GroupedTransactionListState extends State<GroupedTransactionList>
 
     return TweenAnimationBuilder<double>(
       duration: Duration(milliseconds: 600 + (index * 80)),
-      tween: Tween<double>(begin: 0.0, end: 1.0),
+      tween: Tween<double>(begin: 0, end: 1),
       curve: Curves.easeOutCubic,
       builder: (context, value, child) {
         final slideValue = Curves.easeOutCubic.transform(value);
@@ -193,7 +191,7 @@ class _GroupedTransactionListState extends State<GroupedTransactionList>
     return TweenAnimationBuilder<double>(
       key: ValueKey(transaction.id),
       duration: Duration(milliseconds: 600 + (index * 80)),
-      tween: Tween<double>(begin: 0.0, end: 1.0),
+      tween: Tween<double>(begin: 0, end: 1),
       curve: Curves.easeOutCubic,
       builder: (context, value, child) {
         final slideValue = Curves.easeOutCubic.transform(value);

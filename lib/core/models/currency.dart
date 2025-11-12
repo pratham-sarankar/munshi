@@ -1,9 +1,4 @@
 class Currency {
-  final String code;
-  final String symbol;
-  final String name;
-  final String flag;
-  final String locale;
 
   const Currency({
     required this.code,
@@ -12,6 +7,21 @@ class Currency {
     required this.flag,
     required this.locale,
   });
+
+  factory Currency.fromMap(Map<String, dynamic> map) {
+    return Currency(
+      code: map['code'] ?? '',
+      symbol: map['symbol'] ?? '',
+      name: map['name'] ?? '',
+      flag: map['flag'] ?? '',
+      locale: map['locale'] ?? 'en_US',
+    );
+  }
+  final String code;
+  final String symbol;
+  final String name;
+  final String flag;
+  final String locale;
 
   @override
   bool operator ==(Object other) =>
@@ -35,16 +45,6 @@ class Currency {
     };
   }
 
-  factory Currency.fromMap(Map<String, dynamic> map) {
-    return Currency(
-      code: map['code'] ?? '',
-      symbol: map['symbol'] ?? '',
-      name: map['name'] ?? '',
-      flag: map['flag'] ?? '',
-      locale: map['locale'] ?? 'en_US',
-    );
-  }
-
   @override
   String toString() {
     return 'Currency{code: $code, symbol: $symbol, name: $name, flag: $flag, locale: $locale}';
@@ -57,7 +57,7 @@ class SupportedCurrencies {
     // Major currencies
     Currency(
       code: 'USD',
-      symbol: '\$',
+      symbol: r'$',
       name: 'US Dollar',
       flag: '🇺🇸',
       locale: 'en_US',
@@ -99,14 +99,14 @@ class SupportedCurrencies {
     ),
     Currency(
       code: 'AUD',
-      symbol: 'A\$',
+      symbol: r'A$',
       name: 'Australian Dollar',
       flag: '🇦🇺',
       locale: 'en_AU',
     ),
     Currency(
       code: 'CAD',
-      symbol: 'C\$',
+      symbol: r'C$',
       name: 'Canadian Dollar',
       flag: '🇨🇦',
       locale: 'en_CA',
@@ -120,21 +120,21 @@ class SupportedCurrencies {
     ),
     Currency(
       code: 'SGD',
-      symbol: 'S\$',
+      symbol: r'S$',
       name: 'Singapore Dollar',
       flag: '🇸🇬',
       locale: 'en_SG',
     ),
     Currency(
       code: 'HKD',
-      symbol: 'HK\$',
+      symbol: r'HK$',
       name: 'Hong Kong Dollar',
       flag: '🇭🇰',
       locale: 'zh_HK',
     ),
     Currency(
       code: 'NZD',
-      symbol: 'NZ\$',
+      symbol: r'NZ$',
       name: 'New Zealand Dollar',
       flag: '🇳🇿',
       locale: 'en_NZ',
@@ -225,35 +225,35 @@ class SupportedCurrencies {
     ),
     Currency(
       code: 'BRL',
-      symbol: 'R\$',
+      symbol: r'R$',
       name: 'Brazilian Real',
       flag: '🇧🇷',
       locale: 'pt_BR',
     ),
     Currency(
       code: 'MXN',
-      symbol: '\$',
+      symbol: r'$',
       name: 'Mexican Peso',
       flag: '🇲🇽',
       locale: 'es_MX',
     ),
     Currency(
       code: 'ARS',
-      symbol: '\$',
+      symbol: r'$',
       name: 'Argentine Peso',
       flag: '🇦🇷',
       locale: 'es_AR',
     ),
     Currency(
       code: 'CLP',
-      symbol: '\$',
+      symbol: r'$',
       name: 'Chilean Peso',
       flag: '🇨🇱',
       locale: 'es_CL',
     ),
     Currency(
       code: 'COP',
-      symbol: '\$',
+      symbol: r'$',
       name: 'Colombian Peso',
       flag: '🇨🇴',
       locale: 'es_CO',

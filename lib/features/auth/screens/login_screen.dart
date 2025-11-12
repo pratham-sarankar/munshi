@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:munshi/core/service_locator.dart';
 import 'package:munshi/features/auth/services/auth_service.dart';
+import 'package:munshi/features/auth/widgets/feature_cards.dart';
 import 'package:munshi/features/auth/widgets/google_signin_button.dart';
 import 'package:munshi/features/auth/widgets/gradient_background.dart';
 import 'package:munshi/features/auth/widgets/munshi_logo.dart';
 import 'package:munshi/screens/main_screen.dart';
-import '../widgets/feature_cards.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -47,14 +47,14 @@ class _LoginScreenState extends State<LoginScreen>
         Tween<Offset>(begin: const Offset(0, -0.5), end: Offset.zero).animate(
           CurvedAnimation(
             parent: _headerAnimationController,
-            curve: const Interval(0.0, 0.6, curve: Curves.easeOutBack),
+            curve: const Interval(0, 0.6, curve: Curves.easeOutBack),
           ),
         );
 
-    _logoFadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+    _logoFadeAnimation = Tween<double>(begin: 0, end: 1).animate(
       CurvedAnimation(
         parent: _headerAnimationController,
-        curve: const Interval(0.0, 0.6, curve: Curves.easeOut),
+        curve: const Interval(0, 0.6, curve: Curves.easeOut),
       ),
     );
 
@@ -67,7 +67,7 @@ class _LoginScreenState extends State<LoginScreen>
           ),
         );
 
-    _titleFadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+    _titleFadeAnimation = Tween<double>(begin: 0, end: 1).animate(
       CurvedAnimation(
         parent: _headerAnimationController,
         curve: const Interval(0.2, 0.8, curve: Curves.easeOut),
@@ -79,14 +79,14 @@ class _LoginScreenState extends State<LoginScreen>
         Tween<Offset>(begin: const Offset(0, 0.3), end: Offset.zero).animate(
           CurvedAnimation(
             parent: _headerAnimationController,
-            curve: const Interval(0.4, 1.0, curve: Curves.easeOutCubic),
+            curve: const Interval(0.4, 1, curve: Curves.easeOutCubic),
           ),
         );
 
-    _subtitleFadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+    _subtitleFadeAnimation = Tween<double>(begin: 0, end: 1).animate(
       CurvedAnimation(
         parent: _headerAnimationController,
-        curve: const Interval(0.4, 1.0, curve: Curves.easeOut),
+        curve: const Interval(0.4, 1, curve: Curves.easeOut),
       ),
     );
 
@@ -95,14 +95,14 @@ class _LoginScreenState extends State<LoginScreen>
         Tween<Offset>(begin: const Offset(0, 0.5), end: Offset.zero).animate(
           CurvedAnimation(
             parent: _contentAnimationController,
-            curve: const Interval(0.0, 0.6, curve: Curves.easeOutBack),
+            curve: const Interval(0, 0.6, curve: Curves.easeOutBack),
           ),
         );
 
-    _buttonFadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+    _buttonFadeAnimation = Tween<double>(begin: 0, end: 1).animate(
       CurvedAnimation(
         parent: _contentAnimationController,
-        curve: const Interval(0.0, 0.6, curve: Curves.easeOut),
+        curve: const Interval(0, 0.6, curve: Curves.easeOut),
       ),
     );
 
@@ -126,14 +126,14 @@ class _LoginScreenState extends State<LoginScreen>
     super.dispose();
   }
 
-  void _handleGoogleSignIn() async {
+  Future<void> _handleGoogleSignIn() async {
     final result = await locator<AuthService>().signInWithGoogle();
     if (result && mounted) {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
           builder: (context) {
-            return MainScreen();
+            return const MainScreen();
           },
         ),
       );
@@ -145,7 +145,7 @@ class _LoginScreenState extends State<LoginScreen>
     return GradientBackground(
       child: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24.0),
+          padding: const EdgeInsets.symmetric(horizontal: 24),
           child: Column(
             children: [
               Column(
@@ -157,7 +157,7 @@ class _LoginScreenState extends State<LoginScreen>
                     position: _logoSlideAnimation,
                     child: FadeTransition(
                       opacity: _logoFadeAnimation,
-                      child: const MunshiLogo(size: 96),
+                      child: const MunshiLogo(),
                     ),
                   ),
 

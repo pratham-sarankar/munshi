@@ -69,7 +69,7 @@ class _ColorPickerDialogState extends State<ColorPickerDialog> {
           children: [
             // Header
             Padding(
-              padding: const EdgeInsets.all(16.0),
+              padding: const EdgeInsets.all(16),
               child: Row(
                 children: [
                   Expanded(
@@ -91,7 +91,7 @@ class _ColorPickerDialogState extends State<ColorPickerDialog> {
 
             // Color preview
             Padding(
-              padding: const EdgeInsets.all(16.0),
+              padding: const EdgeInsets.all(16),
               child: Container(
                 height: 60,
                 decoration: BoxDecoration(
@@ -108,7 +108,7 @@ class _ColorPickerDialogState extends State<ColorPickerDialog> {
             // Colors grid
             Expanded(
               child: GridView.builder(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                padding: const EdgeInsets.symmetric(horizontal: 16),
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 6,
                   crossAxisSpacing: 8,
@@ -160,7 +160,7 @@ class _ColorPickerDialogState extends State<ColorPickerDialog> {
             // Action buttons
             const Divider(height: 1),
             Padding(
-              padding: const EdgeInsets.all(16.0),
+              padding: const EdgeInsets.all(16),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [

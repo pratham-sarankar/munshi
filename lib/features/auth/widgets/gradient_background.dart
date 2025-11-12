@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
 class GradientBackground extends StatefulWidget {
-  final Widget child;
 
-  const GradientBackground({super.key, required this.child});
+  const GradientBackground({required this.child, super.key});
+  final Widget child;
 
   @override
   State<GradientBackground> createState() => _GradientBackgroundState();
@@ -22,7 +22,7 @@ class _GradientBackgroundState extends State<GradientBackground>
       vsync: this,
     )..repeat(reverse: true);
 
-    _pulseAnimation = Tween<double>(begin: 0.8, end: 1.0).animate(
+    _pulseAnimation = Tween<double>(begin: 0.8, end: 1).animate(
       CurvedAnimation(parent: _pulseController, curve: Curves.easeInOut),
     );
   }

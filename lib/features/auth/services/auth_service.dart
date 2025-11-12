@@ -162,8 +162,8 @@ class AuthService extends ChangeNotifier {
 
   /// Get the stored access token (auto-refresh if expired)
   Future<String?> getAccessToken() async {
-    String? accessToken = await _secureStorage.read(key: _kAccessToken);
-    String? refreshToken = await _secureStorage.read(key: _kRefreshToken);
+    var accessToken = await _secureStorage.read(key: _kAccessToken);
+    final refreshToken = await _secureStorage.read(key: _kRefreshToken);
     // Return null if tokens are missing.
     if (accessToken == null || refreshToken == null) {
       return null;

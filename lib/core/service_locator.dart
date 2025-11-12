@@ -4,9 +4,9 @@ import 'package:munshi/core/database/daos/transaction_dao.dart'
     show TransactionsDao;
 import 'package:munshi/features/auth/services/auth_service.dart';
 import 'package:munshi/features/dashboard/services/dashboard_data_service.dart';
-import 'package:munshi/providers/theme_provider.dart';
 import 'package:munshi/providers/currency_provider.dart';
 import 'package:munshi/providers/period_provider.dart';
+import 'package:munshi/providers/theme_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 final GetIt locator = GetIt.instance;
@@ -33,7 +33,7 @@ Future<void> setupLocator() async {
   );
   locator.registerLazySingleton<PeriodProvider>(() => PeriodProvider(prefs));
 
-  locator.registerLazySingleton<AppDatabase>(() => AppDatabase());
+  locator.registerLazySingleton<AppDatabase>(AppDatabase.new);
   locator.registerLazySingleton<TransactionsDao>(
     () => TransactionsDao(locator<AppDatabase>()),
   );

@@ -1,16 +1,9 @@
 import 'package:munshi/core/database/app_database.dart';
-import 'package:munshi/core/models/date_period.dart';
 import 'package:munshi/core/database/daos/transaction_dao.dart';
+import 'package:munshi/core/models/date_period.dart';
 import 'package:munshi/features/dashboard/models/category_spending_data.dart';
 
 class PeriodSummaryData {
-  final double totalSpent;
-  final double totalIncome;
-  final double balance;
-  final double avgDaily;
-  final int transactionCount;
-  final double biggestSpend;
-  final DatePeriod period;
 
   const PeriodSummaryData({
     required this.totalSpent,
@@ -33,23 +26,30 @@ class PeriodSummaryData {
       period: period,
     );
   }
+  final double totalSpent;
+  final double totalIncome;
+  final double balance;
+  final double avgDaily;
+  final int transactionCount;
+  final double biggestSpend;
+  final DatePeriod period;
 }
 
 class DashboardDataService {
-  final TransactionsDao _transactionsDao;
 
   DashboardDataService(this._transactionsDao);
+  final TransactionsDao _transactionsDao;
 
   /// Alternative method using SQL-based calculation for better performance
   Future<PeriodSummaryData> getPeriodSummarySql(DatePeriod period) async {
     // Use the SQL-based DAO method for maximum efficiency
-    return await _transactionsDao.getPeriodSummarySql(period);
+    return _transactionsDao.getPeriodSummarySql(period);
   }
 
   /// Get spending breakdown by category with transaction count for the period
   Future<Map<TransactionCategory?, CategorySpendingData>>
   getSpendingByCategoryWithCount(DatePeriod period) async {
-    return await _transactionsDao.getSpendingByCategoryWithCount(period);
+    return _transactionsDao.getSpendingByCategoryWithCount(period);
   }
 
   // Future<List<Transaction>> getTransactionsForPeriod(DatePeriod period) async {

@@ -4,20 +4,18 @@ import 'package:icons_plus/icons_plus.dart';
 import 'package:intl/intl.dart';
 import 'package:munshi/core/database/app_database.dart';
 import 'package:munshi/features/categories/providers/category_provider.dart';
+import 'package:munshi/features/transactions/models/transaction_filter.dart';
+import 'package:munshi/features/transactions/models/transaction_type.dart';
+import 'package:munshi/providers/currency_provider.dart';
 import 'package:provider/provider.dart';
-import '../../../providers/currency_provider.dart';
-import '../models/transaction_filter.dart';
-import '../models/transaction_type.dart';
 
 class TransactionFilterBottomSheet extends StatefulWidget {
-  final TransactionFilter initialFilter;
-  final Function(TransactionFilter) onApplyFilter;
 
   const TransactionFilterBottomSheet({
-    super.key,
-    required this.initialFilter,
-    required this.onApplyFilter,
+    required this.initialFilter, required this.onApplyFilter, super.key,
   });
+  final TransactionFilter initialFilter;
+  final Function(TransactionFilter) onApplyFilter;
 
   @override
   State<TransactionFilterBottomSheet> createState() =>
@@ -391,9 +389,7 @@ class _TransactionFilterBottomSheetState
               ),
               suffixIcon: _minAmountController.text.isNotEmpty
                   ? IconButton(
-                      onPressed: () {
-                        _minAmountController.clear();
-                      },
+                      onPressed: _minAmountController.clear,
                       icon: const Icon(Icons.clear, size: 20),
                     )
                   : null,
@@ -415,9 +411,7 @@ class _TransactionFilterBottomSheetState
               ),
               suffixIcon: _maxAmountController.text.isNotEmpty
                   ? IconButton(
-                      onPressed: () {
-                        _maxAmountController.clear();
-                      },
+                      onPressed: _maxAmountController.clear,
                       icon: const Icon(Icons.clear, size: 20),
                     )
                   : null,

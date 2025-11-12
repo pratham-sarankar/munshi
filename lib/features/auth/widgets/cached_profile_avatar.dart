@@ -6,8 +6,7 @@ import 'package:icons_plus/icons_plus.dart';
 
 class CachedProfileAvatar extends StatelessWidget {
   const CachedProfileAvatar({
-    super.key,
-    required this.imageUrl,
+    required this.imageUrl, super.key,
     this.radius = 20,
     this.iconSize = 20,
   });

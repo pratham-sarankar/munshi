@@ -1,18 +1,18 @@
+import 'package:drift/drift.dart' as drift;
 import 'package:flutter/material.dart';
 import 'package:icons_plus/icons_plus.dart';
+import 'package:munshi/core/extensions/currency_extensions.dart';
+import 'package:munshi/features/categories/providers/category_provider.dart';
 import 'package:munshi/features/transactions/models/grouped_transactions.dart';
+import 'package:munshi/features/transactions/models/transaction_filter.dart';
 import 'package:munshi/features/transactions/models/transaction_with_category.dart';
-import 'package:munshi/features/transactions/widgets/grouped_transaction_list.dart';
-import 'package:provider/provider.dart';
 import 'package:munshi/features/transactions/providers/transaction_provider.dart';
 import 'package:munshi/features/transactions/screens/transaction_form_screen.dart';
-import 'package:munshi/core/extensions/currency_extensions.dart';
-import 'package:munshi/features/transactions/widgets/transaction_filter_bottom_sheet.dart';
-import 'package:munshi/features/transactions/models/transaction_filter.dart';
-import 'package:munshi/providers/currency_provider.dart';
-import 'package:munshi/features/categories/providers/category_provider.dart';
 import 'package:munshi/features/transactions/widgets/category_selection_bottom_sheet.dart';
-import 'package:drift/drift.dart' as drift;
+import 'package:munshi/features/transactions/widgets/grouped_transaction_list.dart';
+import 'package:munshi/features/transactions/widgets/transaction_filter_bottom_sheet.dart';
+import 'package:munshi/providers/currency_provider.dart';
+import 'package:provider/provider.dart';
 
 class TransactionsScreen extends StatefulWidget {
   const TransactionsScreen({super.key});
@@ -159,8 +159,7 @@ class _TransactionsScreenState extends State<TransactionsScreen>
                       MaterialPageRoute(
                         builder: (context) => TransactionFormScreen(
                           transaction: transaction,
-                          onSubmit: (updatedTransaction) => transactionProvider
-                              .updateTransaction(updatedTransaction),
+                          onSubmit: transactionProvider.updateTransaction,
                         ),
                       ),
                     );
@@ -238,7 +237,6 @@ class _TransactionsScreenState extends State<TransactionsScreen>
                                 color: transaction.categoryColor.withValues(
                                   alpha: 0.2,
                                 ),
-                                width: 1,
                               ),
                             ),
                             child: Icon(
@@ -445,7 +443,7 @@ class _TransactionsScreenState extends State<TransactionsScreen>
               decoration: BoxDecoration(
                 color: Colors.green.shade50,
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: Colors.green.shade200, width: 1),
+                border: Border.all(color: Colors.green.shade200),
               ),
               child: Text(
                 value,
@@ -479,7 +477,7 @@ class _TransactionsScreenState extends State<TransactionsScreen>
   }
 
   String _getActiveFiltersText(TransactionFilter filter) {
-    final List<String> activeFilters = [];
+    final activeFilters = <String>[];
 
     if (filter.hasAmountFilter) {
       if (filter.minAmount != null && filter.maxAmount != null) {
