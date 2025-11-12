@@ -2,11 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:icons_plus/icons_plus.dart';
 import 'package:intl/intl.dart';
+import 'package:munshi/core/database/app_database.dart';
+import 'package:munshi/features/categories/providers/category_provider.dart';
 import 'package:provider/provider.dart';
 import '../../../providers/currency_provider.dart';
 import '../models/transaction_filter.dart';
 import '../models/transaction_type.dart';
-import '../models/transaction_category.dart';
 
 class TransactionFilterBottomSheet extends StatefulWidget {
   final TransactionFilter initialFilter;
@@ -484,113 +485,121 @@ class _TransactionFilterBottomSheetState
   }
 
   Widget _buildCategoryFilterTab(ColorScheme colorScheme) {
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(24),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'Categories',
-            style: Theme.of(context).textTheme.titleMedium?.copyWith(
-              fontWeight: FontWeight.w600,
-              color: colorScheme.onSurface,
-            ),
-          ),
-          const SizedBox(height: 16),
-
-          // Expense Categories
-          Text(
-            'Expense Categories',
-            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-              fontWeight: FontWeight.w500,
-              color: colorScheme.onSurface,
-            ),
-          ),
-          const SizedBox(height: 8),
-          Wrap(
-            spacing: 8,
-            runSpacing: 8,
-            children: expenseCategories.map((category) {
-              final isSelected =
-                  _workingFilter.categories?.contains(category) ?? false;
-              return FilterChip(
-                label: Text(category.name),
-                selected: isSelected,
-                avatar: Icon(
-                  category.icon,
-                  size: 16,
-                  color: isSelected ? colorScheme.onPrimary : category.color,
+    return Consumer<CategoryProvider>(
+      builder: (context, categoryProvider, _) {
+        return SingleChildScrollView(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Categories',
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                  fontWeight: FontWeight.w600,
+                  color: colorScheme.onSurface,
                 ),
-                onSelected: (selected) {
-                  setState(() {
-                    final currentCategories =
-                        _workingFilter.categories?.toSet() ??
-                        <TransactionCategory>{};
-                    if (selected) {
-                      currentCategories.add(category);
-                    } else {
-                      currentCategories.remove(category);
-                    }
-                    _workingFilter = _workingFilter.copyWith(
-                      categories: currentCategories.isEmpty
-                          ? null
-                          : currentCategories,
-                      clearCategories: currentCategories.isEmpty,
-                    );
-                  });
-                },
-              );
-            }).toList(),
-          ),
+              ),
+              const SizedBox(height: 16),
 
-          const SizedBox(height: 24),
-
-          // Income Categories
-          Text(
-            'Income Categories',
-            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-              fontWeight: FontWeight.w500,
-              color: colorScheme.onSurface,
-            ),
-          ),
-          const SizedBox(height: 8),
-          Wrap(
-            spacing: 8,
-            runSpacing: 8,
-            children: incomeCategories.map((category) {
-              final isSelected =
-                  _workingFilter.categories?.contains(category) ?? false;
-              return FilterChip(
-                label: Text(category.name),
-                selected: isSelected,
-                avatar: Icon(
-                  category.icon,
-                  size: 16,
-                  color: isSelected ? colorScheme.onPrimary : category.color,
+              // Expense Categories
+              Text(
+                'Expense Categories',
+                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                  fontWeight: FontWeight.w500,
+                  color: colorScheme.onSurface,
                 ),
-                onSelected: (selected) {
-                  setState(() {
-                    final currentCategories =
-                        _workingFilter.categories?.toSet() ??
-                        <TransactionCategory>{};
-                    if (selected) {
-                      currentCategories.add(category);
-                    } else {
-                      currentCategories.remove(category);
-                    }
-                    _workingFilter = _workingFilter.copyWith(
-                      categories: currentCategories.isEmpty
-                          ? null
-                          : currentCategories,
-                      clearCategories: currentCategories.isEmpty,
-                    );
-                  });
-                },
-              );
-            }).toList(),
+              ),
+              const SizedBox(height: 8),
+              Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                children: categoryProvider.expenseCategories.map((category) {
+                  final isSelected =
+                      _workingFilter.categories?.contains(category) ?? false;
+                  return FilterChip(
+                    label: Text(category.name),
+                    selected: isSelected,
+                    avatar: Icon(
+                      category.icon,
+                      size: 16,
+                      color: isSelected
+                          ? colorScheme.onPrimary
+                          : category.color,
+                    ),
+                    onSelected: (selected) {
+                      setState(() {
+                        final currentCategories =
+                            _workingFilter.categories?.toSet() ??
+                            <TransactionCategory>{};
+                        if (selected) {
+                          currentCategories.add(category);
+                        } else {
+                          currentCategories.remove(category);
+                        }
+                        _workingFilter = _workingFilter.copyWith(
+                          categories: currentCategories.isEmpty
+                              ? null
+                              : currentCategories,
+                          clearCategories: currentCategories.isEmpty,
+                        );
+                      });
+                    },
+                  );
+                }).toList(),
+              ),
+
+              const SizedBox(height: 24),
+
+              // Income Categories
+              Text(
+                'Income Categories',
+                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                  fontWeight: FontWeight.w500,
+                  color: colorScheme.onSurface,
+                ),
+              ),
+              const SizedBox(height: 8),
+              Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                children: categoryProvider.incomeCategories.map((category) {
+                  final isSelected =
+                      _workingFilter.categories?.contains(category) ?? false;
+                  return FilterChip(
+                    label: Text(category.name),
+                    selected: isSelected,
+                    avatar: Icon(
+                      category.icon,
+                      size: 16,
+                      color: isSelected
+                          ? colorScheme.onPrimary
+                          : category.color,
+                    ),
+                    onSelected: (selected) {
+                      setState(() {
+                        final currentCategories =
+                            _workingFilter.categories?.toSet() ??
+                            <TransactionCategory>{};
+                        if (selected) {
+                          currentCategories.add(category);
+                        } else {
+                          currentCategories.remove(category);
+                        }
+                        _workingFilter = _workingFilter.copyWith(
+                          categories: currentCategories.isEmpty
+                              ? null
+                              : currentCategories,
+                          clearCategories: currentCategories.isEmpty,
+                        );
+                      });
+                    },
+                  );
+                }).toList(),
+              ),
+            ],
           ),
-        ],
-      ),
+        );
+      },
     );
   }
 }

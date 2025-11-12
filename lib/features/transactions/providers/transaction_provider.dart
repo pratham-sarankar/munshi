@@ -1,5 +1,6 @@
 import 'package:drift/drift.dart';
 import 'package:flutter/foundation.dart';
+import 'package:munshi/features/transactions/models/transaction_with_category.dart';
 import '../../../core/database/daos/transaction_dao.dart';
 import '../../../core/database/app_database.dart';
 import '../models/grouped_transactions.dart';
@@ -26,7 +27,7 @@ class TransactionProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Stream<List<Transaction>> get watchTransactions =>
+  Stream<List<TransactionWithCategory>> get watchTransactions =>
       _transactionsDao.watchAllTransactions();
 
   Stream<List<GroupedTransactions>> get watchGroupedTransactions {
@@ -105,14 +106,6 @@ class TransactionProvider extends ChangeNotifier {
     endDate: endDate,
   );
 
-  Future<List<GroupedTransactions>> getGroupedTransactions({
-    DateTime? startDate,
-    DateTime? endDate,
-  }) => _transactionsDao.getTransactionsGroupedByDate(
-    startDate: startDate,
-    endDate: endDate,
-  );
-
   Future<void> addTransaction(Insertable<Transaction> transaction) async {
     await _transactionsDao.insertTransaction(transaction);
   }
@@ -121,7 +114,7 @@ class TransactionProvider extends ChangeNotifier {
     await _transactionsDao.updateTransaction(transaction);
   }
 
-  Future<void> deleteTransaction(Transaction transaction) async {
-    await _transactionsDao.deleteTransaction(transaction);
+  Future<void> deleteTransaction(TransactionWithCategory transaction) async {
+    await _transactionsDao.deleteTransaction(transaction.transaction);
   }
 }

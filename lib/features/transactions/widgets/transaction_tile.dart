@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:icons_plus/icons_plus.dart';
 import 'package:intl/intl.dart';
-import 'package:munshi/core/database/app_database.dart';
 import 'package:munshi/features/transactions/models/transaction_type.dart';
 import 'package:munshi/core/extensions/currency_extensions.dart';
+import 'package:munshi/features/transactions/models/transaction_with_category.dart';
 
 class TransactionTile extends StatefulWidget {
   const TransactionTile({
@@ -13,11 +13,13 @@ class TransactionTile extends StatefulWidget {
     required this.transaction,
     this.onDelete,
     this.onEdit,
+    this.onCategoryTap,
   });
   final VoidCallback onTap;
-  final Transaction transaction;
-  final Future<void> Function(Transaction transaction)? onDelete;
-  final Future<void> Function(Transaction transaction)? onEdit;
+  final TransactionWithCategory transaction;
+  final Future<void> Function(TransactionWithCategory transaction)? onDelete;
+  final Future<void> Function(TransactionWithCategory transaction)? onEdit;
+  final VoidCallback? onCategoryTap;
 
   @override
   State<TransactionTile> createState() => _TransactionTileState();
@@ -77,19 +79,23 @@ class _TransactionTileState extends State<TransactionTile>
         dense: false,
         enableFeedback: true,
         onTap: widget.onTap,
-        leading: Container(
-          padding: const EdgeInsets.all(10),
-          decoration: BoxDecoration(
-            color: widget.transaction.category.color.withValues(alpha: 0.12),
-            borderRadius: BorderRadius.circular(12),
-          ),
-          child: Icon(
-            widget.transaction.category.icon,
-            color: widget.transaction.category.color,
-            size: 22,
+        leading: InkWell(
+          onTap: widget.onCategoryTap,
+          borderRadius: BorderRadius.circular(12),
+          child: Container(
+            padding: const EdgeInsets.all(10),
+            decoration: BoxDecoration(
+              color: widget.transaction.categoryColor.withValues(alpha: 0.12),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Icon(
+              widget.transaction.categoryIcon,
+              color: widget.transaction.categoryColor,
+              size: 22,
+            ),
           ),
         ),
-        title: Text(widget.transaction.category.name),
+        title: Text(widget.transaction.categoryName),
         subtitle: Text(
           DateFormat('d MMM • h:mm a').format(widget.transaction.date),
         ),

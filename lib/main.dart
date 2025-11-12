@@ -12,6 +12,7 @@ import 'package:munshi/providers/period_provider.dart';
 import 'package:munshi/features/transactions/providers/transaction_provider.dart';
 import 'package:munshi/features/dashboard/providers/dashboard_provider.dart';
 import 'package:munshi/features/dashboard/services/dashboard_data_service.dart';
+import 'package:munshi/features/categories/providers/category_provider.dart';
 import 'package:munshi/core/database/daos/transaction_dao.dart';
 import 'package:munshi/screens/main_screen.dart';
 import 'package:provider/provider.dart';
@@ -59,6 +60,9 @@ void main() async {
             locator<PeriodProvider>(),
             locator<CurrencyProvider>(),
           ),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => CategoryProvider(),
         ),
       ],
       child: const Munshi(),

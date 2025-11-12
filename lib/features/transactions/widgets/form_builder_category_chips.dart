@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:form_builder_validators/form_builder_validators.dart';
-import 'package:munshi/features/transactions/models/transaction_category.dart';
+import 'package:munshi/core/database/app_database.dart';
+import 'package:munshi/features/categories/providers/category_provider.dart';
 import 'package:munshi/features/transactions/models/transaction_type.dart';
+import 'package:provider/provider.dart';
 
 class FormBuilderCategoryChips extends StatelessWidget {
   const FormBuilderCategoryChips({
@@ -16,37 +17,39 @@ class FormBuilderCategoryChips extends StatelessWidget {
   final TransactionCategory? initialValue;
   @override
   Widget build(BuildContext context) {
-    return FormBuilderChoiceChips<TransactionCategory>(
-      name: name,
-      initialValue: initialValue,
-      spacing: 5,
-      runSpacing: 5,
-      decoration: InputDecoration(
-        filled: false,
-        border: InputBorder.none,
-        contentPadding: EdgeInsets.zero,
-      ),
-      validator: FormBuilderValidators.required(
-        errorText: 'Please select a category',
-      ),
-      options:
-          (type == TransactionType.expense
-                  ? expenseCategories
-                  : incomeCategories)
-              .map(
-                (category) => FormBuilderChipOption<TransactionCategory>(
-                  value: category,
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(category.icon, size: 16),
-                      const SizedBox(width: 4),
-                      Text(category.name),
-                    ],
-                  ),
-                ),
-              )
-              .toList(),
+    return Consumer<CategoryProvider>(
+      builder: (context, categoryProvider, child) {
+        return FormBuilderChoiceChips<TransactionCategory>(
+          name: name,
+          initialValue: initialValue,
+          spacing: 5,
+          runSpacing: 5,
+          decoration: InputDecoration(
+            filled: false,
+            border: InputBorder.none,
+            contentPadding: EdgeInsets.zero,
+          ),
+          validator: null, // Category is now optional: transactions can exist without categories because the foreign key relationship allows null categoryId values (e.g., categories can be deleted while preserving transactions).
+          options:
+              (type == TransactionType.expense
+                      ? categoryProvider.expenseCategories
+                      : categoryProvider.incomeCategories)
+                  .map(
+                    (category) => FormBuilderChipOption<TransactionCategory>(
+                      value: category,
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(category.icon, size: 16),
+                          const SizedBox(width: 4),
+                          Text(category.name),
+                        ],
+                      ),
+                    ),
+                  )
+                  .toList(),
+        );
+      },
     );
   }
 }

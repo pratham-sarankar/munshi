@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:intl/intl.dart';
-import 'package:munshi/core/database/app_database.dart';
 import 'package:munshi/features/transactions/models/grouped_transactions.dart';
+import 'package:munshi/features/transactions/models/transaction_with_category.dart';
 import 'package:munshi/features/transactions/widgets/transaction_tile.dart';
 
 class GroupedTransactionList extends StatefulWidget {
@@ -15,13 +15,15 @@ class GroupedTransactionList extends StatefulWidget {
     required this.onTap,
     this.onDelete,
     this.onEdit,
+    this.onCategoryTap,
     this.controller,
   });
 
   final List<GroupedTransactions> groupedTransactions;
-  final Function(Transaction) onTap;
-  final Future<void> Function(Transaction transaction)? onDelete;
-  final Future<void> Function(Transaction transaction)? onEdit;
+  final Function(TransactionWithCategory) onTap;
+  final Future<void> Function(TransactionWithCategory transaction)? onDelete;
+  final Future<void> Function(TransactionWithCategory transaction)? onEdit;
+  final Function(TransactionWithCategory)? onCategoryTap;
   final ScrollController? controller;
 
   @override
@@ -184,7 +186,10 @@ class _GroupedTransactionListState extends State<GroupedTransactionList>
     );
   }
 
-  Widget _buildAnimatedTransactionTile(Transaction transaction, int index) {
+  Widget _buildAnimatedTransactionTile(
+    TransactionWithCategory transaction,
+    int index,
+  ) {
     return TweenAnimationBuilder<double>(
       key: ValueKey(transaction.id),
       duration: Duration(milliseconds: 600 + (index * 80)),
@@ -208,6 +213,9 @@ class _GroupedTransactionListState extends State<GroupedTransactionList>
                 },
                 onDelete: widget.onDelete,
                 onEdit: widget.onEdit,
+                onCategoryTap: widget.onCategoryTap != null
+                    ? () => widget.onCategoryTap!(transaction)
+                    : null,
               ),
             ),
           ),
