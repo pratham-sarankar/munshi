@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_ocr/flutter_ocr.dart';
 import 'package:icons_plus/icons_plus.dart';
 import 'package:munshi/features/dashboard/screens/home_screen.dart';
 import 'package:munshi/features/settings/screens/settings_screen.dart';
@@ -57,8 +58,15 @@ class _MainScreenState extends State<MainScreen> {
   @override
   Widget build(BuildContext context) {
     return ShareHandlerWidget(
-      onMediaReceived: (value) {
-        log("Received shared media: ${value.attachments?.first?.path}");
+      onMediaReceived: (value) async {
+        try {
+          final path = value.attachments?.first?.path;
+          if (path == null) return;
+          final text = await FlutterOcr.recognizeTextFromImage(path);
+          log('Recognized text: $text');
+        } catch (e) {
+          log('OCR Error: $e');
+        }
       },
       child: Scaffold(
         floatingActionButton: FloatingActionButton(
