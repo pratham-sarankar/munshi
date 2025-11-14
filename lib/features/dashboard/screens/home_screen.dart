@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:munshi/features/auth/services/auth_service.dart';
 import 'package:munshi/features/auth/widgets/cached_profile_avatar.dart';
@@ -7,15 +9,61 @@ import 'package:munshi/features/dashboard/widgets/dashboard_stats_widget.dart';
 import 'package:munshi/features/dashboard/widgets/dashboard_summary_card.dart';
 import 'package:munshi/features/dashboard/widgets/greeting_text.dart';
 import 'package:munshi/features/dashboard/widgets/period_selector_bottom_sheet.dart';
+import 'package:munshi/features/transactions/providers/transaction_provider.dart';
+import 'package:munshi/features/transactions/models/transaction_with_category.dart';
 import 'package:provider/provider.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
   @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  TransactionProvider? _transactionProvider;
+  DashboardProvider? _dashboardProvider;
+  StreamSubscription<List<TransactionWithCategory>>? _txSubscription;
+  int? _prevTransactionCount;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _dashboardProvider = Provider.of<DashboardProvider>(context, listen: false);
+      _transactionProvider = Provider.of<TransactionProvider>(context, listen: false);
+
+      // Listen to the provider's transaction stream and refresh the dashboard
+      // only when a new transaction is added (i.e., count increases).
+      _txSubscription = _transactionProvider
+          ?.watchTransactions
+          .listen((txList) {
+        if (!mounted) return;
+        final newCount = txList.length;
+        if (_prevTransactionCount == null) {
+          _prevTransactionCount = newCount;
+          return;
+        }
+
+        if (newCount > _prevTransactionCount!) {
+          _dashboardProvider?.refresh();
+        }
+
+        _prevTransactionCount = newCount;
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    _txSubscription?.cancel();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Consumer<DashboardProvider>(
-      builder: (context, dashboardProvider, child) {
+    return Consumer2<DashboardProvider, TransactionProvider>(
+      builder: (context, dashboardProvider, transactionProvider, child) {
         final colorScheme = Theme.of(context).colorScheme;
         return Scaffold(
           backgroundColor: colorScheme.surface,
@@ -109,37 +157,37 @@ class HomeScreen extends StatelessWidget {
           ),
           body: RefreshIndicator(
             onRefresh: () => dashboardProvider.refresh(),
-            child: const SingleChildScrollView(
-              physics: AlwaysScrollableScrollPhysics(),
-              padding: EdgeInsets.fromLTRB(20, 0, 20, 100),
+            child: SingleChildScrollView(
+              physics: const AlwaysScrollableScrollPhysics(),
+              padding: const EdgeInsets.fromLTRB(20, 0, 20, 100),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  SizedBox(height: 10),
-                  DashboardSummaryCard(),
-                  SizedBox(height: 15),
+                  const SizedBox(height: 10),
+                  const DashboardSummaryCard(),
+                  const SizedBox(height: 15),
                   // Quick Stats Row
                   Row(
                     children: [
                       Expanded(
                         child: DashboardStatsWidget(
                           statType: DashboardStatType.transactions,
-                          animationDelay: Duration(milliseconds: 200),
+                          animationDelay: const Duration(milliseconds: 200),
                         ),
                       ),
-                      SizedBox(width: 15),
+                      const SizedBox(width: 15),
                       Expanded(
                         child: DashboardStatsWidget(
                           statType: DashboardStatType.biggestSpend,
-                          animationDelay: Duration(milliseconds: 350),
+                          animationDelay: const Duration(milliseconds: 350),
                         ),
                       ),
                     ],
                   ),
-                  SizedBox(height: 25),
+                  const SizedBox(height: 25),
 
                   // Recent Transactions
-                  DashboardCategoriesWidget(),
+                  const DashboardCategoriesWidget(),
                 ],
               ),
             ),
