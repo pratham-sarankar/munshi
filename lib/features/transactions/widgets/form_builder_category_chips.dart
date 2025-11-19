@@ -7,9 +7,7 @@ import 'package:provider/provider.dart';
 
 class FormBuilderCategoryChips extends StatelessWidget {
   const FormBuilderCategoryChips({
-    super.key,
-    required this.name,
-    required this.type,
+    required this.name, required this.type, super.key,
     this.initialValue,
   });
   final String name;
@@ -24,13 +22,11 @@ class FormBuilderCategoryChips extends StatelessWidget {
           initialValue: initialValue,
           spacing: 5,
           runSpacing: 5,
-          decoration: InputDecoration(
+          decoration: const InputDecoration(
             filled: false,
             border: InputBorder.none,
             contentPadding: EdgeInsets.zero,
           ),
-          validator:
-              null, // Category is now optional: transactions can exist without categories because the foreign key relationship allows null categoryId values (e.g., categories can be deleted while preserving transactions).
           options:
               (type == TransactionType.expense
                       ? categoryProvider.expenseCategories

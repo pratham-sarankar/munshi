@@ -1,12 +1,4 @@
 class User {
-  final String sub;
-  final String name;
-  final String givenName;
-  final String familyName;
-  final String picture;
-  final String email;
-  final bool emailVerified;
-
   const User({
     required this.sub,
     required this.name,
@@ -28,6 +20,13 @@ class User {
       emailVerified: json['email_verified'] as bool? ?? false,
     );
   }
+  final String sub;
+  final String name;
+  final String givenName;
+  final String familyName;
+  final String picture;
+  final String email;
+  final bool emailVerified;
 
   Map<String, dynamic> toJson() {
     return {

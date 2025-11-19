@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../../../core/database/app_database.dart';
-import 'transaction_type.dart';
+import 'package:munshi/core/database/app_database.dart';
+import 'package:munshi/features/transactions/models/transaction_type.dart';
 
 /// A transaction with its optional category information.
 ///
@@ -8,10 +8,10 @@ import 'transaction_type.dart';
 /// or if the category was deleted. This allows transactions to exist
 /// independently of categories.
 class TransactionWithCategory {
-  final Transaction transaction;
-  final TransactionCategory? category;
 
   const TransactionWithCategory({required this.transaction, this.category});
+  final Transaction transaction;
+  final TransactionCategory? category;
 
   int get id => transaction.id;
   double get amount => transaction.amount;

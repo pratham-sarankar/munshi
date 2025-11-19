@@ -5,17 +5,17 @@ import 'package:munshi/features/transactions/models/transaction_type.dart';
 
 class CategorySelectionBottomSheet extends StatefulWidget {
   const CategorySelectionBottomSheet({
-    super.key,
     required this.categories,
     required this.currentCategoryId,
     required this.transactionType,
     required this.onCategorySelected,
+    super.key,
   });
 
   final List<TransactionCategory> categories;
   final int? currentCategoryId;
   final TransactionType transactionType;
-  final Function(TransactionCategory) onCategorySelected;
+  final void Function(TransactionCategory) onCategorySelected;
 
   @override
   State<CategorySelectionBottomSheet> createState() =>
@@ -132,7 +132,6 @@ class _CategorySelectionBottomSheetState
                                 borderRadius: BorderRadius.circular(12),
                                 border: Border.all(
                                   color: category.color.withValues(alpha: 0.3),
-                                  width: 1,
                                 ),
                               ),
                               child: Icon(

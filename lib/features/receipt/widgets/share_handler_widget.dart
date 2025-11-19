@@ -3,9 +3,7 @@ import 'package:share_handler/share_handler.dart';
 
 class ShareHandlerWidget extends StatefulWidget {
   const ShareHandlerWidget({
-    super.key,
-    required this.child,
-    required this.onMediaReceived,
+    required this.child, required this.onMediaReceived, super.key,
   });
   final Widget child;
   final ValueChanged<SharedMedia> onMediaReceived;

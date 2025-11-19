@@ -1,22 +1,16 @@
 import 'package:flutter/material.dart';
 
 class FeatureCard extends StatefulWidget {
+
+  const FeatureCard({
+    required this.icon, required this.title, required this.subtitle, required this.gradientColors, required this.backgroundGradientColors, required this.borderColor, super.key,
+  });
   final IconData icon;
   final String title;
   final String subtitle;
   final List<Color> gradientColors;
   final List<Color> backgroundGradientColors;
   final Color borderColor;
-
-  const FeatureCard({
-    super.key,
-    required this.icon,
-    required this.title,
-    required this.subtitle,
-    required this.gradientColors,
-    required this.backgroundGradientColors,
-    required this.borderColor,
-  });
 
   @override
   State<FeatureCard> createState() => _FeatureCardState();
@@ -35,7 +29,7 @@ class _FeatureCardState extends State<FeatureCard>
       vsync: this,
     );
 
-    _scaleAnimation = Tween<double>(begin: 1.0, end: 0.98).animate(
+    _scaleAnimation = Tween<double>(begin: 1, end: 0.98).animate(
       CurvedAnimation(parent: _animationController, curve: Curves.easeInOut),
     );
   }
@@ -63,10 +57,8 @@ class _FeatureCardState extends State<FeatureCard>
                 borderRadius: BorderRadius.circular(16),
                 gradient: LinearGradient(
                   colors: widget.backgroundGradientColors,
-                  begin: Alignment.centerLeft,
-                  end: Alignment.centerRight,
                 ),
-                border: Border.all(color: widget.borderColor, width: 1),
+                border: Border.all(color: widget.borderColor),
               ),
               child: Row(
                 children: [
@@ -167,7 +159,7 @@ class _FeatureCardsState extends State<FeatureCards>
   }
 
   void _startStaggeredAnimations() {
-    for (int i = 0; i < _animationControllers.length; i++) {
+    for (var i = 0; i < _animationControllers.length; i++) {
       Future.delayed(Duration(milliseconds: i * 100), () {
         if (mounted) {
           _animationControllers[i].forward();

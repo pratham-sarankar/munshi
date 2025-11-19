@@ -59,6 +59,7 @@ dependencies:
   share_handler: ^0.0.25
   flutter_ocr:
     path: packages/flutter_ocr/flutter_ocr
+  firebase_ai: ^3.5.0
 
 dev_dependencies:
   flutter_test:
@@ -72,6 +73,7 @@ dev_dependencies:
   flutter_lints: ^6.0.0
   drift_dev: ^2.28.2
   build_runner: ^2.7.2
+  very_good_analysis: ^10.0.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

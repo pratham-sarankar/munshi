@@ -1,21 +1,22 @@
+import 'dart:io' show Platform;
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:icons_plus/icons_plus.dart';
 import 'package:munshi/core/models/period_type.dart';
-import 'package:munshi/providers/theme_provider.dart';
+import 'package:munshi/core/service_locator.dart';
+import 'package:munshi/features/auth/screens/login_screen.dart';
+import 'package:munshi/features/auth/services/auth_service.dart';
+import 'package:munshi/features/settings/screens/currency_selection_screen.dart';
+import 'package:munshi/features/settings/widgets/app_version_widget.dart';
 import 'package:munshi/providers/currency_provider.dart';
 import 'package:munshi/providers/period_provider.dart';
-import 'package:provider/provider.dart';
+import 'package:munshi/providers/theme_provider.dart';
 import 'package:munshi/widgets/rounded_dropdown.dart';
-import 'package:munshi/features/settings/widgets/app_version_widget.dart';
-import 'package:munshi/features/settings/screens/currency_selection_screen.dart';
-import 'package:munshi/core/service_locator.dart';
-import 'package:munshi/features/auth/services/auth_service.dart';
-import 'package:munshi/features/auth/screens/login_screen.dart';
 import 'package:munshi/widgets/webview_screen.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:package_info_plus/package_info_plus.dart';
-import 'dart:io' show Platform;
+import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -88,21 +89,21 @@ class _SettingsScreenState extends State<SettingsScreen>
       ),
     );
 
-    if (result == true && mounted) {
+    if (mounted && (result ?? false)) {
       try {
         await locator<AuthService>().signOut();
         if (mounted) {
-          Navigator.pushAndRemoveUntil(
+          await Navigator.pushAndRemoveUntil(
             context,
-            MaterialPageRoute(builder: (_) => const LoginScreen()),
+            MaterialPageRoute<void>(builder: (_) => const LoginScreen()),
             (route) => false,
           );
         }
-      } catch (e) {
+      } on Exception catch (e) {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text('Logout failed: ${e.toString()}'),
+              content: Text('Logout failed: $e'),
               backgroundColor: Theme.of(context).colorScheme.error,
             ),
           );
@@ -172,7 +173,7 @@ Best regards,
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Error: ${e.toString()}'),
+            content: Text('Error: $e'),
             backgroundColor: Theme.of(context).colorScheme.error,
           ),
         );
@@ -243,7 +244,7 @@ Best regards,
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Error: ${e.toString()}'),
+            content: Text('Error: $e'),
             backgroundColor: Theme.of(context).colorScheme.error,
           ),
         );
@@ -292,7 +293,7 @@ Best regards,
                               onTap: () {
                                 HapticFeedback.lightImpact();
                                 Navigator.of(context).push(
-                                  MaterialPageRoute(
+                                  MaterialPageRoute<void>(
                                     builder: (_) =>
                                         const CurrencySelectionScreen(),
                                   ),
@@ -309,7 +310,7 @@ Best regards,
                         ),
                         _SettingsTile(
                           title: 'Preferred Dashboard View',
-                          subtitle: "Restart to apply changes",
+                          subtitle: 'Restart to apply changes',
                           trailing: Consumer<PeriodProvider>(
                             builder: (context, periodProvider, child) {
                               return RoundedDropdown<String>(
@@ -454,11 +455,11 @@ Best regards,
                             const privacyPolicyUrl = String.fromEnvironment(
                               'PRIVACY_POLICY_URL',
                               defaultValue:
-                                  "https://munshi.sarankar.com/privacy.html",
+                                  'https://munshi.sarankar.com/privacy.html',
                             );
                             Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (context) => WebViewScreen(
+                              MaterialPageRoute<void>(
+                                builder: (context) => const WebViewScreen(
                                   url: privacyPolicyUrl,
                                   title: 'Privacy Policy',
                                 ),
@@ -495,12 +496,14 @@ Best regards,
                             const faqUrl = String.fromEnvironment(
                               'FAQ_URL',
                               defaultValue:
-                                  "https://munshi.sarankar.com/faq.html",
+                                  'https://munshi.sarankar.com/faq.html',
                             );
                             Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (context) =>
-                                    WebViewScreen(url: faqUrl, title: 'FAQ'),
+                              MaterialPageRoute<void>(
+                                builder: (context) => const WebViewScreen(
+                                  url: faqUrl,
+                                  title: 'FAQ',
+                                ),
                               ),
                             );
                           },
@@ -635,14 +638,13 @@ Best regards,
             borderRadius: BorderRadius.circular(15),
             side: BorderSide(
               color: colorScheme.outline.withValues(alpha: 0.2),
-              width: 1,
             ),
           ),
           color: colorScheme.surface,
           margin: EdgeInsets.zero,
           child: Column(
             children: List<Widget>.generate(tiles.length, (index) {
-              final Widget tile = tiles[index];
+              final tile = tiles[index];
               if (tile is _SettingsTile) {
                 return _SettingsTile(
                   key: tile.key,
@@ -702,12 +704,6 @@ Best regards,
 }
 
 class _SettingsTile extends StatelessWidget {
-  final String title;
-  final String? subtitle;
-  final Widget? trailing;
-  final VoidCallback? onTap;
-  final bool hasDivider;
-
   const _SettingsTile({
     required this.title,
     this.subtitle,
@@ -716,6 +712,11 @@ class _SettingsTile extends StatelessWidget {
     this.hasDivider = true,
     super.key,
   });
+  final String title;
+  final String? subtitle;
+  final Widget? trailing;
+  final VoidCallback? onTap;
+  final bool hasDivider;
 
   @override
   Widget build(BuildContext context) {
@@ -725,7 +726,7 @@ class _SettingsTile extends StatelessWidget {
         InkWell(
           onTap: onTap,
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 0),
+            padding: const EdgeInsets.symmetric(horizontal: 18),
             child: ListTile(
               title: Text(title),
               subtitle: subtitle == null ? null : Text(subtitle!),

@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:munshi/core/models/period_type.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class PeriodProvider extends ChangeNotifier {
+
+  /// Creates a PeriodProvider and loads the period synchronously from SharedPreferences.
+  PeriodProvider(this.prefs) {
+    _loadPeriodFromPrefs();
+  }
   static const String _defaultPeriodKey = 'default_period';
 
   PeriodType _defaultPeriod = PeriodType.monthly;
@@ -11,11 +16,6 @@ class PeriodProvider extends ChangeNotifier {
   String get defaultPeriodDisplayName => _defaultPeriod.displayName;
 
   final SharedPreferences prefs;
-
-  /// Creates a PeriodProvider and loads the period synchronously from SharedPreferences.
-  PeriodProvider(this.prefs) {
-    _loadPeriodFromPrefs();
-  }
 
   void setDefaultPeriod(PeriodType period) {
     if (_defaultPeriod != period) {

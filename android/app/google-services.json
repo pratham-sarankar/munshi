@@ -15,12 +15,20 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyDTMprR1MsgSPkbVqdenvTchUtMw1-xor4"
+          "current_key": "AIzaSyDLJdVtuAH9B1-bHpth9dOwGhoQMLmFJIw"
         }
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "573858831973-1pnnog3uvvb1h4lbmibr6a8j18up03in.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "sarankar.app.munshi"
+              }
+            }
+          ]
         }
       }
     }

@@ -2,15 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:icons_plus/icons_plus.dart';
 import 'package:intl/intl.dart';
-import 'package:munshi/features/transactions/models/transaction_type.dart';
 import 'package:munshi/core/extensions/currency_extensions.dart';
+import 'package:munshi/features/transactions/models/transaction_type.dart';
 import 'package:munshi/features/transactions/models/transaction_with_category.dart';
 
 class TransactionTile extends StatefulWidget {
   const TransactionTile({
-    super.key,
-    required this.onTap,
-    required this.transaction,
+    required this.onTap, required this.transaction, super.key,
     this.onDelete,
     this.onEdit,
     this.onCategoryTap,
@@ -41,10 +39,9 @@ class _TransactionTileState extends State<TransactionTile>
     return Slidable(
       controller: controller,
       key: ValueKey(widget.transaction.id),
-      groupTag: "transactions",
+      groupTag: 'transactions',
       endActionPane: ActionPane(
-        motion: BehindMotion(),
-        dragDismissible: true,
+        motion: const BehindMotion(),
         dismissible: DismissiblePane(
           confirmDismiss: _showDeleteConfirmationDialog,
           closeOnCancel: true,
@@ -52,7 +49,6 @@ class _TransactionTileState extends State<TransactionTile>
         ),
         children: [
           SlidableAction(
-            flex: 1,
             onPressed: (context) => _editTransaction(),
             backgroundColor: colorScheme.inverseSurface,
             foregroundColor: colorScheme.onInverseSurface,
@@ -60,7 +56,6 @@ class _TransactionTileState extends State<TransactionTile>
             label: 'Edit',
           ),
           SlidableAction(
-            flex: 1,
             onPressed: (context) async {
               final confirm = await _showDeleteConfirmationDialog();
               if (confirm) {
@@ -121,7 +116,7 @@ class _TransactionTileState extends State<TransactionTile>
     if (mounted) {
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(SnackBar(content: Text("Transaction deleted")));
+      ).showSnackBar(const SnackBar(content: Text('Transaction deleted')));
     }
   }
 
@@ -136,18 +131,18 @@ class _TransactionTileState extends State<TransactionTile>
     final result = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text("Confirm Deletion"),
+        title: const Text('Confirm Deletion'),
         content: const Text(
-          "Are you sure you want to delete this transaction?",
+          'Are you sure you want to delete this transaction?',
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(false), // cancel
-            child: const Text("Cancel"),
+            child: const Text('Cancel'),
           ),
           FilledButton(
             onPressed: () => Navigator.of(context).pop(true), // confirm
-            child: const Text("Delete"),
+            child: const Text('Delete'),
           ),
         ],
       ),

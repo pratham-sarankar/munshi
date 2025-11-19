@@ -1,9 +1,9 @@
-import "package:flutter/material.dart";
+import 'package:flutter/material.dart';
 
 class MaterialTheme {
-  final TextTheme textTheme;
 
   const MaterialTheme(this.textTheme);
+  final TextTheme textTheme;
 
   static ColorScheme lightScheme() {
     return const ColorScheme(
@@ -347,9 +347,8 @@ class MaterialTheme {
     canvasColor: colorScheme.surface,
     inputDecorationTheme: InputDecorationThemeData(
       filled: true,
-      floatingLabelBehavior: FloatingLabelBehavior.auto,
       border: UnderlineInputBorder(borderRadius: BorderRadius.circular(10)),
-      contentPadding: EdgeInsets.symmetric(horizontal: 15, vertical: 15),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
     ),
   );
 
@@ -357,13 +356,6 @@ class MaterialTheme {
 }
 
 class ExtendedColor {
-  final Color seed, value;
-  final ColorFamily light;
-  final ColorFamily lightHighContrast;
-  final ColorFamily lightMediumContrast;
-  final ColorFamily dark;
-  final ColorFamily darkHighContrast;
-  final ColorFamily darkMediumContrast;
 
   const ExtendedColor({
     required this.seed,
@@ -375,6 +367,14 @@ class ExtendedColor {
     required this.darkHighContrast,
     required this.darkMediumContrast,
   });
+  final Color seed;
+  final Color value;
+  final ColorFamily light;
+  final ColorFamily lightHighContrast;
+  final ColorFamily lightMediumContrast;
+  final ColorFamily dark;
+  final ColorFamily darkHighContrast;
+  final ColorFamily darkMediumContrast;
 }
 
 class ColorFamily {

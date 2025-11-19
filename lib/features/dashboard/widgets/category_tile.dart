@@ -4,12 +4,10 @@ import 'package:munshi/core/extensions/currency_extensions.dart';
 
 class CategoryTile extends StatefulWidget {
   const CategoryTile({
-    super.key,
-    required this.category,
-    required this.onTap,
+    required this.category, required this.onTap, super.key,
     this.spendingAmount = 0.0,
     this.transactionCount = 0,
-    this.animationDelay = const Duration(milliseconds: 0),
+    this.animationDelay = const Duration(),
   });
 
   final TransactionCategory? category;
@@ -40,7 +38,7 @@ class _CategoryTileState extends State<CategoryTile>
     );
 
     _scaleController = AnimationController(
-      duration: Duration(milliseconds: 300),
+      duration: const Duration(milliseconds: 300),
       vsync: this,
     );
 
@@ -48,7 +46,7 @@ class _CategoryTileState extends State<CategoryTile>
         Tween<Offset>(begin: const Offset(0, 0.3), end: Offset.zero).animate(
           CurvedAnimation(
             parent: _entryController,
-            curve: const Cubic(0.165, 0.84, 0.44, 1.0), // iOS easeOutQuart
+            curve: const Cubic(0.165, 0.84, 0.44, 1), // iOS easeOutQuart
           ),
         );
 
@@ -59,7 +57,7 @@ class _CategoryTileState extends State<CategoryTile>
 
     _scaleAnimation = Tween<double>(
       begin: 0.95,
-      end: 1.0,
+      end: 1,
     ).animate(CurvedAnimation(parent: _scaleController, curve: Curves.easeOut));
 
     // Start animations after delay
@@ -95,7 +93,7 @@ class _CategoryTileState extends State<CategoryTile>
         child: ScaleTransition(
           scale: _scaleAnimation,
           child: Container(
-            margin: const EdgeInsets.symmetric(horizontal: 0, vertical: 4),
+            margin: const EdgeInsets.symmetric(vertical: 4),
             child: Material(
               elevation: 2,
               borderRadius: BorderRadius.circular(16),
@@ -117,7 +115,6 @@ class _CategoryTileState extends State<CategoryTile>
                     ),
                     border: Border.all(
                       color: colorScheme.outline.withValues(alpha: 0.1),
-                      width: 1,
                     ),
                   ),
                   child: Row(
@@ -133,7 +130,6 @@ class _CategoryTileState extends State<CategoryTile>
                           border: Border.all(
                             color: (widget.category?.color ?? Colors.grey)
                                 .withValues(alpha: 0.3),
-                            width: 1,
                           ),
                         ),
                         child: Icon(

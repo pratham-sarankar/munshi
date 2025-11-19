@@ -4,10 +4,7 @@ import 'package:munshi/core/database/app_database.dart';
 
 class CategoryListTile extends StatelessWidget {
   const CategoryListTile({
-    super.key,
-    required this.category,
-    required this.onTap,
-    required this.onDelete,
+    required this.category, required this.onTap, required this.onDelete, super.key,
   });
 
   final TransactionCategory category;
