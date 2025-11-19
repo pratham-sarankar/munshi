@@ -1,6 +1,6 @@
 import 'package:intl/intl.dart';
-import 'package:munshi/providers/currency_provider.dart';
 import 'package:munshi/core/service_locator.dart';
+import 'package:munshi/providers/currency_provider.dart';
 
 /// Extension on String to add currency formatting functionality
 extension CurrencyStringExtension on String {
@@ -126,14 +126,13 @@ extension CurrencyIntExtension on int {
   /// Formats the int as currency with the selected currency symbol
   /// Example: 1000.toCurrency() => "₹1,000"
   String toCurrency({bool useGrouping = true}) {
-    return toDouble().toCurrency(decimalPlaces: 0, useGrouping: useGrouping);
+    return toDouble().toCurrency(useGrouping: useGrouping);
   }
 
   /// Formats the int as currency with spacing
   /// Example: 1000.toCurrencySpaced() => "₹ 1,000"
   String toCurrencySpaced({bool useGrouping = true}) {
     return toDouble().toCurrencySpaced(
-      decimalPlaces: 0,
       useGrouping: useGrouping,
     );
   }

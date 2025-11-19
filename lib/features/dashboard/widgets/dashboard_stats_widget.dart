@@ -9,9 +9,8 @@ enum DashboardStatType { transactions, biggestSpend }
 
 class DashboardStatsWidget extends StatefulWidget {
   const DashboardStatsWidget({
-    super.key,
-    required this.statType,
-    this.animationDelay = const Duration(milliseconds: 0),
+    required this.statType, super.key,
+    this.animationDelay = const Duration(),
   });
 
   final DashboardStatType statType;
@@ -43,7 +42,7 @@ class _DashboardStatsWidgetState extends State<DashboardStatsWidget>
       vsync: this,
     );
 
-    _scaleAnimation = Tween<double>(begin: 1.0, end: 0.98).animate(
+    _scaleAnimation = Tween<double>(begin: 1, end: 0.98).animate(
       CurvedAnimation(
         parent: _hoverController,
         curve: const Cubic(0.25, 0.46, 0.45, 0.94), // iOS easeOutQuad
@@ -54,10 +53,10 @@ class _DashboardStatsWidgetState extends State<DashboardStatsWidget>
       CurvedAnimation(parent: _hoverController, curve: Curves.easeOutCubic),
     );
 
-    _entryScaleAnimation = Tween<double>(begin: 0.8, end: 1.0).animate(
+    _entryScaleAnimation = Tween<double>(begin: 0.8, end: 1).animate(
       CurvedAnimation(
         parent: _entryController,
-        curve: const Cubic(0.23, 1.0, 0.32, 1.0), // iOS easeOutQuint
+        curve: const Cubic(0.23, 1, 0.32, 1), // iOS easeOutQuint
       ),
     );
 
@@ -65,7 +64,7 @@ class _DashboardStatsWidgetState extends State<DashboardStatsWidget>
         Tween<Offset>(begin: const Offset(0, 0.4), end: Offset.zero).animate(
           CurvedAnimation(
             parent: _entryController,
-            curve: const Cubic(0.23, 1.0, 0.32, 1.0),
+            curve: const Cubic(0.23, 1, 0.32, 1),
           ),
         );
 
@@ -152,7 +151,6 @@ class _DashboardStatsWidgetState extends State<DashboardStatsWidget>
                                       color: statData.accentColor.withValues(
                                         alpha: 0.2,
                                       ),
-                                      width: 1,
                                     ),
                                   ),
                                   child: Icon(
@@ -184,7 +182,7 @@ class _DashboardStatsWidgetState extends State<DashboardStatsWidget>
                                   ?.copyWith(
                                     fontWeight: FontWeight.w800,
                                     color: colorScheme.onSurface,
-                                    height: 1.0,
+                                    height: 1,
                                     letterSpacing: -0.3,
                                   ),
                             ),
@@ -354,10 +352,6 @@ class _DashboardStatsWidgetState extends State<DashboardStatsWidget>
 
 // Helper class to hold stat data
 class _StatData {
-  final String title;
-  final String value;
-  final IconData icon;
-  final Color accentColor;
 
   _StatData({
     required this.title,
@@ -365,4 +359,8 @@ class _StatData {
     required this.icon,
     required this.accentColor,
   });
+  final String title;
+  final String value;
+  final IconData icon;
+  final Color accentColor;
 }

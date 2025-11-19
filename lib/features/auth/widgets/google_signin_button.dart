@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:icons_plus/icons_plus.dart';
 
 class GoogleSignInButton extends StatefulWidget {
-  final VoidCallback onPressed;
 
-  const GoogleSignInButton({super.key, required this.onPressed});
+  const GoogleSignInButton({required this.onPressed, super.key});
+  final VoidCallback onPressed;
 
   @override
   State<GoogleSignInButton> createState() => _GoogleSignInButtonState();
@@ -24,7 +24,7 @@ class _GoogleSignInButtonState extends State<GoogleSignInButton>
       vsync: this,
     );
 
-    _scaleAnimation = Tween<double>(begin: 1.0, end: 0.95).animate(
+    _scaleAnimation = Tween<double>(begin: 1, end: 0.95).animate(
       CurvedAnimation(parent: _animationController, curve: Curves.easeInOut),
     );
 
@@ -73,15 +73,12 @@ class _GoogleSignInButtonState extends State<GoogleSignInButton>
                 borderRadius: BorderRadius.circular(16),
                 gradient: const LinearGradient(
                   colors: [Color(0xff556afc), Color(0xff653de0)],
-                  begin: Alignment.centerLeft,
-                  end: Alignment.centerRight,
                 ),
                 boxShadow: [
                   BoxShadow(
                     color: const Color(0xFF6366F1).withValues(alpha: 0.3),
                     blurRadius: 20,
                     offset: const Offset(0, 8),
-                    spreadRadius: 0,
                   ),
                 ],
               ),

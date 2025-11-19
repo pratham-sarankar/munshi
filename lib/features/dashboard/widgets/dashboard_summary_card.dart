@@ -26,7 +26,7 @@ class _DashboardSummaryCardState extends State<DashboardSummaryCard>
       vsync: this,
     );
 
-    _summaryCardAnimation = Tween<double>(begin: 0.8, end: 1.0).animate(
+    _summaryCardAnimation = Tween<double>(begin: 0.8, end: 1).animate(
       CurvedAnimation(
         parent: _summaryCardAnimationController,
         curve: Curves.easeOutBack,
@@ -37,7 +37,7 @@ class _DashboardSummaryCardState extends State<DashboardSummaryCard>
         Tween<Offset>(begin: const Offset(0, 0.2), end: Offset.zero).animate(
           CurvedAnimation(
             parent: _summaryCardAnimationController,
-            curve: const Cubic(0.175, 0.885, 0.32, 1.0), // iOS easeOutQuart
+            curve: const Cubic(0.175, 0.885, 0.32, 1), // iOS easeOutQuart
           ),
         );
     _summaryCardAnimationController.forward();

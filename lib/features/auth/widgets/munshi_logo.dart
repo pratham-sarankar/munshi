@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
 class MunshiLogo extends StatefulWidget {
-  final double size;
 
   const MunshiLogo({super.key, this.size = 96});
+  final double size;
 
   @override
   State<MunshiLogo> createState() => _MunshiLogoState();

@@ -5,6 +5,10 @@ import 'package:munshi/core/service_locator.dart';
 import 'package:munshi/features/transactions/models/transaction_type.dart';
 
 class CategoryProvider extends ChangeNotifier {
+
+  CategoryProvider() {
+    loadCategories();
+  }
   final CategoriesDao _categoriesDao = locator<AppDatabase>().categoriesDao;
 
   List<TransactionCategory> _expenseCategories = [];
@@ -14,10 +18,6 @@ class CategoryProvider extends ChangeNotifier {
   List<TransactionCategory> get expenseCategories => _expenseCategories;
   List<TransactionCategory> get incomeCategories => _incomeCategories;
   bool get isLoading => _isLoading;
-
-  CategoryProvider() {
-    loadCategories();
-  }
 
   Future<void> loadCategories() async {
     _isLoading = true;
@@ -54,7 +54,7 @@ class CategoryProvider extends ChangeNotifier {
     TransactionType type, {
     int? excludeId,
   }) async {
-    return await _categoriesDao.categoryNameExists(
+    return _categoriesDao.categoryNameExists(
       name,
       type,
       excludeId: excludeId,

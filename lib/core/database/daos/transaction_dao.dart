@@ -1,14 +1,14 @@
 import 'package:drift/drift.dart';
+import 'package:munshi/core/database/app_database.dart';
+import 'package:munshi/core/database/converters/transaction_type_converter.dart';
+import 'package:munshi/core/database/tables/transaction_categories.dart';
+import 'package:munshi/core/database/tables/transactions.dart';
 import 'package:munshi/core/models/date_period.dart';
 import 'package:munshi/features/dashboard/models/category_spending_data.dart';
 import 'package:munshi/features/dashboard/services/dashboard_data_service.dart';
 import 'package:munshi/features/transactions/models/grouped_transactions.dart';
 import 'package:munshi/features/transactions/models/transaction_type.dart';
 import 'package:munshi/features/transactions/models/transaction_with_category.dart';
-import '../app_database.dart';
-import '../converters/transaction_type_converter.dart';
-import '../tables/transactions.dart';
-import '../tables/transaction_categories.dart';
 
 part 'transaction_dao.g.dart';
 
@@ -143,7 +143,7 @@ class TransactionsDao extends DatabaseAccessor<AppDatabase>
       }
 
       // Group by date
-      final Map<String, List<TransactionWithCategory>> groupedMap = {};
+      final groupedMap = <String, List<TransactionWithCategory>>{};
       for (final transaction in filteredTransactions) {
         final dateKey = DateTime(
           transaction.date.year,
@@ -156,7 +156,7 @@ class TransactionsDao extends DatabaseAccessor<AppDatabase>
       }
 
       // Convert to GroupedTransactions and sort by date descending
-      final List<GroupedTransactions> result = [];
+      final result = <GroupedTransactions>[];
       final sortedDates = groupedMap.keys.toList()
         ..sort((a, b) => b.compareTo(a));
 
@@ -233,7 +233,7 @@ class TransactionsDao extends DatabaseAccessor<AppDatabase>
     // Calculate period days with inclusive counting
     // (inDays returns full 24-hour periods, so we add 1 for inclusive count)
     final periodDays = effectiveEnd.difference(period.startDate).inDays + 1;
-    final double avgDaily = periodDays > 0 ? totalExpense / periodDays : 0;
+    final avgDaily = periodDays > 0 ? totalExpense / periodDays : 0.0;
 
     return PeriodSummaryData(
       totalSpent: totalExpense,
@@ -292,7 +292,7 @@ class TransactionsDao extends DatabaseAccessor<AppDatabase>
     final categoryMap = {for (final cat in categories) cat.id: cat};
 
     // Build the final result map
-    final Map<TransactionCategory?, CategorySpendingData> categorySpending = {};
+    final categorySpending = <TransactionCategory?, CategorySpendingData>{};
 
     for (final row in aggregationResult) {
       final categoryId = row.readNullable<int>('category_id');

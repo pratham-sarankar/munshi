@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:webview_flutter/webview_flutter.dart';
 import 'package:icons_plus/icons_plus.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 
 class WebViewScreen extends StatefulWidget {
+
+  const WebViewScreen({required this.url, required this.title, super.key});
   final String url;
   final String title;
-
-  const WebViewScreen({super.key, required this.url, required this.title});
 
   @override
   State<WebViewScreen> createState() => _WebViewScreenState();
@@ -91,7 +91,7 @@ class _WebViewScreenState extends State<WebViewScreen> {
             WebViewWidget(controller: _controller),
 
           if (_isLoading && !_hasError)
-            Container(
+            ColoredBox(
               color: colorScheme.surface,
               child: Center(
                 child: Column(

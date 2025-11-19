@@ -1,6 +1,6 @@
 import 'package:drift/drift.dart';
-import '../converters/transaction_type_converter.dart';
-import 'transaction_categories.dart';
+import 'package:munshi/core/database/converters/transaction_type_converter.dart';
+import 'package:munshi/core/database/tables/transaction_categories.dart';
 
 class Transactions extends Table {
   IntColumn get id => integer().autoIncrement()();

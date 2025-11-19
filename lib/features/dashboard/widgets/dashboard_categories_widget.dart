@@ -100,7 +100,7 @@ class _DashboardCategoriesWidgetState extends State<DashboardCategoriesWidget>
 
   Widget _buildEmptyCategoriesState(ColorScheme colorScheme) {
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 0, vertical: 15),
+      margin: const EdgeInsets.symmetric(vertical: 15),
       child: Material(
         elevation: 2,
         borderRadius: BorderRadius.circular(16),
@@ -119,7 +119,6 @@ class _DashboardCategoriesWidgetState extends State<DashboardCategoriesWidget>
             ),
             border: Border.all(
               color: colorScheme.outline.withValues(alpha: 0.1),
-              width: 1,
             ),
           ),
           child: Center(
@@ -190,7 +189,7 @@ class _DashboardCategoriesWidgetState extends State<DashboardCategoriesWidget>
 
   Widget _buildShimmerCategoryTile(ColorScheme colorScheme, int index) {
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 0, vertical: 4),
+      margin: const EdgeInsets.symmetric(vertical: 4),
       child: Material(
         elevation: 2,
         borderRadius: BorderRadius.circular(16),
@@ -209,7 +208,6 @@ class _DashboardCategoriesWidgetState extends State<DashboardCategoriesWidget>
             ),
             border: Border.all(
               color: colorScheme.outline.withValues(alpha: 0.1),
-              width: 1,
             ),
           ),
           child: Shimmer.fromColors(

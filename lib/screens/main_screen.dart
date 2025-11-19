@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:icons_plus/icons_plus.dart';
+import 'package:munshi/features/categories/screens/categories_screen.dart';
 import 'package:munshi/features/dashboard/screens/home_screen.dart';
 import 'package:munshi/features/receipt/screens/ai_receipt_screen.dart';
 import 'package:munshi/features/settings/screens/settings_screen.dart';
@@ -26,23 +27,23 @@ class _MainScreenState extends State<MainScreen> {
     const NavigationDestination(
       icon: Icon(Iconsax.home_outline),
       selectedIcon: Icon(Iconsax.home_1_bold),
-      label: "Home",
+      label: 'Home',
     ),
     const NavigationDestination(
       icon: Icon(Iconsax.receipt_item_outline),
       selectedIcon: Icon(Iconsax.receipt_item_bold),
-      label: "History",
+      label: 'History',
     ),
     const SizedBox(),
     const NavigationDestination(
       icon: Icon(Iconsax.category_outline),
       selectedIcon: Icon(Iconsax.category_bold),
-      label: "Categories",
+      label: 'Categories',
     ),
     const NavigationDestination(
       icon: Icon(Iconsax.setting_2_outline),
       selectedIcon: Icon(Iconsax.setting_2_bold),
-      label: "Settings",
+      label: 'Settings',
     ),
   ];
 

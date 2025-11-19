@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
 class AppVersionWidget extends StatefulWidget {
-  final TextStyle? style;
-  final String prefix;
 
   const AppVersionWidget({super.key, this.style, this.prefix = 'Munshi'});
+  final TextStyle? style;
+  final String prefix;
 
   @override
   State<AppVersionWidget> createState() => _AppVersionWidgetState();

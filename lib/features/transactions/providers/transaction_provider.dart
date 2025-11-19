@@ -1,16 +1,16 @@
 import 'package:drift/drift.dart';
 import 'package:flutter/foundation.dart';
+import 'package:munshi/core/database/app_database.dart';
+import 'package:munshi/core/database/daos/transaction_dao.dart';
+import 'package:munshi/features/transactions/models/grouped_transactions.dart';
+import 'package:munshi/features/transactions/models/transaction_filter.dart';
 import 'package:munshi/features/transactions/models/transaction_with_category.dart';
-import '../../../core/database/daos/transaction_dao.dart';
-import '../../../core/database/app_database.dart';
-import '../models/grouped_transactions.dart';
-import '../models/transaction_filter.dart';
 
 class TransactionProvider extends ChangeNotifier {
-  final TransactionsDao _transactionsDao;
-  TransactionFilter _currentFilter = TransactionFilter.empty();
 
   TransactionProvider(this._transactionsDao);
+  final TransactionsDao _transactionsDao;
+  TransactionFilter _currentFilter = TransactionFilter.empty();
 
   /// Get the current filter
   TransactionFilter get currentFilter => _currentFilter;
@@ -41,8 +41,7 @@ class TransactionProvider extends ChangeNotifier {
           endDate: _currentFilter.effectiveEndDate,
         )
         .map(
-          (groupedTransactions) =>
-              _applyFiltersToGroupedTransactions(groupedTransactions),
+          _applyFiltersToGroupedTransactions,
         );
   }
 
