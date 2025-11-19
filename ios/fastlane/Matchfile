@@ -8,7 +8,9 @@ app_identifier ([
   "sarankar.app.munshi",
   "sarankar.app.munshi.ShareExtension"
 ])
-# username("user@fastlane.tools") # Your Apple Developer Portal username
+
+username("pratham@sarankar.com") # Your Apple Developer Portal username
+team_id("KSX4T4JQF9") # Your Apple Developer Portal Team ID
 
 # For all available options run `fastlane match --help`
 # Remove the # in the beginning of the line to enable the other options
