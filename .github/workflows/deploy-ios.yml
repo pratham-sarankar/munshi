@@ -1,10 +1,14 @@
 name: Deploy iOS App to TestFlight
 
 on:
-  push:
-    tags:
-      - "v*"
-  workflow_dispatch: # Allow manual trigger
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version name (optional)"
+        required: false
+      notes:
+        description: "Release notes (optional)"
+        required: false
 
 jobs:
   build-and-deploy-ios:
@@ -38,7 +42,9 @@ jobs:
 
       - name: 🚧 Build iOS (config-only)
         run: |
-          flutter build ios --release --no-codesign --config-only --no-tree-shake-icons --dart-define-from-file=env.json
+          flutter build ios --release --no-codesign --config-only \
+            --no-tree-shake-icons \
+            --dart-define-from-file=env.json
 
       - name: 💎 Install Ruby gems for iOS
         working-directory: ios
@@ -48,4 +54,10 @@ jobs:
 
       - name: 🚀 Deploy iOS app to TestFlight
         working-directory: ios
-        run: bundle exec fastlane beta
+        env:
+          RELEASE_VERSION: ${{ github.event.inputs.version }}
+          RELEASE_NOTES: ${{ github.event.inputs.notes }}
+        run: |
+          echo "Version: $RELEASE_VERSION"
+          echo "Notes: $RELEASE_NOTES"
+          bundle exec fastlane beta

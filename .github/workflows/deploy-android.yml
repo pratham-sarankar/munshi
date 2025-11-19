@@ -1,10 +1,14 @@
 name: Deploy Android App to Play Store
 
 on:
-  push:
-    tags:
-      - "v*"
-  workflow_dispatch: # Allow manual trigger
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version name (optional)"
+        required: false
+      notes:
+        description: "Release notes (optional)"
+        required: false
 
 jobs:
   build-and-deploy-android:
@@ -46,9 +50,15 @@ jobs:
       - name: 📦 Install Flutter dependencies
         run: flutter pub get
 
-      - name: 🤖 Build Android App Bundle
+      - name: 🤖 Build Android App Bundle (AAB)
         run: flutter build appbundle --release --no-tree-shake-icons --dart-define-from-file=env.json
 
       - name: 🚀 Deploy Android app to Play Store
         working-directory: android
-        run: bundle exec fastlane deploy
+        env:
+          RELEASE_VERSION: ${{ github.event.inputs.version }}
+          RELEASE_NOTES: ${{ github.event.inputs.notes }}
+        run: |
+          echo "Version: $RELEASE_VERSION"
+          echo "Notes: $RELEASE_NOTES"
+          bundle exec fastlane deploy
