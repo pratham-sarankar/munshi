@@ -5,6 +5,7 @@ import 'package:munshi/core/database/daos/transaction_dao.dart'
     show TransactionsDao;
 import 'package:munshi/features/auth/services/auth_service.dart';
 import 'package:munshi/features/dashboard/services/dashboard_data_service.dart';
+import 'package:munshi/features/receipt/services/receipt_service.dart';
 import 'package:munshi/providers/currency_provider.dart';
 import 'package:munshi/providers/period_provider.dart';
 import 'package:munshi/providers/theme_provider.dart';
@@ -27,30 +28,30 @@ final GetIt locator = GetIt.instance;
 /// Call this function during app initialization to ensure all dependencies are available via the locator.
 Future<void> setupLocator() async {
   final prefs = await SharedPreferences.getInstance();
-  locator.registerSingleton<SharedPreferences>(prefs);
-  locator.registerLazySingleton<ThemeProvider>(() => ThemeProvider(prefs));
-  locator.registerLazySingleton<CurrencyProvider>(
-    () => CurrencyProvider(prefs),
-  );
-  locator.registerLazySingleton<PeriodProvider>(() => PeriodProvider(prefs));
-
-  locator.registerLazySingleton<AppDatabase>(AppDatabase.new);
-  locator.registerLazySingleton<TransactionsDao>(
-    () => TransactionsDao(locator<AppDatabase>()),
-  );
-  locator.registerLazySingleton<DashboardDataService>(
-    () => DashboardDataService(locator<TransactionsDao>()),
-  );
+  locator
+    ..registerSingleton<SharedPreferences>(prefs)
+    ..registerLazySingleton<ThemeProvider>(() => ThemeProvider(prefs))
+    ..registerLazySingleton<CurrencyProvider>(
+      () => CurrencyProvider(prefs),
+    )
+    ..registerLazySingleton<PeriodProvider>(() => PeriodProvider(prefs))
+    ..registerLazySingleton<AppDatabase>(AppDatabase.new)
+    ..registerLazySingleton<TransactionsDao>(
+      () => TransactionsDao(locator<AppDatabase>()),
+    )
+    ..registerLazySingleton<DashboardDataService>(
+      () => DashboardDataService(locator<TransactionsDao>()),
+    );
 
   // Register AuthService as a lazy singleton
   final authService = AuthService();
   await authService.init();
-  locator.registerLazySingleton<AuthService>(() => authService);
-
-  // Register ReceiptAIService as a lazy singleton
-  locator.registerLazySingleton<ReceiptAIService>(
-    () => ReceiptAIService(
-      FirebaseAI.googleAI().generativeModel(model: 'gemini-2.5-flash'),
-    ),
-  );
+  locator
+    ..registerLazySingleton<AuthService>(() => authService)
+    // Register ReceiptAIService as a lazy singleton
+    ..registerLazySingleton<ReceiptAIService>(
+      () => ReceiptAIService(
+        FirebaseAI.googleAI().generativeModel(model: 'gemini-2.5-flash'),
+      ),
+    );
 }
