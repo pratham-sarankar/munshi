@@ -11,7 +11,6 @@ import 'package:munshi/features/categories/providers/category_provider.dart';
 import 'package:munshi/features/dashboard/providers/dashboard_provider.dart';
 import 'package:munshi/features/dashboard/services/dashboard_data_service.dart';
 import 'package:munshi/features/transactions/providers/transaction_provider.dart';
-import 'package:munshi/firebase_options.dart';
 import 'package:munshi/providers/currency_provider.dart';
 import 'package:munshi/providers/period_provider.dart';
 import 'package:munshi/providers/theme_provider.dart';
@@ -34,7 +33,7 @@ void main() async {
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
 
   // Initialize Firebase
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  await Firebase.initializeApp();
 
   // Register all app-wide singletons/services using get_it, including SharedPreferences and ThemeProvider.
   // This ensures SharedPreferences is ready before ThemeProvider is created, allowing synchronous theme loading.
