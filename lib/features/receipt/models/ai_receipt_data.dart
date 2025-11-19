@@ -13,16 +13,25 @@ class AIReceiptData {
 
   factory AIReceiptData.fromJson(Map<String, dynamic> json) {
     return AIReceiptData(
-      merchantDetails: MerchantDetails.fromJson(json['merchant_details'] ?? {}),
+      merchantDetails: MerchantDetails.fromJson(
+        (json['merchant_details'] ?? <String, dynamic>{})
+            as Map<String, dynamic>,
+      ),
       transactionDetails: TransactionDetails.fromJson(
-        json['transaction_details'] ?? {},
+        (json['transaction_details'] ?? <String, dynamic>{})
+            as Map<String, dynamic>,
       ),
       items:
           (json['items'] as List<dynamic>?)
-              ?.map((item) => ReceiptItem.fromJson(item))
+              ?.map(
+                (item) => ReceiptItem.fromJson(item as Map<String, dynamic>),
+              )
               .toList() ??
           [],
-      additionalInfo: AdditionalInfo.fromJson(json['additional_info'] ?? {}),
+      additionalInfo: AdditionalInfo.fromJson(
+        (json['additional_info'] ?? <String, dynamic>{})
+            as Map<String, dynamic>,
+      ),
     );
   }
 
@@ -53,11 +62,11 @@ class MerchantDetails {
 
   factory MerchantDetails.fromJson(Map<String, dynamic> json) {
     return MerchantDetails(
-      name: json['name'] ?? '',
-      address: json['address'] ?? '',
-      phoneNumber: json['phone_number'] ?? '',
-      email: json['email'] ?? '',
-      website: json['website'] ?? '',
+      name: json['name'] as String? ?? '',
+      address: json['address'] as String? ?? '',
+      phoneNumber: json['phone_number'] as String? ?? '',
+      email: json['email'] as String? ?? '',
+      website: json['website'] as String? ?? '',
     );
   }
 
@@ -101,17 +110,17 @@ class TransactionDetails {
 
   factory TransactionDetails.fromJson(Map<String, dynamic> json) {
     return TransactionDetails(
-      transactionId: json['transaction_id'] ?? '',
-      date: json['date'] ?? '',
-      time: json['time'] ?? '',
-      paymentMethod: json['payment_method'] ?? '',
-      paymentProvider: json['payment_provider'] ?? '',
-      cardOrAccountLast4: json['card_or_account_last4'] ?? '',
-      currency: json['currency'] ?? '',
-      subtotal: json['subtotal'] ?? '',
-      tax: json['tax'] ?? '',
-      discount: json['discount'] ?? '',
-      totalAmount: json['total_amount'] ?? '',
+      transactionId: json['transaction_id'] as String? ?? '',
+      date: json['date'] as String? ?? '',
+      time: json['time'] as String? ?? '',
+      paymentMethod: json['payment_method'] as String? ?? '',
+      paymentProvider: json['payment_provider'] as String? ?? '',
+      cardOrAccountLast4: json['card_or_account_last4'] as String? ?? '',
+      currency: json['currency'] as String? ?? '',
+      subtotal: json['subtotal'] as String? ?? '',
+      tax: json['tax'] as String? ?? '',
+      discount: json['discount'] as String? ?? '',
+      totalAmount: json['total_amount'] as String? ?? '',
     );
   }
 
@@ -149,11 +158,11 @@ class ReceiptItem {
 
   factory ReceiptItem.fromJson(Map<String, dynamic> json) {
     return ReceiptItem(
-      itemName: json['item_name'] ?? '',
-      quantity: json['quantity'] ?? '',
-      unitPrice: json['unit_price'] ?? '',
-      totalPrice: json['total_price'] ?? '',
-      category: json['category'] ?? '',
+      itemName: json['item_name'] as String? ?? '',
+      quantity: json['quantity'] as String? ?? '',
+      unitPrice: json['unit_price'] as String? ?? '',
+      totalPrice: json['total_price'] as String? ?? '',
+      category: json['category'] as String? ?? '',
     );
   }
 
@@ -189,13 +198,13 @@ class AdditionalInfo {
 
   factory AdditionalInfo.fromJson(Map<String, dynamic> json) {
     return AdditionalInfo(
-      notes: json['notes'] ?? '',
-      terminalId: json['terminal_id'] ?? '',
-      invoiceNumber: json['invoice_number'] ?? '',
-      referenceNumber: json['reference_number'] ?? '',
-      receiptType: json['receipt_type'] ?? '',
-      country: json['country'] ?? '',
-      language: json['language'] ?? '',
+      notes: json['notes'] as String? ?? '',
+      terminalId: json['terminal_id'] as String? ?? '',
+      invoiceNumber: json['invoice_number'] as String? ?? '',
+      referenceNumber: json['reference_number'] as String? ?? '',
+      receiptType: json['receipt_type'] as String? ?? '',
+      country: json['country'] as String? ?? '',
+      language: json['language'] as String? ?? '',
     );
   }
 

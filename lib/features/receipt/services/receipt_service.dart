@@ -1,25 +1,24 @@
 import 'dart:convert';
 import 'package:firebase_ai/firebase_ai.dart';
 import 'package:munshi/features/receipt/models/ai_receipt_data.dart';
-import 'package:munshi/features/receipt/screens/ai_receipt_screen.dart';
 
 /// A lightweight, cost-efficient service for extracting structured
 /// transaction and item data from receipts using Gemini models via Firebase AI.
 class ReceiptAIService {
-  GenerativeModel model;
 
   ReceiptAIService(this.model);
+  GenerativeModel model;
 
   /// Extracts structured transaction data from OCR text of a receipt.
   Future<AIReceiptData> extractReceiptDataFromText(String ocrText) async {
-    const systemPrompt = """
+    const systemPrompt = '''
 You are a precise receipt parser. 
 Read the given text extracted from a receipt or invoice.
 Return a compact JSON with merchant, transaction, and item details.
 If data is missing, use empty strings. Do not add or assume information.
-""";
+''';
 
-    const userPrompt = """
+    const userPrompt = '''
 From the following receipt text, extract all details and return only a valid JSON object:
 
 {
@@ -63,17 +62,18 @@ From the following receipt text, extract all details and return only a valid JSO
   }
 }
 Text:
-""";
+''';
 
     final response = await model.generateContent(
       [
-        Content.model([TextPart(systemPrompt)]),
+        Content.model([const TextPart(systemPrompt)]),
         Content.text('$userPrompt\n$ocrText'),
       ],
       generationConfig: GenerationConfig(responseMimeType: 'application/json'),
     );
 
-    final jsonResponse = jsonDecode(response.text ?? '{}');
+    final jsonResponse =
+        jsonDecode(response.text ?? '{}') as Map<String, dynamic>;
     return AIReceiptData.fromJson(jsonResponse);
   }
 }

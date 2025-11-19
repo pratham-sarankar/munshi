@@ -3,12 +3,11 @@ import 'package:icons_plus/icons_plus.dart';
 import 'package:munshi/features/categories/screens/categories_screen.dart';
 import 'package:munshi/features/dashboard/screens/home_screen.dart';
 import 'package:munshi/features/receipt/screens/ai_receipt_screen.dart';
+import 'package:munshi/features/receipt/widgets/share_handler_widget.dart';
 import 'package:munshi/features/settings/screens/settings_screen.dart';
 import 'package:munshi/features/transactions/providers/transaction_provider.dart';
 import 'package:munshi/features/transactions/screens/transaction_form_screen.dart';
 import 'package:munshi/features/transactions/screens/transactions_screen.dart';
-import 'package:munshi/features/receipt/widgets/share_handler_widget.dart';
-import 'package:munshi/features/categories/screens/categories_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:share_handler/share_handler.dart';
 
@@ -60,8 +59,8 @@ class _MainScreenState extends State<MainScreen> {
   Widget build(BuildContext context) {
     return ShareHandlerWidget(
       onMediaReceived: (SharedMedia value) async {
-        Navigator.of(context).push(
-          MaterialPageRoute(
+        await Navigator.of(context).push(
+          MaterialPageRoute<void>(
             builder: (context) {
               return AiReceiptScreen(media: value);
             },
@@ -70,14 +69,14 @@ class _MainScreenState extends State<MainScreen> {
       },
       child: Scaffold(
         floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            Navigator.of(context).push(
-              MaterialPageRoute(
+          onPressed: () async {
+            await Navigator.of(context).push(
+              MaterialPageRoute<void>(
                 builder: (context) {
                   return TransactionFormScreen(
-                    onSubmit: (transaction) {
+                    onSubmit: (transaction) async {
                       final provider = context.read<TransactionProvider>();
-                      provider.addTransaction(transaction);
+                      await provider.addTransaction(transaction);
                     },
                   );
                 },

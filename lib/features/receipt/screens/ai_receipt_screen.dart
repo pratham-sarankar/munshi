@@ -8,6 +8,7 @@ import 'package:icons_plus/icons_plus.dart';
 import 'package:munshi/core/database/app_database.dart';
 import 'package:munshi/core/service_locator.dart';
 import 'package:munshi/features/receipt/models/ai_receipt_data.dart';
+import 'package:munshi/features/receipt/services/receipt_service.dart';
 import 'package:munshi/features/transactions/models/transaction_type.dart';
 import 'package:munshi/features/transactions/providers/transaction_provider.dart';
 import 'package:munshi/features/transactions/screens/transaction_form_screen.dart';
@@ -15,10 +16,8 @@ import 'package:munshi/features/transactions/screens/transactions_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:share_handler/share_handler.dart';
 
-import '../services/receipt_service.dart';
-
 class AiReceiptScreen extends StatefulWidget {
-  const AiReceiptScreen({super.key, required this.media});
+  const AiReceiptScreen({required this.media, super.key});
   final SharedMedia media;
   @override
   State<AiReceiptScreen> createState() => _AiReceiptScreenState();
@@ -35,16 +34,16 @@ class _AiReceiptScreenState extends State<AiReceiptScreen> {
     processReceipt();
   }
 
-  void processReceipt() async {
+  Future<void> processReceipt() async {
     final imagePath = widget.media.attachments?.first?.path;
-    if (imagePath == null) return null;
+    if (imagePath == null) return;
     try {
       final filePath = widget.media.attachments?.first?.path;
       log('Processing file at path: $filePath');
-      if (filePath == null) return null;
+      if (filePath == null) return;
       final file = File(filePath);
       final ocrResult = await FlutterOcr.recognizeTextFromImage(file.path);
-      if (ocrResult == null) return null;
+      if (ocrResult == null) return;
       log('OCR result: $ocrResult');
       final jsonResponse = await locator<ReceiptAIService>()
           .extractReceiptDataFromText(ocrResult);
@@ -57,7 +56,7 @@ class _AiReceiptScreenState extends State<AiReceiptScreen> {
       setState(() {
         errorMessage = 'Something went wrong while processing the receipt.';
       });
-      return null;
+      return;
     } finally {
       setState(() {
         isProcessing = false;
@@ -67,7 +66,7 @@ class _AiReceiptScreenState extends State<AiReceiptScreen> {
 
   double? _parseAmount(String rawAmount) {
     if (rawAmount.isEmpty) return null;
-    final clean = rawAmount.replaceAll(RegExp(r'[^0-9.,-]'), '');
+    final clean = rawAmount.replaceAll(RegExp('[^0-9.,-]'), '');
     return double.tryParse(clean.replaceAll(',', ''));
   }
 
@@ -109,9 +108,8 @@ class _AiReceiptScreenState extends State<AiReceiptScreen> {
     if (amount == null || amount <= 0) {
       // Open transaction form to let user fill required fields
       await Navigator.of(context).push(
-        MaterialPageRoute(
+        MaterialPageRoute<void>(
           builder: (ctx) => TransactionFormScreen(
-            transaction: null,
             onSubmit: (insertable) async {
               await ctx.read<TransactionProvider>().addTransaction(insertable);
             },
@@ -126,7 +124,7 @@ class _AiReceiptScreenState extends State<AiReceiptScreen> {
     final transaction = TransactionsCompanion(
       amount: drift.Value(amount),
       categoryId: const drift.Value(null),
-      type: drift.Value(TransactionType.expense),
+      type: const drift.Value(TransactionType.expense),
       date: drift.Value(dateTime),
       note: drift.Value(
         result!.merchantDetails.name.isNotEmpty
@@ -140,7 +138,7 @@ class _AiReceiptScreenState extends State<AiReceiptScreen> {
     if (!mounted) return;
 
     Navigator.of(context).pushAndRemoveUntil(
-      MaterialPageRoute(builder: (_) => const TransactionsScreen()),
+      MaterialPageRoute<void>(builder: (_) => const TransactionsScreen()),
       (route) => route.isFirst,
     );
 
@@ -157,7 +155,7 @@ class _AiReceiptScreenState extends State<AiReceiptScreen> {
       backgroundColor: colorScheme.surface,
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.all(24.0),
+          padding: const EdgeInsets.all(24),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
@@ -189,7 +187,7 @@ class _AiReceiptScreenState extends State<AiReceiptScreen> {
                           isProcessing
                               ? 'Extracting transaction details from your receipt'
                               : (errorMessage != null
-                                    ? 'We couldn\'t process this receipt'
+                                    ? "We couldn't process this receipt"
                                     : 'Review & save your transaction'),
                           style: Theme.of(context).textTheme.bodySmall
                               ?.copyWith(color: colorScheme.onSurfaceVariant),
@@ -263,7 +261,7 @@ class _AiReceiptScreenState extends State<AiReceiptScreen> {
         ),
         const SizedBox(height: 8),
         Text(
-          'We\'re using AI to extract merchant, amount, and date from your receipt. This usually takes just a few seconds.',
+          "We're using AI to extract merchant, amount, and date from your receipt. This usually takes just a few seconds.",
           textAlign: TextAlign.center,
           style: Theme.of(
             context,
@@ -313,7 +311,7 @@ class _AiReceiptScreenState extends State<AiReceiptScreen> {
         ),
         const SizedBox(height: 20),
         Text(
-          'Couldn\'t read this receipt',
+          "Couldn't read this receipt",
           style: Theme.of(
             context,
           ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
@@ -460,7 +458,7 @@ class _AiReceiptScreenState extends State<AiReceiptScreen> {
                       ),
                   if (result!.items.length > 5)
                     Padding(
-                      padding: const EdgeInsets.only(top: 4.0),
+                      padding: const EdgeInsets.only(top: 4),
                       child: Text(
                         '+${result!.items.length - 5} more items',
                         style: Theme.of(context).textTheme.bodySmall?.copyWith(
@@ -471,7 +469,7 @@ class _AiReceiptScreenState extends State<AiReceiptScreen> {
                   const SizedBox(height: 24),
                 ],
                 Text(
-                  'We\'ll create a transaction with these details. You can always edit it later from the Transactions tab.',
+                  "We'll create a transaction with these details. You can always edit it later from the Transactions tab.",
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
                     color: colorScheme.onSurfaceVariant,
                   ),

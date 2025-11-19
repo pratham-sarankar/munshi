@@ -6,7 +6,6 @@ import 'package:munshi/core/database/daos/transaction_dao.dart'
 import 'package:munshi/features/auth/services/auth_service.dart';
 import 'package:munshi/features/dashboard/services/dashboard_data_service.dart';
 import 'package:munshi/features/receipt/services/receipt_service.dart';
-import 'package:munshi/providers/theme_provider.dart';
 import 'package:munshi/providers/currency_provider.dart';
 import 'package:munshi/providers/period_provider.dart';
 import 'package:munshi/providers/theme_provider.dart';
