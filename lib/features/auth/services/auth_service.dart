@@ -37,7 +37,6 @@ class AuthService extends ChangeNotifier {
     'openid',
     'email',
     'profile',
-    'https://www.googleapis.com/auth/gmail.readonly',
   ];
 
   // Storage keys
