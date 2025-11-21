@@ -29,7 +29,6 @@ class _SettingsScreenState extends State<SettingsScreen>
 
   // Settings state
   bool _dailyReport = true;
-  bool _emailTransactionExtraction = true;
 
   final List<String> _themeOptions = ['Light', 'Dark', 'Auto'];
 
