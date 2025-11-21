@@ -51,14 +51,17 @@ void main() async {
         ChangeNotifierProvider.value(value: locator<PeriodProvider>()),
         ChangeNotifierProvider.value(value: locator<AuthService>()),
         ChangeNotifierProvider(
-          create: (_) => TransactionProvider(locator<TransactionsDao>()),
-        ),
-        ChangeNotifierProvider(
           create: (_) => DashboardProvider(
             locator<DashboardDataService>(),
             locator<PeriodProvider>(),
             locator<CurrencyProvider>(),
           ),
+        ),
+        ChangeNotifierProxyProvider<DashboardProvider, TransactionProvider>(
+          create: (_) => TransactionProvider(locator<TransactionsDao>()),
+          update: (_, dashboardProvider, transactionProvider) =>
+              transactionProvider!
+                ..onTransactionChanged = dashboardProvider.refresh,
         ),
         ChangeNotifierProvider(create: (_) => CategoryProvider()),
       ],

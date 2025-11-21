@@ -7,10 +7,18 @@ import 'package:munshi/features/transactions/models/transaction_filter.dart';
 import 'package:munshi/features/transactions/models/transaction_with_category.dart';
 
 class TransactionProvider extends ChangeNotifier {
-
-  TransactionProvider(this._transactionsDao);
+  TransactionProvider(
+    this._transactionsDao, {
+    VoidCallback? onTransactionChanged,
+  }) : _onTransactionChanged = onTransactionChanged;
   final TransactionsDao _transactionsDao;
+  VoidCallback? _onTransactionChanged;
   TransactionFilter _currentFilter = TransactionFilter.empty();
+
+  /// Set the callback to be called when transactions change
+  set onTransactionChanged(VoidCallback? callback) {
+    _onTransactionChanged = callback;
+  }
 
   /// Get the current filter
   TransactionFilter get currentFilter => _currentFilter;
@@ -107,13 +115,16 @@ class TransactionProvider extends ChangeNotifier {
 
   Future<void> addTransaction(Insertable<Transaction> transaction) async {
     await _transactionsDao.insertTransaction(transaction);
+    _onTransactionChanged?.call();
   }
 
   Future<void> updateTransaction(Insertable<Transaction> transaction) async {
     await _transactionsDao.updateTransaction(transaction);
+    _onTransactionChanged?.call();
   }
 
   Future<void> deleteTransaction(TransactionWithCategory transaction) async {
     await _transactionsDao.deleteTransaction(transaction.transaction);
+    _onTransactionChanged?.call();
   }
 }
