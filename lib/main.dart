@@ -5,8 +5,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:munshi/core/database/daos/transaction_dao.dart';
 import 'package:munshi/core/service_locator.dart';
 import 'package:munshi/core/theme.dart';
-import 'package:munshi/features/auth/screens/login_screen.dart';
-import 'package:munshi/features/auth/services/auth_service.dart';
 import 'package:munshi/features/categories/providers/category_provider.dart';
 import 'package:munshi/features/dashboard/providers/dashboard_provider.dart';
 import 'package:munshi/features/dashboard/services/dashboard_data_service.dart';
@@ -49,7 +47,6 @@ void main() async {
         ChangeNotifierProvider.value(value: locator<ThemeProvider>()),
         ChangeNotifierProvider.value(value: locator<CurrencyProvider>()),
         ChangeNotifierProvider.value(value: locator<PeriodProvider>()),
-        ChangeNotifierProvider.value(value: locator<AuthService>()),
         ChangeNotifierProvider(
           create: (_) => DashboardProvider(
             locator<DashboardDataService>(),
@@ -96,9 +93,7 @@ class Munshi extends StatelessWidget {
           highContrastDarkTheme: theme.darkHighContrast(),
           themeMode: themeProvider
               .themeMode, // Uses the current theme mode from provider
-          home: locator<AuthService>().isSignedIn
-              ? const MainScreen()
-              : const LoginScreen(), // Main navigation and dashboard
+          home: const MainScreen(), // Main navigation and dashboard
         );
       },
     );

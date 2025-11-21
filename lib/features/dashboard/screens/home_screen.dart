@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:munshi/features/auth/services/auth_service.dart';
-import 'package:munshi/features/auth/widgets/cached_profile_avatar.dart';
 import 'package:munshi/features/dashboard/providers/dashboard_provider.dart';
 import 'package:munshi/features/dashboard/widgets/dashboard_categories_widget.dart';
 import 'package:munshi/features/dashboard/widgets/dashboard_stats_widget.dart';
@@ -33,9 +31,10 @@ class HomeScreen extends StatelessWidget {
                 ),
               ],
             ),
+            centerTitle: false,
             actions: [
               Container(
-                margin: const EdgeInsets.only(right: 8, top: 8, bottom: 8),
+                margin: const EdgeInsets.only(top: 8, bottom: 8),
                 decoration: BoxDecoration(
                   color: colorScheme.surfaceContainerHighest,
                   borderRadius: BorderRadius.circular(25),
@@ -94,15 +93,6 @@ class HomeScreen extends StatelessWidget {
                     ),
                   ],
                 ),
-              ),
-
-              // Profile Avatar
-              Consumer<AuthService>(
-                builder: (context, value, child) {
-                  return CachedProfileAvatar(
-                    imageUrl: value.currentUser?.picture,
-                  );
-                },
               ),
             ],
             actionsPadding: const EdgeInsets.only(right: 15),
