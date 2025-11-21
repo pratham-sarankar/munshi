@@ -1,11 +1,8 @@
-import 'package:firebase_ai/firebase_ai.dart';
 import 'package:get_it/get_it.dart';
 import 'package:munshi/core/database/app_database.dart';
 import 'package:munshi/core/database/daos/transaction_dao.dart'
     show TransactionsDao;
-import 'package:munshi/features/auth/services/auth_service.dart';
 import 'package:munshi/features/dashboard/services/dashboard_data_service.dart';
-import 'package:munshi/features/receipt/services/receipt_service.dart';
 import 'package:munshi/providers/currency_provider.dart';
 import 'package:munshi/providers/period_provider.dart';
 import 'package:munshi/providers/theme_provider.dart';
@@ -41,17 +38,5 @@ Future<void> setupLocator() async {
     )
     ..registerLazySingleton<DashboardDataService>(
       () => DashboardDataService(locator<TransactionsDao>()),
-    );
-
-  // Register AuthService as a lazy singleton
-  final authService = AuthService();
-  await authService.init();
-  locator
-    ..registerLazySingleton<AuthService>(() => authService)
-    // Register ReceiptAIService as a lazy singleton
-    ..registerLazySingleton<ReceiptAIService>(
-      () => ReceiptAIService(
-        FirebaseAI.googleAI().generativeModel(model: 'gemini-2.5-flash'),
-      ),
     );
 }
