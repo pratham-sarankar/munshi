@@ -4,9 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:icons_plus/icons_plus.dart';
 import 'package:munshi/core/models/period_type.dart';
-import 'package:munshi/core/service_locator.dart';
-import 'package:munshi/features/auth/screens/login_screen.dart';
-import 'package:munshi/features/auth/services/auth_service.dart';
 import 'package:munshi/features/settings/screens/currency_selection_screen.dart';
 import 'package:munshi/features/settings/widgets/app_version_widget.dart';
 import 'package:munshi/providers/currency_provider.dart';
@@ -32,7 +29,6 @@ class _SettingsScreenState extends State<SettingsScreen>
 
   // Settings state
   bool _dailyReport = true;
-  bool _emailTransactionExtraction = true;
 
   final List<String> _themeOptions = ['Light', 'Dark', 'Auto'];
 
@@ -67,49 +63,6 @@ class _SettingsScreenState extends State<SettingsScreen>
   void dispose() {
     _animationController.dispose();
     super.dispose();
-  }
-
-  Future<void> _handleLogout() async {
-    // Show confirmation dialog
-    final result = await showDialog<bool>(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Confirm Logout'),
-        content: const Text('Are you sure you want to logout?'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(false),
-            child: const Text('Cancel'),
-          ),
-          FilledButton(
-            onPressed: () => Navigator.of(context).pop(true),
-            child: const Text('Logout'),
-          ),
-        ],
-      ),
-    );
-
-    if (mounted && (result ?? false)) {
-      try {
-        await locator<AuthService>().signOut();
-        if (mounted) {
-          await Navigator.pushAndRemoveUntil(
-            context,
-            MaterialPageRoute<void>(builder: (_) => const LoginScreen()),
-            (route) => false,
-          );
-        }
-      } on Exception catch (e) {
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text('Logout failed: $e'),
-              backgroundColor: Theme.of(context).colorScheme.error,
-            ),
-          );
-        }
-      }
-    }
   }
 
   Future<void> _reportBug() async {
@@ -405,20 +358,6 @@ Best regards,
                       icon: Iconsax.notification_outline,
                       tiles: [
                         _SettingsTile(
-                          title: 'Email Sync',
-                          subtitle: 'Auto-sync transactions from emails',
-                          trailing: Switch(
-                            value: _emailTransactionExtraction,
-                            onChanged: (bool value) {
-                              setState(
-                                () => _emailTransactionExtraction = value,
-                              );
-                              HapticFeedback.lightImpact();
-                            },
-                            activeThumbColor: colorScheme.primary,
-                          ),
-                        ),
-                        _SettingsTile(
                           title: 'Daily Report',
                           subtitle: 'Receive daily expense summary',
                           trailing: Switch(
@@ -537,49 +476,6 @@ Best regards,
                           ),
                         ),
                       ],
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 24),
-
-                // Logout Button
-                SlideTransition(
-                  position: _itemAnimations[4],
-                  child: FadeTransition(
-                    opacity: _animationController,
-                    child: SizedBox(
-                      width: double.infinity,
-                      child: OutlinedButton.icon(
-                        onPressed: _handleLogout,
-                        icon: Icon(
-                          Iconsax.logout_outline,
-                          size: 20,
-                          color: colorScheme.error,
-                        ),
-                        label: Text(
-                          'Logout',
-                          style: Theme.of(context).textTheme.bodyMedium
-                              ?.copyWith(
-                                color: colorScheme.error,
-                                fontWeight: FontWeight.w600,
-                              ),
-                        ),
-                        style: OutlinedButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(vertical: 16),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(16),
-                          ),
-                          side: BorderSide(
-                            color: colorScheme.error.withValues(alpha: 0.3),
-                          ),
-                          backgroundColor: colorScheme.error.withValues(
-                            alpha: 0.08,
-                          ),
-                          overlayColor: colorScheme.error.withValues(
-                            alpha: 0.1,
-                          ),
-                        ),
-                      ),
                     ),
                   ),
                 ),
