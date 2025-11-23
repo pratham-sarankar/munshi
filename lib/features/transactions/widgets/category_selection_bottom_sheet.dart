@@ -24,14 +24,6 @@ class CategorySelectionBottomSheet extends StatefulWidget {
 
 class _CategorySelectionBottomSheetState
     extends State<CategorySelectionBottomSheet> {
-  int? _selectedCategoryId;
-
-  @override
-  void initState() {
-    super.initState();
-    _selectedCategoryId = widget.currentCategoryId;
-  }
-
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
@@ -64,7 +56,7 @@ class _CategorySelectionBottomSheetState
 
           // Header
           Padding(
-            padding: const EdgeInsets.fromLTRB(24, 16, 24, 16),
+            padding: const EdgeInsets.fromLTRB(24, 16, 10, 16),
             child: Row(
               children: [
                 Icon(
@@ -101,7 +93,7 @@ class _CategorySelectionBottomSheetState
               itemCount: widget.categories.length,
               itemBuilder: (context, index) {
                 final category = widget.categories[index];
-                final isSelected = _selectedCategoryId == category.id;
+                final isSelected = widget.currentCategoryId == category.id;
 
                 return Padding(
                   padding: const EdgeInsets.symmetric(vertical: 4),
@@ -113,9 +105,8 @@ class _CategorySelectionBottomSheetState
                     child: InkWell(
                       borderRadius: BorderRadius.circular(16),
                       onTap: () {
-                        setState(() {
-                          _selectedCategoryId = category.id;
-                        });
+                        widget.onCategorySelected(category);
+                        Navigator.pop(context);
                       },
                       child: Padding(
                         padding: const EdgeInsets.symmetric(
@@ -170,59 +161,6 @@ class _CategorySelectionBottomSheetState
               },
             ),
           ),
-
-          // Action Buttons
-          Container(
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              color: colorScheme.surface,
-              border: Border(
-                top: BorderSide(
-                  color: colorScheme.outline.withValues(alpha: 0.1),
-                ),
-              ),
-            ),
-            child: Row(
-              children: [
-                Expanded(
-                  child: OutlinedButton(
-                    onPressed: () => Navigator.pop(context),
-                    style: OutlinedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16),
-                      ),
-                    ),
-                    child: const Text('Cancel'),
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  flex: 2,
-                  child: FilledButton(
-                    onPressed: _selectedCategoryId == null
-                        ? null
-                        : () {
-                            final selectedCategory = widget.categories
-                                .firstWhere((c) => c.id == _selectedCategoryId);
-                            widget.onCategorySelected(selectedCategory);
-                            Navigator.pop(context);
-                          },
-                    style: FilledButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16),
-                      ),
-                    ),
-                    child: const Text('Save Category'),
-                  ),
-                ),
-              ],
-            ),
-          ),
-
-          // Bottom padding for safe area
-          SizedBox(height: MediaQuery.of(context).padding.bottom),
         ],
       ),
     );
