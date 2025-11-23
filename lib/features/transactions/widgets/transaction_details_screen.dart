@@ -44,8 +44,10 @@ class _TransactionDetailsScreenState extends State<TransactionDetailsScreen> {
           ),
 
           const SizedBox(height: 8),
+          const SizedBox(height: 8),
           Column(
             children: [
+              // Header Section
               // Header Section
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -154,11 +156,10 @@ class _TransactionDetailsScreenState extends State<TransactionDetailsScreen> {
     return Container(
       margin: EdgeInsets.only(bottom: isLast ? 0 : 20),
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            padding: const EdgeInsets.all(10),
-            margin: const EdgeInsets.only(top: 3),
+            margin: const EdgeInsets.only(top: 4),
+            padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
               color: colorScheme.primaryContainer.withValues(alpha: 0.5),
               borderRadius: BorderRadius.circular(10),
