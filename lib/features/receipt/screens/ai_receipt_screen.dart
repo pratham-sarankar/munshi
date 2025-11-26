@@ -107,7 +107,7 @@ class _AiReceiptScreenState extends State<AiReceiptScreen> {
 
     if (amount == null || amount <= 0) {
       // Open transaction form to let user fill required fields
-      await Navigator.of(context).push(
+      await Navigator.of(context).pushReplacement(
         MaterialPageRoute<void>(
           builder: (ctx) => TransactionFormScreen(
             onSubmit: (insertable) async {
