@@ -43,41 +43,34 @@ class _TransactionDetailsScreenState extends State<TransactionDetailsScreen> {
             ),
           ),
 
-          const SizedBox(height: 10),
+          const SizedBox(height: 8),
+          const SizedBox(height: 8),
           Column(
             children: [
-              // Details Section
+              // Header Section
+              // Header Section
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    'Transaction Details',
-                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                      fontWeight: FontWeight.bold,
-                      color: colorScheme.onSurface,
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-                  _buildDetailRow(
+                  _buildModernDetailRow(
                     'Amount',
-                    widget.transaction.amount.toCurrency(decimalPlaces: 2),
-                    Iconsax.money_outline,
+                    _formatCurrency(widget.transaction.amount),
+                    Iconsax.money_3_outline,
                     colorScheme,
                   ),
-
-                  _buildDetailRow(
+                  _buildModernDetailRow(
                     'Category',
                     widget.transaction.categoryName,
                     Iconsax.category_outline,
                     colorScheme,
                   ),
-                  _buildDetailRow(
+                  _buildModernDetailRow(
                     'Date & Time',
                     _formatDateTime(widget.transaction.date),
                     Iconsax.calendar_outline,
                     colorScheme,
                   ),
-                  _buildDetailRow(
+                  _buildModernDetailRow(
                     'Note',
                     widget.transaction.note ?? 'No note',
                     Iconsax.note_text_outline,
@@ -85,8 +78,6 @@ class _TransactionDetailsScreenState extends State<TransactionDetailsScreen> {
                   ),
                 ],
               ),
-
-              const SizedBox(height: 24),
 
               // Bottom padding for safe area
               SizedBox(height: MediaQuery.of(context).padding.bottom),
@@ -132,6 +123,10 @@ class _TransactionDetailsScreenState extends State<TransactionDetailsScreen> {
     );
   }
 
+  String _formatCurrency(double amount) {
+    return amount.toCurrency(decimalPlaces: 2);
+  }
+
   String _formatDateTime(DateTime date) {
     final now = DateTime.now();
     final today = DateTime(now.year, now.month, now.day);
@@ -151,7 +146,7 @@ class _TransactionDetailsScreenState extends State<TransactionDetailsScreen> {
     return '$dateStr at $timeStr';
   }
 
-  Widget _buildDetailRow(
+  Widget _buildModernDetailRow(
     String label,
     String value,
     IconData icon,
@@ -159,9 +154,8 @@ class _TransactionDetailsScreenState extends State<TransactionDetailsScreen> {
     bool isLast = false,
   }) {
     return Container(
-      margin: EdgeInsets.only(bottom: isLast ? 0 : 16),
+      margin: EdgeInsets.only(bottom: isLast ? 0 : 20),
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
             margin: const EdgeInsets.only(top: 4),
@@ -170,7 +164,7 @@ class _TransactionDetailsScreenState extends State<TransactionDetailsScreen> {
               color: colorScheme.primaryContainer.withValues(alpha: 0.5),
               borderRadius: BorderRadius.circular(10),
             ),
-            child: Icon(icon, size: 18, color: colorScheme.primary),
+            child: Icon(icon, size: 20, color: colorScheme.primary),
           ),
           const SizedBox(width: 16),
           Expanded(
