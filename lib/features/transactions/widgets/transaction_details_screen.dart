@@ -48,98 +48,34 @@ class _TransactionDetailsScreenState extends State<TransactionDetailsScreen> {
             children: [
               // Header Section
               Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Container(
-                    padding: const EdgeInsets.all(18),
-                    decoration: BoxDecoration(
-                      color: widget.transaction.categoryColor.withValues(
-                        alpha: 0.12,
-                      ),
-                      borderRadius: BorderRadius.circular(20),
-                      border: Border.all(
-                        color: widget.transaction.categoryColor.withValues(
-                          alpha: 0.2,
-                        ),
-                      ),
-                    ),
-                    child: Icon(
-                      widget.transaction.categoryIcon,
-                      color: widget.transaction.categoryColor,
-                      size: 36,
-                    ),
+                  _buildModernDetailRow(
+                    'Amount',
+                    _formatCurrency(widget.transaction.amount),
+                    Iconsax.money_3_outline,
+                    colorScheme,
                   ),
-                  const SizedBox(height: 20),
-
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 8,
-                    ),
-                    decoration: BoxDecoration(
-                      color: colorScheme.errorContainer,
-                      borderRadius: BorderRadius.circular(20),
-                      border: Border.all(
-                        color: colorScheme.error.withValues(alpha: 0.3),
-                      ),
-                    ),
-                    child: Text(
-                      _formatCurrency(widget.transaction.amount),
-                      style: Theme.of(context).textTheme.headlineLarge
-                          ?.copyWith(
-                            fontWeight: FontWeight.bold,
-                            color: colorScheme.error,
-                          ),
-                    ),
+                  _buildModernDetailRow(
+                    'Category',
+                    widget.transaction.categoryName,
+                    Iconsax.category_outline,
+                    colorScheme,
+                  ),
+                  _buildModernDetailRow(
+                    'Date & Time',
+                    _formatDateTime(widget.transaction.date),
+                    Iconsax.calendar_outline,
+                    colorScheme,
+                  ),
+                  _buildModernDetailRow(
+                    'Note',
+                    widget.transaction.note ?? 'No note',
+                    Iconsax.note_text_outline,
+                    colorScheme,
                   ),
                 ],
               ),
-
-              const SizedBox(height: 32),
-
-              // Details Section
-              Container(
-                padding: const EdgeInsets.all(20),
-                decoration: BoxDecoration(
-                  color: colorScheme.surfaceContainerLow,
-                  borderRadius: BorderRadius.circular(20),
-                  border: Border.all(
-                    color: colorScheme.outline.withValues(alpha: 0.1),
-                  ),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Transaction Details',
-                      style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                        fontWeight: FontWeight.bold,
-                        color: colorScheme.onSurface,
-                      ),
-                    ),
-                    const SizedBox(height: 20),
-                    _buildModernDetailRow(
-                      'Category',
-                      widget.transaction.categoryName,
-                      Iconsax.category_outline,
-                      colorScheme,
-                    ),
-                    _buildModernDetailRow(
-                      'Date & Time',
-                      _formatDateTime(widget.transaction.date),
-                      Iconsax.calendar_outline,
-                      colorScheme,
-                    ),
-                    _buildModernDetailRow(
-                      'Note',
-                      widget.transaction.note ?? 'No note',
-                      Iconsax.note_text_outline,
-                      colorScheme,
-                    ),
-                  ],
-                ),
-              ),
-
-              const SizedBox(height: 24),
 
               // Bottom padding for safe area
               SizedBox(height: MediaQuery.of(context).padding.bottom),
@@ -216,16 +152,18 @@ class _TransactionDetailsScreenState extends State<TransactionDetailsScreen> {
     bool isLast = false,
   }) {
     return Container(
-      margin: EdgeInsets.only(bottom: isLast ? 0 : 16),
+      margin: EdgeInsets.only(bottom: isLast ? 0 : 20),
       child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            padding: const EdgeInsets.all(8),
+            padding: const EdgeInsets.all(10),
+            margin: const EdgeInsets.only(top: 3),
             decoration: BoxDecoration(
               color: colorScheme.primaryContainer.withValues(alpha: 0.5),
               borderRadius: BorderRadius.circular(10),
             ),
-            child: Icon(icon, size: 18, color: colorScheme.primary),
+            child: Icon(icon, size: 20, color: colorScheme.primary),
           ),
           const SizedBox(width: 16),
           Expanded(
