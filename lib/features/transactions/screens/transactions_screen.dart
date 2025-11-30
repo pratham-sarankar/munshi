@@ -1,7 +1,6 @@
 import 'package:drift/drift.dart' as drift;
 import 'package:flutter/material.dart';
 import 'package:icons_plus/icons_plus.dart';
-import 'package:munshi/core/extensions/currency_extensions.dart';
 import 'package:munshi/features/categories/providers/category_provider.dart';
 import 'package:munshi/features/transactions/models/grouped_transactions.dart';
 import 'package:munshi/features/transactions/models/transaction_filter.dart';
