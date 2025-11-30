@@ -235,18 +235,22 @@ class _AiReceiptScreenState extends State<AiReceiptScreen> {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         SizedBox(
-          height: 72,
-          width: 72,
+          height: 80,
+          width: 80,
           child: Stack(
             alignment: Alignment.center,
             children: [
-              CircularProgressIndicator(
-                strokeWidth: 6,
-                valueColor: AlwaysStoppedAnimation(colorScheme.primary),
+              SizedBox(
+                height: 72,
+                width: 72,
+                child: CircularProgressIndicator(
+                  strokeWidth: 6,
+                  valueColor: AlwaysStoppedAnimation(colorScheme.primary),
+                ),
               ),
               Icon(
                 Iconsax.document_text_outline,
-                size: 30,
+                size: 28,
                 color: colorScheme.primary,
               ),
             ],
