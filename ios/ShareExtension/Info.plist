@@ -10,12 +10,11 @@
 		<dict>
 			<key>NSExtensionAttributes</key>
 			<dict>
-				<key>PHSupportedMediaTypes</key>
-				<array>
-					<string>Image</string>
-				</array>
+				<!-- removed PHSupportedMediaTypes -->
 				<key>NSExtensionActivationRule</key>
 				<dict>
+					<key>NSExtensionActivationDictionaryVersion</key>
+					<integer>2</integer>
 					<key>NSExtensionActivationSupportsImageWithMaxCount</key>
 					<integer>1</integer>
 				</dict>
