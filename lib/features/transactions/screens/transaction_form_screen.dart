@@ -86,6 +86,7 @@ class _TransactionFormScreenState extends State<TransactionFormScreen>
                 const SizedBox(height: 5),
                 FormBuilderTextField(
                   name: 'amount',
+                  autofocus: true,
                   initialValue: widget.transaction?.amount.toString(),
                   keyboardType: const TextInputType.numberWithOptions(
                     decimal: true,
