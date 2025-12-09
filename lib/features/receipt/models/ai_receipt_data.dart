@@ -1,18 +1,23 @@
+import 'package:munshi/core/database/app_database.dart';
+
 /// Simplified AI receipt data for transaction form
 class AIReceiptData {
   final double? amount;
-  final String? categorySuggestion;
+  final TransactionCategory? category;
   final DateTime? dateTime;
   final String description;
 
   const AIReceiptData({
     this.amount,
-    this.categorySuggestion,
+    this.category,
     this.dateTime,
     required this.description,
   });
 
-  factory AIReceiptData.fromJson(Map<String, dynamic> json) {
+  factory AIReceiptData.fromJson(
+    Map<String, dynamic> json, {
+    List<TransactionCategory> availableCategories = const [],
+  }) {
     // Parse amount
     double? amount;
     final amountStr = json['amount'] as String? ?? '';
@@ -52,6 +57,17 @@ class AIReceiptData {
       }
     }
 
+    // Match category by name from AI suggestion
+    TransactionCategory? matchedCategory;
+    final categorySuggestion = json['category_suggestion'] as String? ?? '';
+    if (categorySuggestion.isNotEmpty && availableCategories.isNotEmpty) {
+      // Try exact match first (case-insensitive)
+      matchedCategory = availableCategories.firstWhere(
+        (cat) => cat.name.toLowerCase() == categorySuggestion.toLowerCase(),
+        orElse: () => availableCategories.first, // Fallback to first category
+      );
+    }
+
     // Build description from merchant name
     final merchantName = json['merchant_name'] as String? ?? '';
     final description = merchantName.isNotEmpty
@@ -60,7 +76,7 @@ class AIReceiptData {
 
     return AIReceiptData(
       amount: amount,
-      categorySuggestion: json['category_suggestion'] as String?,
+      category: matchedCategory,
       dateTime: dateTime,
       description: description,
     );
@@ -69,7 +85,7 @@ class AIReceiptData {
   Map<String, dynamic> toJson() {
     return {
       'amount': amount?.toString() ?? '',
-      'category_suggestion': categorySuggestion ?? '',
+      'category_suggestion': category?.name ?? '',
       'date': dateTime?.toIso8601String() ?? '',
       'merchant_name': description.replaceFirst('Receipt - ', ''),
     };

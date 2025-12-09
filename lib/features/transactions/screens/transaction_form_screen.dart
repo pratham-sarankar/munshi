@@ -181,7 +181,8 @@ class _TransactionFormScreenState extends State<TransactionFormScreen>
                     type: _tabController.index == 0
                         ? TransactionType.expense
                         : TransactionType.income,
-                    initialValue: widget.transaction?.category,
+                    initialValue:
+                        _aiResult?.category ?? widget.transaction?.category,
                   ),
                 ),
 

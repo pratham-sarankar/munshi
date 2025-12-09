@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_ocr/flutter_ocr.dart';
+import 'package:munshi/core/database/app_database.dart';
 import 'package:munshi/core/service_locator.dart';
 import 'package:munshi/features/receipt/models/ai_receipt_data.dart';
 import 'package:munshi/features/receipt/services/receipt_service.dart';
@@ -67,6 +68,11 @@ class _AiReceiptScreenState extends State<AiReceiptScreen> {
       final file = File(imagePath);
       log('Processing receipt at path: $imagePath');
 
+      // Fetch expense categories from database
+      final db = locator<AppDatabase>();
+      final expenseCategories = await db.categoriesDao.getExpenseCategories();
+      log('Fetched ${expenseCategories.length} expense categories');
+
       // Perform OCR
       final ocrResult = await FlutterOcr.recognizeTextFromImage(file.path);
       if (ocrResult == null) {
@@ -76,9 +82,12 @@ class _AiReceiptScreenState extends State<AiReceiptScreen> {
 
       log('OCR result: $ocrResult');
 
-      // Extract data using AI
+      // Extract data using AI with available categories
       final aiData = await locator<ReceiptAIService>()
-          .extractReceiptDataFromText(ocrResult);
+          .extractReceiptDataFromText(
+            ocrResult,
+            availableCategories: expenseCategories,
+          );
 
       log('Extracted Receipt Data: $aiData');
       return aiData;
