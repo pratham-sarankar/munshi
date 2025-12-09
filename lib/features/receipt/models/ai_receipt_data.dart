@@ -1,18 +1,97 @@
+/// Simplified AI receipt data for transaction form
 class AIReceiptData {
+  final double? amount;
+  final String? categorySuggestion;
+  final DateTime? dateTime;
+  final String description;
+
+  const AIReceiptData({
+    this.amount,
+    this.categorySuggestion,
+    this.dateTime,
+    required this.description,
+  });
+
+  factory AIReceiptData.fromJson(Map<String, dynamic> json) {
+    // Parse amount
+    double? amount;
+    final amountStr = json['amount'] as String? ?? '';
+    if (amountStr.isNotEmpty) {
+      final clean = amountStr.replaceAll(RegExp('[^0-9.,-]'), '');
+      amount = double.tryParse(clean.replaceAll(',', ''));
+    }
+
+    // Parse datetime
+    DateTime? dateTime;
+    final dateStr = json['date'] as String? ?? '';
+    final timeStr = json['time'] as String? ?? '';
+
+    if (dateStr.isNotEmpty) {
+      try {
+        final parsedDate = DateTime.tryParse(dateStr) ?? DateTime.now();
+        if (timeStr.isNotEmpty) {
+          final timeParts = timeStr.split(':');
+          if (timeParts.length >= 2) {
+            final hour = int.tryParse(timeParts[0]) ?? 0;
+            final minute = int.tryParse(timeParts[1]) ?? 0;
+            dateTime = DateTime(
+              parsedDate.year,
+              parsedDate.month,
+              parsedDate.day,
+              hour,
+              minute,
+            );
+          } else {
+            dateTime = parsedDate;
+          }
+        } else {
+          dateTime = parsedDate;
+        }
+      } catch (_) {
+        dateTime = null;
+      }
+    }
+
+    // Build description from merchant name
+    final merchantName = json['merchant_name'] as String? ?? '';
+    final description = merchantName.isNotEmpty
+        ? 'Receipt - $merchantName'
+        : 'Receipt transaction';
+
+    return AIReceiptData(
+      amount: amount,
+      categorySuggestion: json['category_suggestion'] as String?,
+      dateTime: dateTime,
+      description: description,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'amount': amount?.toString() ?? '',
+      'category_suggestion': categorySuggestion ?? '',
+      'date': dateTime?.toIso8601String() ?? '',
+      'merchant_name': description.replaceFirst('Receipt - ', ''),
+    };
+  }
+}
+
+// Keep old models for backward compatibility if needed elsewhere
+class AIReceiptDataDetailed {
   final MerchantDetails merchantDetails;
   final TransactionDetails transactionDetails;
   final List<ReceiptItem> items;
   final AdditionalInfo additionalInfo;
 
-  const AIReceiptData({
+  const AIReceiptDataDetailed({
     required this.merchantDetails,
     required this.transactionDetails,
     required this.items,
     required this.additionalInfo,
   });
 
-  factory AIReceiptData.fromJson(Map<String, dynamic> json) {
-    return AIReceiptData(
+  factory AIReceiptDataDetailed.fromJson(Map<String, dynamic> json) {
+    return AIReceiptDataDetailed(
       merchantDetails: MerchantDetails.fromJson(
         (json['merchant_details'] ?? <String, dynamic>{})
             as Map<String, dynamic>,

@@ -5,62 +5,36 @@ import 'package:munshi/features/receipt/models/ai_receipt_data.dart';
 /// A lightweight, cost-efficient service for extracting structured
 /// transaction and item data from receipts using Gemini models via Firebase AI.
 class ReceiptAIService {
-
   ReceiptAIService(this.model);
   GenerativeModel model;
 
   /// Extracts structured transaction data from OCR text of a receipt.
   Future<AIReceiptData> extractReceiptDataFromText(String ocrText) async {
     const systemPrompt = '''
-You are a precise receipt parser. 
+You are a precise receipt parser for a personal finance app.
 Read the given text extracted from a receipt or invoice.
-Return a compact JSON with merchant, transaction, and item details.
+Extract only the essential transaction details needed for expense tracking.
 If data is missing, use empty strings. Do not add or assume information.
 ''';
 
     const userPrompt = '''
-From the following receipt text, extract all details and return only a valid JSON object:
+From the following receipt text, extract the essential transaction details and return only a valid JSON object with these fields:
 
 {
-  "merchant_details": {
-    "name": "",
-    "address": "",
-    "phone_number": "",
-    "email": "",
-    "website": ""
-  },
-  "transaction_details": {
-    "transaction_id": "",
-    "date": "",
-    "time": "",
-    "payment_method": "",
-    "payment_provider": "",
-    "card_or_account_last4": "",
-    "currency": "",
-    "subtotal": "",
-    "tax": "",
-    "discount": "",
-    "total_amount": ""
-  },
-  "items": [
-    {
-      "item_name": "",
-      "quantity": "",
-      "unit_price": "",
-      "total_price": "",
-      "category": ""
-    }
-  ],
-  "additional_info": {
-    "notes": "",
-    "terminal_id": "",
-    "invoice_number": "",
-    "reference_number": "",
-    "receipt_type": "",
-    "country": "",
-    "language": ""
-  }
+  "amount": "",           // Total amount (numeric value only, e.g., "150.50")
+  "merchant_name": "",    // Name of the store/merchant
+  "category_suggestion": "", // Suggested expense category (e.g., "Food & Dining", "Shopping", "Transportation", "Utilities", "Entertainment", "Healthcare", "Other")
+  "date": "",            // Date in YYYY-MM-DD format
+  "time": ""             // Time in HH:MM format (24-hour)
 }
+
+Guidelines:
+- amount: Extract the total/final amount to be paid. Remove currency symbols and commas.
+- merchant_name: Business or store name from the receipt header
+- category_suggestion: Infer category from merchant name or items (use common categories like Food & Dining, Shopping, Transportation, Entertainment, Healthcare, Utilities, or Other)
+- date: Convert to YYYY-MM-DD format if possible
+- time: Convert to HH:MM 24-hour format if available
+
 Text:
 ''';
 
