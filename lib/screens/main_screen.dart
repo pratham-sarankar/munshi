@@ -1,8 +1,16 @@
+import 'dart:developer';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_ocr/flutter_ocr.dart';
 import 'package:icons_plus/icons_plus.dart';
+import 'package:munshi/core/database/app_database.dart';
+import 'package:munshi/core/service_locator.dart';
 import 'package:munshi/features/categories/screens/categories_screen.dart';
 import 'package:munshi/features/dashboard/screens/home_screen.dart';
+import 'package:munshi/features/receipt/models/ai_receipt_data.dart';
 import 'package:munshi/features/receipt/screens/ai_receipt_screen.dart';
+import 'package:munshi/features/receipt/services/receipt_service.dart';
 import 'package:munshi/features/receipt/widgets/share_handler_widget.dart';
 import 'package:munshi/features/settings/screens/settings_screen.dart';
 import 'package:munshi/features/transactions/providers/transaction_provider.dart';
@@ -58,12 +66,31 @@ class _MainScreenState extends State<MainScreen> {
   @override
   Widget build(BuildContext context) {
     return ShareHandlerWidget(
-      onMediaReceived: (SharedMedia value) async {
-        await Navigator.of(context).push(
+      onMediaReceived: (SharedMedia media) async {
+        Navigator.of(context).pushReplacement(
           MaterialPageRoute<void>(
-            builder: (context) {
-              return AiReceiptScreen(media: value);
-            },
+            builder: (context) => TransactionFormScreen(
+              aiProcessingFuture: locator<ReceiptAIService>().process(media),
+              onSubmit: (insertable) async {
+                await context.read<TransactionProvider>().addTransaction(
+                  insertable,
+                );
+
+                // Navigate back to transactions screen
+                Navigator.of(context).pushAndRemoveUntil(
+                  MaterialPageRoute<void>(
+                    builder: (_) => const TransactionsScreen(),
+                  ),
+                  (route) => route.isFirst,
+                );
+
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('Transaction Added Successfully'),
+                  ),
+                );
+              },
+            ),
           ),
         );
       },

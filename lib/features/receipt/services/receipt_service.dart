@@ -1,7 +1,12 @@
 import 'dart:convert';
+import 'dart:developer';
+import 'dart:io';
 import 'package:firebase_ai/firebase_ai.dart';
+import 'package:flutter_ocr/flutter_ocr.dart';
 import 'package:munshi/core/database/app_database.dart';
+import 'package:munshi/core/service_locator.dart';
 import 'package:munshi/features/receipt/models/ai_receipt_data.dart';
+import 'package:share_handler/share_handler.dart';
 
 /// A lightweight, cost-efficient service for extracting structured
 /// transaction and item data from receipts using Gemini models via Firebase AI.
@@ -9,9 +14,45 @@ class ReceiptAIService {
   ReceiptAIService(this.model);
   GenerativeModel model;
 
+  Future<AIReceiptData?> process(SharedMedia media) async {
+    final imagePath = media.attachments?.first?.path;
+    if (imagePath == null) return null;
+
+    try {
+      final file = File(imagePath);
+      log('Processing receipt at path: $imagePath');
+
+      // Fetch expense categories from database
+      final db = locator<AppDatabase>();
+      final expenseCategories = await db.categoriesDao.getExpenseCategories();
+      log('Fetched ${expenseCategories.length} expense categories');
+
+      // Perform OCR
+      final ocrResult = await FlutterOcr.recognizeTextFromImage(file.path);
+      if (ocrResult == null) {
+        log('OCR returned null');
+        return null;
+      }
+
+      log('OCR result: $ocrResult');
+
+      // Extract data using AI with available categories
+      final aiData = await _extractReceiptDataFromText(
+        ocrResult,
+        availableCategories: expenseCategories,
+      );
+
+      log('Extracted Receipt Data: $aiData');
+      return aiData;
+    } on Exception catch (e, stackTrace) {
+      log('Error processing receipt: $e', stackTrace: stackTrace);
+      return null;
+    }
+  }
+
   /// Extracts structured transaction data from OCR text of a receipt.
   /// [availableCategories] - List of expense categories to suggest from
-  Future<AIReceiptData> extractReceiptDataFromText(
+  Future<AIReceiptData> _extractReceiptDataFromText(
     String ocrText, {
     List<TransactionCategory> availableCategories = const [],
   }) async {
