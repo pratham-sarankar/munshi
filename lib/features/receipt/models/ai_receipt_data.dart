@@ -2,16 +2,11 @@ import 'package:munshi/core/database/app_database.dart';
 
 /// Simplified AI receipt data for transaction form
 class AIReceiptData {
-  final double? amount;
-  final TransactionCategory? category;
-  final DateTime? dateTime;
-  final String description;
 
   const AIReceiptData({
-    this.amount,
+    required this.description, this.amount,
     this.category,
     this.dateTime,
-    required this.description,
   });
 
   factory AIReceiptData.fromJson(
@@ -81,6 +76,10 @@ class AIReceiptData {
       description: description,
     );
   }
+  final double? amount;
+  final TransactionCategory? category;
+  final DateTime? dateTime;
+  final String description;
 
   Map<String, dynamic> toJson() {
     return {
@@ -94,10 +93,6 @@ class AIReceiptData {
 
 // Keep old models for backward compatibility if needed elsewhere
 class AIReceiptDataDetailed {
-  final MerchantDetails merchantDetails;
-  final TransactionDetails transactionDetails;
-  final List<ReceiptItem> items;
-  final AdditionalInfo additionalInfo;
 
   const AIReceiptDataDetailed({
     required this.merchantDetails,
@@ -129,6 +124,10 @@ class AIReceiptDataDetailed {
       ),
     );
   }
+  final MerchantDetails merchantDetails;
+  final TransactionDetails transactionDetails;
+  final List<ReceiptItem> items;
+  final AdditionalInfo additionalInfo;
 
   Map<String, dynamic> toJson() {
     return {
@@ -141,11 +140,6 @@ class AIReceiptDataDetailed {
 }
 
 class MerchantDetails {
-  final String name;
-  final String address;
-  final String phoneNumber;
-  final String email;
-  final String website;
 
   const MerchantDetails({
     required this.name,
@@ -164,6 +158,11 @@ class MerchantDetails {
       website: json['website'] as String? ?? '',
     );
   }
+  final String name;
+  final String address;
+  final String phoneNumber;
+  final String email;
+  final String website;
 
   Map<String, dynamic> toJson() {
     return {
@@ -177,17 +176,6 @@ class MerchantDetails {
 }
 
 class TransactionDetails {
-  final String transactionId;
-  final String date;
-  final String time;
-  final String paymentMethod;
-  final String paymentProvider;
-  final String cardOrAccountLast4;
-  final String currency;
-  final String subtotal;
-  final String tax;
-  final String discount;
-  final String totalAmount;
 
   const TransactionDetails({
     required this.transactionId,
@@ -218,6 +206,17 @@ class TransactionDetails {
       totalAmount: json['total_amount'] as String? ?? '',
     );
   }
+  final String transactionId;
+  final String date;
+  final String time;
+  final String paymentMethod;
+  final String paymentProvider;
+  final String cardOrAccountLast4;
+  final String currency;
+  final String subtotal;
+  final String tax;
+  final String discount;
+  final String totalAmount;
 
   Map<String, dynamic> toJson() {
     return {
@@ -237,11 +236,6 @@ class TransactionDetails {
 }
 
 class ReceiptItem {
-  final String itemName;
-  final String quantity;
-  final String unitPrice;
-  final String totalPrice;
-  final String category;
 
   const ReceiptItem({
     required this.itemName,
@@ -260,6 +254,11 @@ class ReceiptItem {
       category: json['category'] as String? ?? '',
     );
   }
+  final String itemName;
+  final String quantity;
+  final String unitPrice;
+  final String totalPrice;
+  final String category;
 
   Map<String, dynamic> toJson() {
     return {
@@ -273,13 +272,6 @@ class ReceiptItem {
 }
 
 class AdditionalInfo {
-  final String notes;
-  final String terminalId;
-  final String invoiceNumber;
-  final String referenceNumber;
-  final String receiptType;
-  final String country;
-  final String language;
 
   const AdditionalInfo({
     required this.notes,
@@ -302,6 +294,13 @@ class AdditionalInfo {
       language: json['language'] as String? ?? '',
     );
   }
+  final String notes;
+  final String terminalId;
+  final String invoiceNumber;
+  final String referenceNumber;
+  final String receiptType;
+  final String country;
+  final String language;
 
   Map<String, dynamic> toJson() {
     return {

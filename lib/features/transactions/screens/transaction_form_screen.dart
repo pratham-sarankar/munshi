@@ -219,7 +219,7 @@ class _TransactionFormScreenState extends State<TransactionFormScreen>
                 else
                   FormBuilderTextField(
                     name: 'description',
-                    initialValue: _aiResult?.description.isNotEmpty == true
+                    initialValue: _aiResult?.description.isNotEmpty ?? false
                         ? _aiResult!.description
                         : widget.transaction?.note,
                     maxLines: 3,

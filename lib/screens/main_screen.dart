@@ -1,15 +1,8 @@
-import 'dart:developer';
-import 'dart:io';
-
 import 'package:flutter/material.dart';
-import 'package:flutter_ocr/flutter_ocr.dart';
 import 'package:icons_plus/icons_plus.dart';
-import 'package:munshi/core/database/app_database.dart';
 import 'package:munshi/core/service_locator.dart';
 import 'package:munshi/features/categories/screens/categories_screen.dart';
 import 'package:munshi/features/dashboard/screens/home_screen.dart';
-import 'package:munshi/features/receipt/models/ai_receipt_data.dart';
-import 'package:munshi/features/receipt/screens/ai_receipt_screen.dart';
 import 'package:munshi/features/receipt/services/receipt_service.dart';
 import 'package:munshi/features/receipt/widgets/share_handler_widget.dart';
 import 'package:munshi/features/settings/screens/settings_screen.dart';
