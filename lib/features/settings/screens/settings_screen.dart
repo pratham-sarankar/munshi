@@ -511,10 +511,10 @@ Best regards,
             Container(
               padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
-                color: colorScheme.primaryContainer.withValues(alpha: 0.6),
+                color: colorScheme.surfaceContainerHighest,
                 borderRadius: BorderRadius.circular(10),
               ),
-              child: Icon(icon, color: colorScheme.primary, size: 20),
+              child: Icon(icon, color: colorScheme.onSurface, size: 20),
             ),
             const SizedBox(width: 8),
             Text(
