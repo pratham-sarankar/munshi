@@ -60,7 +60,7 @@ class _MainScreenState extends State<MainScreen> {
   Widget build(BuildContext context) {
     return ShareHandlerWidget(
       onMediaReceived: (SharedMedia media) async {
-        Navigator.of(context).pushReplacement(
+        await Navigator.of(context).push(
           MaterialPageRoute<void>(
             builder: (context) => TransactionFormScreen(
               aiProcessingFuture: locator<ReceiptAIService>().process(media),
@@ -69,19 +69,15 @@ class _MainScreenState extends State<MainScreen> {
                   insertable,
                 );
 
-                // Navigate back to transactions screen
-                Navigator.of(context).pushAndRemoveUntil(
-                  MaterialPageRoute<void>(
-                    builder: (_) => const TransactionsScreen(),
-                  ),
-                  (route) => route.isFirst,
-                );
-
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Transaction Added Successfully'),
-                  ),
-                );
+                setState(() {
+                  Navigator.pop(context);
+                  _selectedIndex = 1;
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Transaction Added Successfully'),
+                    ),
+                  );
+                });
               },
             ),
           ),
