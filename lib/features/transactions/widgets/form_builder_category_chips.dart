@@ -7,7 +7,9 @@ import 'package:provider/provider.dart';
 
 class FormBuilderCategoryChips extends StatelessWidget {
   const FormBuilderCategoryChips({
-    required this.name, required this.type, super.key,
+    required this.name,
+    required this.type,
+    super.key,
     this.initialValue,
   });
   final String name;
@@ -27,6 +29,7 @@ class FormBuilderCategoryChips extends StatelessWidget {
             border: InputBorder.none,
             contentPadding: EdgeInsets.zero,
           ),
+          showCheckmark: false,
           options:
               (type == TransactionType.expense
                       ? categoryProvider.expenseCategories
@@ -34,14 +37,8 @@ class FormBuilderCategoryChips extends StatelessWidget {
                   .map(
                     (category) => FormBuilderChipOption<TransactionCategory>(
                       value: category,
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(category.icon, size: 16),
-                          const SizedBox(width: 4),
-                          Text(category.name),
-                        ],
-                      ),
+                      avatar: Icon(category.icon),
+                      child: Text(category.name),
                     ),
                   )
                   .toList(),

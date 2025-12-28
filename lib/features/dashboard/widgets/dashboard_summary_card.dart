@@ -122,12 +122,15 @@ class _DashboardSummaryCardState extends State<DashboardSummaryCard>
                         ),
                         Container(
                           padding: const EdgeInsets.symmetric(
-                            vertical: 4,
-                            horizontal: 10,
+                            vertical: 6,
+                            horizontal: 12,
                           ),
                           decoration: BoxDecoration(
                             color: colorScheme.secondaryContainer,
-                            borderRadius: BorderRadius.circular(12),
+                            borderRadius: BorderRadius.circular(15),
+                            border: Border.all(
+                              color: colorScheme.outline,
+                            ),
                           ),
                           child: Text(
                             dashboardProvider.selectedPeriod.displayName,
