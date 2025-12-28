@@ -1,18 +1,108 @@
+import 'package:munshi/core/database/app_database.dart';
+
+/// Simplified AI receipt data for transaction form
 class AIReceiptData {
-  final MerchantDetails merchantDetails;
-  final TransactionDetails transactionDetails;
-  final List<ReceiptItem> items;
-  final AdditionalInfo additionalInfo;
 
   const AIReceiptData({
+    required this.description, this.amount,
+    this.category,
+    this.dateTime,
+  });
+
+  factory AIReceiptData.fromJson(
+    Map<String, dynamic> json, {
+    List<TransactionCategory> availableCategories = const [],
+  }) {
+    // Parse amount
+    double? amount;
+    final amountStr = json['amount'] as String? ?? '';
+    if (amountStr.isNotEmpty) {
+      final clean = amountStr.replaceAll(RegExp('[^0-9.,-]'), '');
+      amount = double.tryParse(clean.replaceAll(',', ''));
+    }
+
+    // Parse datetime
+    DateTime? dateTime;
+    final dateStr = json['date'] as String? ?? '';
+    final timeStr = json['time'] as String? ?? '';
+
+    if (dateStr.isNotEmpty) {
+      try {
+        final parsedDate = DateTime.tryParse(dateStr) ?? DateTime.now();
+        if (timeStr.isNotEmpty) {
+          final timeParts = timeStr.split(':');
+          if (timeParts.length >= 2) {
+            final hour = int.tryParse(timeParts[0]) ?? 0;
+            final minute = int.tryParse(timeParts[1]) ?? 0;
+            dateTime = DateTime(
+              parsedDate.year,
+              parsedDate.month,
+              parsedDate.day,
+              hour,
+              minute,
+            );
+          } else {
+            dateTime = parsedDate;
+          }
+        } else {
+          dateTime = parsedDate;
+        }
+      } catch (_) {
+        dateTime = null;
+      }
+    }
+
+    // Match category by name from AI suggestion
+    TransactionCategory? matchedCategory;
+    final categorySuggestion = json['category_suggestion'] as String? ?? '';
+    if (categorySuggestion.isNotEmpty && availableCategories.isNotEmpty) {
+      // Try exact match first (case-insensitive)
+      matchedCategory = availableCategories.firstWhere(
+        (cat) => cat.name.toLowerCase() == categorySuggestion.toLowerCase(),
+        orElse: () => availableCategories.first, // Fallback to first category
+      );
+    }
+
+    // Build description from merchant name
+    final merchantName = json['merchant_name'] as String? ?? '';
+    final description = merchantName.isNotEmpty
+        ? 'Receipt - $merchantName'
+        : 'Receipt transaction';
+
+    return AIReceiptData(
+      amount: amount,
+      category: matchedCategory,
+      dateTime: dateTime,
+      description: description,
+    );
+  }
+  final double? amount;
+  final TransactionCategory? category;
+  final DateTime? dateTime;
+  final String description;
+
+  Map<String, dynamic> toJson() {
+    return {
+      'amount': amount?.toString() ?? '',
+      'category_suggestion': category?.name ?? '',
+      'date': dateTime?.toIso8601String() ?? '',
+      'merchant_name': description.replaceFirst('Receipt - ', ''),
+    };
+  }
+}
+
+// Keep old models for backward compatibility if needed elsewhere
+class AIReceiptDataDetailed {
+
+  const AIReceiptDataDetailed({
     required this.merchantDetails,
     required this.transactionDetails,
     required this.items,
     required this.additionalInfo,
   });
 
-  factory AIReceiptData.fromJson(Map<String, dynamic> json) {
-    return AIReceiptData(
+  factory AIReceiptDataDetailed.fromJson(Map<String, dynamic> json) {
+    return AIReceiptDataDetailed(
       merchantDetails: MerchantDetails.fromJson(
         (json['merchant_details'] ?? <String, dynamic>{})
             as Map<String, dynamic>,
@@ -34,6 +124,10 @@ class AIReceiptData {
       ),
     );
   }
+  final MerchantDetails merchantDetails;
+  final TransactionDetails transactionDetails;
+  final List<ReceiptItem> items;
+  final AdditionalInfo additionalInfo;
 
   Map<String, dynamic> toJson() {
     return {
@@ -46,11 +140,6 @@ class AIReceiptData {
 }
 
 class MerchantDetails {
-  final String name;
-  final String address;
-  final String phoneNumber;
-  final String email;
-  final String website;
 
   const MerchantDetails({
     required this.name,
@@ -69,6 +158,11 @@ class MerchantDetails {
       website: json['website'] as String? ?? '',
     );
   }
+  final String name;
+  final String address;
+  final String phoneNumber;
+  final String email;
+  final String website;
 
   Map<String, dynamic> toJson() {
     return {
@@ -82,17 +176,6 @@ class MerchantDetails {
 }
 
 class TransactionDetails {
-  final String transactionId;
-  final String date;
-  final String time;
-  final String paymentMethod;
-  final String paymentProvider;
-  final String cardOrAccountLast4;
-  final String currency;
-  final String subtotal;
-  final String tax;
-  final String discount;
-  final String totalAmount;
 
   const TransactionDetails({
     required this.transactionId,
@@ -123,6 +206,17 @@ class TransactionDetails {
       totalAmount: json['total_amount'] as String? ?? '',
     );
   }
+  final String transactionId;
+  final String date;
+  final String time;
+  final String paymentMethod;
+  final String paymentProvider;
+  final String cardOrAccountLast4;
+  final String currency;
+  final String subtotal;
+  final String tax;
+  final String discount;
+  final String totalAmount;
 
   Map<String, dynamic> toJson() {
     return {
@@ -142,11 +236,6 @@ class TransactionDetails {
 }
 
 class ReceiptItem {
-  final String itemName;
-  final String quantity;
-  final String unitPrice;
-  final String totalPrice;
-  final String category;
 
   const ReceiptItem({
     required this.itemName,
@@ -165,6 +254,11 @@ class ReceiptItem {
       category: json['category'] as String? ?? '',
     );
   }
+  final String itemName;
+  final String quantity;
+  final String unitPrice;
+  final String totalPrice;
+  final String category;
 
   Map<String, dynamic> toJson() {
     return {
@@ -178,13 +272,6 @@ class ReceiptItem {
 }
 
 class AdditionalInfo {
-  final String notes;
-  final String terminalId;
-  final String invoiceNumber;
-  final String referenceNumber;
-  final String receiptType;
-  final String country;
-  final String language;
 
   const AdditionalInfo({
     required this.notes,
@@ -207,6 +294,13 @@ class AdditionalInfo {
       language: json['language'] as String? ?? '',
     );
   }
+  final String notes;
+  final String terminalId;
+  final String invoiceNumber;
+  final String referenceNumber;
+  final String receiptType;
+  final String country;
+  final String language;
 
   Map<String, dynamic> toJson() {
     return {

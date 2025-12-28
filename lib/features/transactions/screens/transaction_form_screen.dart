@@ -5,18 +5,26 @@ import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:icons_plus/icons_plus.dart';
 import 'package:intl/intl.dart';
 import 'package:munshi/core/database/app_database.dart';
+import 'package:munshi/features/receipt/models/ai_receipt_data.dart';
 import 'package:munshi/features/transactions/models/transaction_type.dart';
 import 'package:munshi/features/transactions/models/transaction_with_category.dart';
 import 'package:munshi/features/transactions/widgets/form_builder_category_chips.dart';
+import 'package:munshi/widgets/shimmer_loading.dart';
 
 class TransactionFormScreen extends StatefulWidget {
   const TransactionFormScreen({
     required this.onSubmit,
     super.key,
     this.transaction,
+    this.aiProcessingFuture,
   });
   final TransactionWithCategory? transaction;
   final void Function(drift.Insertable<Transaction> transaction) onSubmit;
+
+  /// Optional future that processes AI receipt data
+  /// When provided, the form will show shimmer loading and auto-fill on completion
+  final Future<AIReceiptData?>? aiProcessingFuture;
+
   @override
   State<TransactionFormScreen> createState() => _TransactionFormScreenState();
 }
@@ -25,6 +33,10 @@ class _TransactionFormScreenState extends State<TransactionFormScreen>
     with SingleTickerProviderStateMixin {
   late final TabController _tabController;
   late final GlobalKey<FormBuilderState> _formKey;
+
+  // AI processing state
+  bool _isAIProcessing = false;
+  AIReceiptData? _aiResult;
 
   @override
   void initState() {
@@ -39,6 +51,42 @@ class _TransactionFormScreenState extends State<TransactionFormScreen>
       initialIndex: initialTabIndex,
     )..addListener(() => setState(() {}));
     _formKey = GlobalKey<FormBuilderState>();
+
+    // Start AI processing if future is provided
+    if (widget.aiProcessingFuture != null) {
+      _processAIData();
+    }
+  }
+
+  Future<void> _processAIData() async {
+    setState(() {
+      _isAIProcessing = true;
+    });
+
+    try {
+      final result = await widget.aiProcessingFuture;
+      if (result != null && mounted) {
+        setState(() {
+          _aiResult = result;
+          _isAIProcessing = false;
+        });
+      } else if (mounted) {
+        setState(() {
+          _isAIProcessing = false;
+        });
+      }
+    } on Exception {
+      if (mounted) {
+        setState(() {
+          _isAIProcessing = false;
+        });
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Failed to process receipt. Please fill manually.'),
+          ),
+        );
+      }
+    }
   }
 
   @override
@@ -82,32 +130,40 @@ class _TransactionFormScreenState extends State<TransactionFormScreen>
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                // AI Processing Indicator
+                if (_isAIProcessing) const AIProcessingIndicator(),
+
                 const Text('Amount'),
                 const SizedBox(height: 5),
-                FormBuilderTextField(
-                  name: 'amount',
-                  autofocus: true,
-                  initialValue: widget.transaction?.amount.toString(),
-                  keyboardType: const TextInputType.numberWithOptions(
-                    decimal: true,
+                if (_isAIProcessing)
+                  const ShimmerPlaceholder()
+                else
+                  FormBuilderTextField(
+                    name: 'amount',
+                    autofocus: true,
+                    initialValue:
+                        _aiResult?.amount?.toString() ??
+                        widget.transaction?.amount.toString(),
+                    keyboardType: const TextInputType.numberWithOptions(
+                      decimal: true,
+                    ),
+                    decoration: const InputDecoration(
+                      prefixIcon: Icon(Iconsax.wallet_outline),
+                      hintText: 'Enter amount',
+                    ),
+                    validator: FormBuilderValidators.compose([
+                      FormBuilderValidators.required(
+                        errorText: 'Amount is required',
+                      ),
+                      FormBuilderValidators.numeric(
+                        errorText: 'Please enter a valid number',
+                      ),
+                      FormBuilderValidators.min(
+                        0.01,
+                        errorText: 'Amount must be greater than zero',
+                      ),
+                    ]),
                   ),
-                  decoration: const InputDecoration(
-                    prefixIcon: Icon(Iconsax.wallet_outline),
-                    hintText: 'Enter amount',
-                  ),
-                  validator: FormBuilderValidators.compose([
-                    FormBuilderValidators.required(
-                      errorText: 'Amount is required',
-                    ),
-                    FormBuilderValidators.numeric(
-                      errorText: 'Please enter a valid number',
-                    ),
-                    FormBuilderValidators.min(
-                      0.01,
-                      errorText: 'Amount must be greater than zero',
-                    ),
-                  ]),
-                ),
                 const SizedBox(height: 20),
                 Text(
                   _tabController.index == 0
@@ -125,47 +181,59 @@ class _TransactionFormScreenState extends State<TransactionFormScreen>
                     type: _tabController.index == 0
                         ? TransactionType.expense
                         : TransactionType.income,
-                    initialValue: widget.transaction?.category,
+                    initialValue:
+                        _aiResult?.category ?? widget.transaction?.category,
                   ),
                 ),
 
                 const SizedBox(height: 20),
                 const Text('Date & Time'),
                 const SizedBox(height: 5),
-                FormBuilderDateTimePicker(
-                  name: 'datetime',
-                  format: DateFormat('d MMM, h:mm a'),
-                  initialValue: widget.transaction?.date ?? DateTime.now(),
-                  decoration: const InputDecoration(
-                    prefixIcon: Icon(Iconsax.calendar_edit_outline),
-                    hintText: 'Select date and time',
+                if (_isAIProcessing)
+                  const ShimmerPlaceholder()
+                else
+                  FormBuilderDateTimePicker(
+                    name: 'datetime',
+                    format: DateFormat('d MMM, h:mm a'),
+                    initialValue:
+                        _aiResult?.dateTime ??
+                        widget.transaction?.date ??
+                        DateTime.now(),
+                    decoration: const InputDecoration(
+                      prefixIcon: Icon(Iconsax.calendar_edit_outline),
+                      hintText: 'Select date and time',
+                    ),
+                    validator: FormBuilderValidators.required(
+                      errorText: 'Date & Time is required',
+                    ),
+                    firstDate: DateTime.now().subtract(
+                      const Duration(days: 365 * 2),
+                    ),
+                    lastDate: DateTime.now().add(const Duration(days: 365)),
                   ),
-                  validator: FormBuilderValidators.required(
-                    errorText: 'Date & Time is required',
-                  ),
-                  firstDate: DateTime.now().subtract(
-                    const Duration(days: 365 * 2),
-                  ),
-                  lastDate: DateTime.now().add(const Duration(days: 365)),
-                ),
                 const SizedBox(height: 20),
                 const Text('Description (Optional)'),
                 const SizedBox(height: 5),
-                FormBuilderTextField(
-                  name: 'description',
-                  initialValue: widget.transaction?.note,
-                  maxLines: 3,
-                  decoration: const InputDecoration(
-                    prefixIcon: Icon(Iconsax.note_outline),
-                    hintText: 'Add a description...',
-                    alignLabelWithHint: true,
+                if (_isAIProcessing)
+                  const ShimmerPlaceholder(height: 88)
+                else
+                  FormBuilderTextField(
+                    name: 'description',
+                    initialValue: _aiResult?.description?.isNotEmpty == true
+                        ? _aiResult!.description
+                        : widget.transaction?.note,
+                    maxLines: 3,
+                    decoration: const InputDecoration(
+                      prefixIcon: Icon(Iconsax.note_outline),
+                      hintText: 'Add a description...',
+                      alignLabelWithHint: true,
+                    ),
+                    validator: FormBuilderValidators.maxLength(
+                      200,
+                      errorText: 'Description too long',
+                      checkNullOrEmpty: false,
+                    ),
                   ),
-                  validator: FormBuilderValidators.maxLength(
-                    200,
-                    errorText: 'Description too long',
-                    checkNullOrEmpty: false,
-                  ),
-                ),
                 const SizedBox(height: 80), // Extra space to account for FAB
               ],
             ),
@@ -216,7 +284,6 @@ class _TransactionFormScreenState extends State<TransactionFormScreen>
             );
 
       widget.onSubmit(transaction);
-      Navigator.of(context).pop();
     } else {
       // Handle validation errors
       ScaffoldMessenger.of(context).showSnackBar(

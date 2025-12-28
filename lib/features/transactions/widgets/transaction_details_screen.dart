@@ -5,7 +5,7 @@ import 'package:munshi/core/extensions/currency_extensions.dart';
 import 'package:munshi/features/transactions/models/transaction_with_category.dart';
 
 class TransactionDetailsScreen extends StatefulWidget {
-  const TransactionDetailsScreen({super.key, required this.transaction});
+  const TransactionDetailsScreen({required this.transaction, super.key});
   final TransactionWithCategory transaction;
   @override
   State<TransactionDetailsScreen> createState() =>

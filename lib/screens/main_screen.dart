@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:icons_plus/icons_plus.dart';
+import 'package:munshi/core/service_locator.dart';
 import 'package:munshi/features/categories/screens/categories_screen.dart';
 import 'package:munshi/features/dashboard/screens/home_screen.dart';
-import 'package:munshi/features/receipt/screens/ai_receipt_screen.dart';
+import 'package:munshi/features/receipt/services/receipt_service.dart';
 import 'package:munshi/features/receipt/widgets/share_handler_widget.dart';
 import 'package:munshi/features/settings/screens/settings_screen.dart';
 import 'package:munshi/features/transactions/providers/transaction_provider.dart';
@@ -58,12 +59,27 @@ class _MainScreenState extends State<MainScreen> {
   @override
   Widget build(BuildContext context) {
     return ShareHandlerWidget(
-      onMediaReceived: (SharedMedia value) async {
+      onMediaReceived: (SharedMedia media) async {
         await Navigator.of(context).push(
           MaterialPageRoute<void>(
-            builder: (context) {
-              return AiReceiptScreen(media: value);
-            },
+            builder: (context) => TransactionFormScreen(
+              aiProcessingFuture: locator<ReceiptAIService>().process(media),
+              onSubmit: (insertable) async {
+                await context.read<TransactionProvider>().addTransaction(
+                  insertable,
+                );
+
+                setState(() {
+                  Navigator.pop(context);
+                  _selectedIndex = 1;
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Transaction Added Successfully'),
+                    ),
+                  );
+                });
+              },
+            ),
           ),
         );
       },
