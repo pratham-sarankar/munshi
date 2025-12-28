@@ -5,42 +5,42 @@
     
     
       
-      <testcase classname="fastlane.lanes" name="0: default_platform" time="0.000258">
+      <testcase classname="fastlane.lanes" name="0: default_platform" time="0.000186">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="1: create_keychain" time="4.456672">
+      <testcase classname="fastlane.lanes" name="1: create_keychain" time="4.134417">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="2: match" time="4.04772">
+      <testcase classname="fastlane.lanes" name="2: match" time="8.07426">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="3: build_app" time="112.82743">
+      <testcase classname="fastlane.lanes" name="3: build_app" time="79.112163">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="4: app_store_connect_api_key" time="0.013821">
+      <testcase classname="fastlane.lanes" name="4: app_store_connect_api_key" time="0.024196">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="5: upload_to_testflight" time="458.363729">
+      <testcase classname="fastlane.lanes" name="5: upload_to_testflight" time="417.959037">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="6: delete_keychain" time="0.042033">
+      <testcase classname="fastlane.lanes" name="6: delete_keychain" time="0.027409">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="7: echo &apos;✅ Successfully uploaded build to TestFlight via GitHub Actions!&apos;" time="0.007224">
+      <testcase classname="fastlane.lanes" name="7: echo &apos;✅ Successfully uploaded build to TestFlight via GitHub Actions!&apos;" time="0.00573">
         
       </testcase>
     

@@ -6,7 +6,6 @@ type("appstore") # The default type, can be: appstore, adhoc, enterprise or deve
 
 app_identifier ([
   "sarankar.app.munshi",
-  "sarankar.app.munshi.ShareExtension"
 ])
 
 username("pratham@sarankar.com") # Your Apple Developer Portal username

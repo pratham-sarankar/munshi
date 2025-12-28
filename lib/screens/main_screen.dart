@@ -64,6 +64,7 @@ class _MainScreenState extends State<MainScreen> {
                   onSubmit: (transaction) async {
                     final provider = context.read<TransactionProvider>();
                     await provider.addTransaction(transaction);
+                    if (!context.mounted) return;
                   },
                 );
               },

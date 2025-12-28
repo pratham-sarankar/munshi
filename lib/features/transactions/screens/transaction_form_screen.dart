@@ -217,6 +217,7 @@ class _TransactionFormScreenState extends State<TransactionFormScreen>
             );
 
       widget.onSubmit(transaction);
+      Navigator.pop(context);
     } else {
       // Handle validation errors
       ScaffoldMessenger.of(context).showSnackBar(

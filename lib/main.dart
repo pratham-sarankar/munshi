@@ -87,7 +87,7 @@ class Munshi extends StatelessWidget {
         return MaterialApp(
           title: 'Munshi',
           debugShowCheckedModeBanner: false,
-          theme: theme.lightHighContrast(),
+          theme: theme.light(),
           darkTheme: theme.dark(),
           themeMode: themeProvider.themeMode,
           home: const MainScreen(), // Main navigation and dashboard

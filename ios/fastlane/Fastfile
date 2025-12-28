@@ -41,7 +41,6 @@ platform :ios do
       export_options: {
         provisioningProfiles: {
           "sarankar.app.munshi" => "match AppStore sarankar.app.munshi",
-          "sarankar.app.munshi.ShareExtension" => "match AppStore sarankar.app.munshi.ShareExtension"
         }
       },
       skip_build_archive: false
