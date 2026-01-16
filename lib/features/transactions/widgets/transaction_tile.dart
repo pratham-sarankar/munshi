@@ -8,7 +8,9 @@ import 'package:munshi/features/transactions/models/transaction_with_category.da
 
 class TransactionTile extends StatefulWidget {
   const TransactionTile({
-    required this.onTap, required this.transaction, super.key,
+    required this.onTap,
+    required this.transaction,
+    super.key,
     this.onDelete,
     this.onEdit,
     this.onCategoryTap,
@@ -90,7 +92,11 @@ class _TransactionTileState extends State<TransactionTile>
             ),
           ),
         ),
-        title: Text(widget.transaction.categoryName),
+        title: Text(
+          widget.transaction.note ?? widget.transaction.categoryName,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+        ),
         subtitle: Text(
           DateFormat('d MMM • h:mm a').format(widget.transaction.date),
         ),

@@ -110,6 +110,26 @@ class _TransactionFormScreenState extends State<TransactionFormScreen>
                   ]),
                 ),
                 const SizedBox(height: 20),
+                const Text('Note'),
+                const SizedBox(height: 5),
+                FormBuilderTextField(
+                  name: 'note',
+                  initialValue: widget.transaction?.note,
+                  maxLines: 3,
+                  decoration: InputDecoration(
+                    prefixIcon: const Icon(Iconsax.note_outline),
+                    hintText: _tabController.index == 0
+                        ? 'What was this for? (Tea, Auto, Lunch, Petrol)'
+                        : 'Where did this come from? (Salary, Client, Refund)',
+                    alignLabelWithHint: true,
+                  ),
+                  validator: FormBuilderValidators.maxLength(
+                    200,
+                    errorText: 'Note too long',
+                    checkNullOrEmpty: false,
+                  ),
+                ),
+                const SizedBox(height: 20),
                 Text(
                   _tabController.index == 0
                       ? 'Expense Category'
@@ -149,24 +169,6 @@ class _TransactionFormScreenState extends State<TransactionFormScreen>
                   ),
                   lastDate: DateTime.now().add(const Duration(days: 365)),
                 ),
-                const SizedBox(height: 20),
-                const Text('Description (Optional)'),
-                const SizedBox(height: 5),
-                FormBuilderTextField(
-                  name: 'description',
-                  initialValue: widget.transaction?.note,
-                  maxLines: 3,
-                  decoration: const InputDecoration(
-                    prefixIcon: Icon(Iconsax.note_outline),
-                    hintText: 'Add a description...',
-                    alignLabelWithHint: true,
-                  ),
-                  validator: FormBuilderValidators.maxLength(
-                    200,
-                    errorText: 'Description too long',
-                    checkNullOrEmpty: false,
-                  ),
-                ),
                 const SizedBox(height: 80), // Extra space to account for FAB
               ],
             ),
@@ -189,7 +191,7 @@ class _TransactionFormScreenState extends State<TransactionFormScreen>
                   : formData['income_category'])
               as TransactionCategory?;
       final datetime = formData['datetime'] as DateTime;
-      final description = formData['description'] as String?;
+      final description = formData['note'] as String?;
 
       final transaction = widget.transaction != null
           ? TransactionsCompanion(
