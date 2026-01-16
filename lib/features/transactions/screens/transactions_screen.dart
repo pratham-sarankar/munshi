@@ -23,6 +23,7 @@ class TransactionsScreen extends StatefulWidget {
 
 class _TransactionsScreenState extends State<TransactionsScreen>
     with TickerProviderStateMixin {
+  final ScrollController _scrollController = ScrollController();
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
@@ -144,6 +145,7 @@ class _TransactionsScreenState extends State<TransactionsScreen>
               // Transaction List
               Expanded(
                 child: GroupedTransactionList(
+                  controller: _scrollController,
                   onTap: (transaction) {
                     _showTransactionDetails(transaction, colorScheme);
                   },
