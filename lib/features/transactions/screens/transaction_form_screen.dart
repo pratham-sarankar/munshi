@@ -119,8 +119,8 @@ class _TransactionFormScreenState extends State<TransactionFormScreen>
                   decoration: InputDecoration(
                     prefixIcon: const Icon(Iconsax.note_outline),
                     hintText: _tabController.index == 0
-                        ? 'Add a note about this expense...'
-                        : 'Add a note about this income...',
+                        ? 'What was this for? (Tea, Auto, Lunch, Petrol)'
+                        : 'Where did this come from? (Salary, Client, Refund)',
                     alignLabelWithHint: true,
                   ),
                   validator: FormBuilderValidators.maxLength(
