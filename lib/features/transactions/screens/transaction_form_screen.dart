@@ -1,5 +1,6 @@
 import 'package:drift/drift.dart' as drift;
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:icons_plus/icons_plus.dart';
@@ -88,6 +89,7 @@ class _TransactionFormScreenState extends State<TransactionFormScreen>
                 FormBuilderTextField(
                   name: 'amount',
                   autofocus: true,
+                  textInputAction: TextInputAction.next,
                   initialValue: widget.transaction?.amount.toString(),
                   keyboardType: const TextInputType.numberWithOptions(
                     decimal: true,
