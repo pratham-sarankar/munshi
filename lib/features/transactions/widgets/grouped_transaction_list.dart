@@ -74,9 +74,16 @@ class _GroupedTransactionListState extends State<GroupedTransactionList>
             child: widget.groupedTransactions.isEmpty
                 ? _buildEmptyState(colorScheme)
                 : SlidableAutoCloseBehavior(
-                    child: ListView(
+                    child: Scrollbar(
                       controller: widget.controller,
-                      children: _buildGroupedTransactionWidgets(),
+                      interactive: true,
+                      thumbVisibility: false,
+                      trackVisibility: false,
+                      radius: const Radius.circular(4),
+                      child: ListView(
+                        controller: widget.controller,
+                        children: _buildGroupedTransactionWidgets(),
+                      ),
                     ),
                   ),
           ),
