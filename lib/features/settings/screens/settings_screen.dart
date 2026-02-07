@@ -3,6 +3,7 @@ import 'dart:io' show Platform;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:icons_plus/icons_plus.dart';
+import 'package:munshi/core/constants/app_constants.dart';
 import 'package:munshi/core/models/period_type.dart';
 import 'package:munshi/features/settings/screens/currency_selection_screen.dart';
 import 'package:munshi/features/settings/widgets/app_version_widget.dart';
@@ -29,8 +30,6 @@ class _SettingsScreenState extends State<SettingsScreen>
 
   // Settings state
   bool _dailyReport = true;
-
-  final List<String> _themeOptions = ['Light', 'Dark', 'Auto'];
 
   @override
   void initState() {
@@ -76,12 +75,6 @@ class _SettingsScreenState extends State<SettingsScreen>
       // Get platform information
       final platform = Platform.isIOS ? 'iOS' : 'Android';
 
-      // Get support email from environment
-      const supportEmail = String.fromEnvironment(
-        'SUPPORT_EMAIL',
-        defaultValue: 'support@sarankar.com',
-      );
-
       // Prepare email content
       final subject = Uri.encodeComponent('Bug Report - $appName');
       final body = Uri.encodeComponent('''
@@ -118,7 +111,7 @@ Best regards,
 ''');
 
       final emailUri = Uri.parse(
-        'mailto:$supportEmail?subject=$subject&body=$body',
+        'mailto:${AppConfig.supportEmail}?subject=$subject&body=$body',
       );
       await launchUrl(emailUri);
       return;
@@ -144,12 +137,6 @@ Best regards,
 
       // Get platform information
       final platform = Platform.isIOS ? 'iOS' : 'Android';
-
-      // Get support email from environment
-      const supportEmail = String.fromEnvironment(
-        'SUPPORT_EMAIL',
-        defaultValue: 'support@sarankar.com',
-      );
 
       // Prepare email content
       final subject = Uri.encodeComponent('Feedback - $appName');
@@ -188,7 +175,7 @@ Best regards,
 ''');
 
       final emailUri = Uri.parse(
-        'mailto:$supportEmail?subject=$subject&body=$body',
+        'mailto:${AppConfig.supportEmail}?subject=$subject&body=$body',
       );
 
       await launchUrl(emailUri);
@@ -318,7 +305,7 @@ Best regards,
                                     alpha: 0.6,
                                   ),
                                 ),
-                                items: _themeOptions
+                                items: ThemeOptions.modes
                                     .map<DropdownMenuItem<String>>((
                                       String option,
                                     ) {
@@ -391,15 +378,10 @@ Best regards,
                           onTap: () {
                             HapticFeedback.lightImpact();
                             // Navigate to privacy policy
-                            const privacyPolicyUrl = String.fromEnvironment(
-                              'PRIVACY_POLICY_URL',
-                              defaultValue:
-                                  'https://munshi.sarankar.com/privacy.html',
-                            );
                             Navigator.of(context).push(
                               MaterialPageRoute<void>(
                                 builder: (context) => const WebViewScreen(
-                                  url: privacyPolicyUrl,
+                                  url: AppConfig.privacyPolicyUrl,
                                   title: 'Privacy Policy',
                                 ),
                               ),

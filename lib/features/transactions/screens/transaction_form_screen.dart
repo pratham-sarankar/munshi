@@ -44,6 +44,12 @@ class _TransactionFormScreenState extends State<TransactionFormScreen>
   }
 
   @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -186,7 +192,15 @@ class _TransactionFormScreenState extends State<TransactionFormScreen>
       final type = _tabController.index == 0
           ? TransactionType.expense
           : TransactionType.income;
-      final amount = double.parse(formData['amount'] as String);
+      // Safely parse amount with null check
+      final amountString = formData['amount'] as String?;
+      if (amountString == null || amountString.isEmpty) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Amount is required.')),
+        );
+        return;
+      }
+      final amount = double.parse(amountString);
       final category =
           (type == TransactionType.expense
                   ? formData['expense_category']

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:icons_plus/icons_plus.dart';
 import 'package:intl/intl.dart';
+import 'package:munshi/core/constants/app_constants.dart';
 import 'package:munshi/core/database/app_database.dart';
 import 'package:munshi/features/categories/providers/category_provider.dart';
 import 'package:munshi/features/transactions/models/transaction_filter.dart';
@@ -31,14 +32,6 @@ class _TransactionFilterBottomSheetState
   final _minAmountController = TextEditingController();
   final _maxAmountController = TextEditingController();
 
-  final List<String> _timeframeOptions = [
-    'Today',
-    'This Week',
-    'This Month',
-    'Last Month',
-    'This Year',
-  ];
-
   @override
   void initState() {
     super.initState();
@@ -53,13 +46,7 @@ class _TransactionFilterBottomSheetState
       _maxAmountController.text = _workingFilter.maxAmount!.toStringAsFixed(2);
     }
 
-    // Add listeners to update UI when text changes
-    _minAmountController.addListener(() {
-      setState(() {});
-    });
-    _maxAmountController.addListener(() {
-      setState(() {});
-    });
+    // Removed inefficient listeners - use ValueListenableBuilder instead
   }
 
   @override
@@ -224,7 +211,7 @@ class _TransactionFilterBottomSheetState
           Wrap(
             spacing: 8,
             runSpacing: 8,
-            children: _timeframeOptions.map((timeframe) {
+            children: TimeframeOptions.options.map((timeframe) {
               final isSelected =
                   _workingFilter.datePeriod?.displayName ==
                   TransactionFilter.fromTimeframe(
@@ -375,48 +362,60 @@ class _TransactionFilterBottomSheetState
             ),
           ),
           const SizedBox(height: 16),
-          TextField(
-            controller: _minAmountController,
-            keyboardType: const TextInputType.numberWithOptions(decimal: true),
-            inputFormatters: [
-              FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d{0,2}')),
-            ],
-            decoration: InputDecoration(
-              labelText: 'Minimum Amount',
-              prefixIcon: const Icon(Iconsax.wallet_1_outline),
-              prefixText: '$currencySymbol ',
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
-              suffixIcon: _minAmountController.text.isNotEmpty
-                  ? IconButton(
-                      onPressed: _minAmountController.clear,
-                      icon: const Icon(Icons.clear, size: 20),
-                    )
-                  : null,
-            ),
+          ValueListenableBuilder<TextEditingValue>(
+            valueListenable: _minAmountController,
+            builder: (context, value, child) {
+              return TextField(
+                controller: _minAmountController,
+                keyboardType:
+                    const TextInputType.numberWithOptions(decimal: true),
+                inputFormatters: [
+                  FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d{0,2}')),
+                ],
+                decoration: InputDecoration(
+                  labelText: 'Minimum Amount',
+                  prefixIcon: const Icon(Iconsax.wallet_1_outline),
+                  prefixText: '$currencySymbol ',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  suffixIcon: value.text.isNotEmpty
+                      ? IconButton(
+                          onPressed: _minAmountController.clear,
+                          icon: const Icon(Icons.clear, size: 20),
+                        )
+                      : null,
+                ),
+              );
+            },
           ),
           const SizedBox(height: 16),
-          TextField(
-            controller: _maxAmountController,
-            keyboardType: const TextInputType.numberWithOptions(decimal: true),
-            inputFormatters: [
-              FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d{0,2}')),
-            ],
-            decoration: InputDecoration(
-              labelText: 'Maximum Amount',
-              prefixIcon: const Icon(Iconsax.wallet_1_outline),
-              prefixText: '$currencySymbol ',
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
-              suffixIcon: _maxAmountController.text.isNotEmpty
-                  ? IconButton(
-                      onPressed: _maxAmountController.clear,
-                      icon: const Icon(Icons.clear, size: 20),
-                    )
-                  : null,
-            ),
+          ValueListenableBuilder<TextEditingValue>(
+            valueListenable: _maxAmountController,
+            builder: (context, value, child) {
+              return TextField(
+                controller: _maxAmountController,
+                keyboardType:
+                    const TextInputType.numberWithOptions(decimal: true),
+                inputFormatters: [
+                  FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d{0,2}')),
+                ],
+                decoration: InputDecoration(
+                  labelText: 'Maximum Amount',
+                  prefixIcon: const Icon(Iconsax.wallet_1_outline),
+                  prefixText: '$currencySymbol ',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  suffixIcon: value.text.isNotEmpty
+                      ? IconButton(
+                          onPressed: _maxAmountController.clear,
+                          icon: const Icon(Icons.clear, size: 20),
+                        )
+                      : null,
+                ),
+              );
+            },
           ),
         ],
       ),

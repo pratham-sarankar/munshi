@@ -72,29 +72,32 @@ class _DashboardCategoriesWidgetState extends State<DashboardCategoriesWidget>
   }
 
   Widget _buildCategoriesList(DashboardProvider dashboardProvider) {
-    return ListView.separated(
-      shrinkWrap: true,
-      padding: const EdgeInsets.only(top: 5),
-      physics: const NeverScrollableScrollPhysics(),
-      itemCount: dashboardProvider.categorySpending!.keys.length,
-      separatorBuilder: (context, index) => const SizedBox(height: 8),
-      itemBuilder: (context, index) {
-        final category = dashboardProvider.categorySpending!.keys.elementAt(
-          index,
-        );
-        final spendingAmount = dashboardProvider.getCategorySpending(category);
-        final transactionCount = dashboardProvider.getCategoryTransactionCount(
-          category,
-        );
+    // Use Column instead of ListView for better performance when wrapped in ScrollView
+    final categories = dashboardProvider.categorySpending!.keys.toList();
+    return Column(
+      children: [
+        const SizedBox(height: 5),
+        for (var index = 0; index < categories.length; index++) ...[
+          Builder(
+            builder: (context) {
+              final category = categories[index];
+              final spendingAmount =
+                  dashboardProvider.getCategorySpending(category);
+              final transactionCount =
+                  dashboardProvider.getCategoryTransactionCount(category);
 
-        return CategoryTile(
-          onTap: () {},
-          category: category,
-          spendingAmount: spendingAmount,
-          transactionCount: transactionCount,
-          animationDelay: Duration(milliseconds: 400 + (index * 120)),
-        );
-      },
+              return CategoryTile(
+                onTap: () {},
+                category: category,
+                spendingAmount: spendingAmount,
+                transactionCount: transactionCount,
+                animationDelay: Duration(milliseconds: 400 + (index * 120)),
+              );
+            },
+          ),
+          if (index < categories.length - 1) const SizedBox(height: 8),
+        ],
+      ],
     );
   }
 

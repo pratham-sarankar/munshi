@@ -81,9 +81,6 @@ class DashboardProvider extends ChangeNotifier {
     _error = null;
     notifyListeners();
 
-    // Add 300ms delay for smoother UX
-    await Future<void>.delayed(const Duration(milliseconds: 300));
-
     try {
       // Load both summary data and category spending in parallel
       final results = await Future.wait([
@@ -91,10 +88,16 @@ class DashboardProvider extends ChangeNotifier {
         _dashboardDataService.getSpendingByCategoryWithCount(_selectedPeriod),
       ]);
 
-      _summaryData = results[0] as PeriodSummaryData;
-      _categorySpending =
-          results[1] as Map<TransactionCategory?, CategorySpendingData>;
-      _error = null;
+      // Safely cast results with type validation
+      if (results[0] is PeriodSummaryData &&
+          results[1] is Map<TransactionCategory?, CategorySpendingData>) {
+        _summaryData = results[0] as PeriodSummaryData;
+        _categorySpending =
+            results[1] as Map<TransactionCategory?, CategorySpendingData>;
+        _error = null;
+      } else {
+        throw Exception('Invalid data types returned from dashboard service');
+      }
     } catch (e) {
       _error = e.toString();
       _summaryData = PeriodSummaryData.empty(_selectedPeriod);
