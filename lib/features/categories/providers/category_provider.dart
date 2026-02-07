@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:munshi/core/database/app_database.dart';
 import 'package:munshi/core/database/daos/category_dao.dart';
 import 'package:munshi/core/service_locator.dart';
+import 'package:munshi/core/utils/error_handler.dart';
 import 'package:munshi/features/transactions/models/transaction_type.dart';
 
 class CategoryProvider extends ChangeNotifier {
@@ -26,8 +27,9 @@ class CategoryProvider extends ChangeNotifier {
     try {
       _expenseCategories = await _categoriesDao.getExpenseCategories();
       _incomeCategories = await _categoriesDao.getIncomeCategories();
-    } catch (e) {
-      debugPrint('Error loading categories: $e');
+    } catch (e, stackTrace) {
+      // Use centralized error handler
+      ErrorHandler.logError('Error loading categories', e, stackTrace);
     }
 
     _isLoading = false;

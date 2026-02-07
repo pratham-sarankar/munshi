@@ -4,6 +4,7 @@ import 'package:munshi/core/database/app_database.dart';
 import 'package:munshi/core/extensions/currency_extensions.dart';
 import 'package:munshi/core/models/date_period.dart';
 import 'package:munshi/core/models/period_type.dart';
+import 'package:munshi/core/utils/error_handler.dart';
 import 'package:munshi/features/dashboard/models/category_spending_data.dart';
 import 'package:munshi/features/dashboard/services/dashboard_data_service.dart';
 import 'package:munshi/providers/currency_provider.dart';
@@ -98,8 +99,13 @@ class DashboardProvider extends ChangeNotifier {
       } else {
         throw Exception('Invalid data types returned from dashboard service');
       }
-    } catch (e) {
-      _error = e.toString();
+    } catch (e, stackTrace) {
+      // Use centralized error handler for consistent error management
+      _error = ErrorHandler.handleError(
+        e,
+        stackTrace,
+        'Failed to load dashboard data',
+      );
       _summaryData = PeriodSummaryData.empty(_selectedPeriod);
       _categorySpending = {};
     } finally {
