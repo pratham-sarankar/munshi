@@ -27,6 +27,7 @@ class TransactionProvider extends ChangeNotifier {
   int _offset = 0;
   // Token used to cancel superseded page loads after a refresh
   int _loadToken = 0;
+  Object? _loadError;
 
   /// Set the callback to be called when transactions change
   set onTransactionChanged(VoidCallback? callback) {
@@ -41,6 +42,9 @@ class TransactionProvider extends ChangeNotifier {
 
   /// Whether a page load is in progress
   bool get isLoadingMore => _isLoadingMore;
+
+  /// The last error that occurred during a page load, or null if none.
+  Object? get loadError => _loadError;
 
   /// Transactions grouped by date from the currently loaded pages
   List<GroupedTransactions> get groupedTransactions {
@@ -84,6 +88,7 @@ class TransactionProvider extends ChangeNotifier {
     _transactions = [];
     _hasMore = true;
     _isLoadingMore = false;
+    _loadError = null;
     await loadNextPage();
   }
 
@@ -91,6 +96,7 @@ class TransactionProvider extends ChangeNotifier {
   Future<void> loadNextPage() async {
     if (_isLoadingMore || !_hasMore) return;
     _isLoadingMore = true;
+    _loadError = null;
     notifyListeners();
 
     final token = _loadToken;
@@ -114,6 +120,10 @@ class TransactionProvider extends ChangeNotifier {
       _transactions.addAll(result);
       _hasMore = result.length == pageSize;
       _offset += result.length;
+    } on Exception catch (e) {
+      if (token != _loadToken) return;
+      _loadError = e;
+      debugPrint('TransactionProvider: failed to load page: $e');
     } finally {
       if (token == _loadToken) {
         _isLoadingMore = false;
