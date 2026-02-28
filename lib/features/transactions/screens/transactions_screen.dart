@@ -2,7 +2,6 @@ import 'package:drift/drift.dart' as drift;
 import 'package:flutter/material.dart';
 import 'package:icons_plus/icons_plus.dart';
 import 'package:munshi/features/categories/providers/category_provider.dart';
-import 'package:munshi/features/transactions/models/grouped_transactions.dart';
 import 'package:munshi/features/transactions/models/transaction_filter.dart';
 import 'package:munshi/features/transactions/models/transaction_with_category.dart';
 import 'package:munshi/features/transactions/providers/transaction_provider.dart';
@@ -21,21 +20,47 @@ class TransactionsScreen extends StatefulWidget {
   State<TransactionsScreen> createState() => _TransactionsScreenState();
 }
 
-class _TransactionsScreenState extends State<TransactionsScreen>
-    with TickerProviderStateMixin {
+class _TransactionsScreenState extends State<TransactionsScreen> {
   final ScrollController _scrollController = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController.addListener(_onScroll);
+  }
+
+  @override
+  void dispose() {
+    _scrollController.removeListener(_onScroll);
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void _onScroll() {
+    if (!_scrollController.hasClients) return;
+    final position = _scrollController.position;
+    // Trigger load when within 200px of the bottom
+    if (position.pixels >= position.maxScrollExtent - 200) {
+      final provider = Provider.of<TransactionProvider>(
+        context,
+        listen: false,
+      );
+      if (!provider.isLoadingMore && provider.hasMore) {
+        provider.loadNextPage();
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-    final transactionProvider = Provider.of<TransactionProvider>(context);
     // Watch CurrencyProvider to rebuild entire screen when currency changes.
     // This is necessary because currency formatting occurs throughout the widget tree
     // in transaction tiles, filter displays, and detail modals.
     context.watch<CurrencyProvider>();
-    return StreamBuilder<List<GroupedTransactions>>(
-      stream: transactionProvider.watchGroupedTransactions,
-      builder: (context, snapshot) {
-        final groupedTransactions = snapshot.data ?? [];
+    return Consumer<TransactionProvider>(
+      builder: (context, transactionProvider, child) {
+        final groupedTransactions = transactionProvider.groupedTransactions;
         return Scaffold(
           backgroundColor: colorScheme.surface,
           appBar: AppBar(
@@ -89,58 +114,53 @@ class _TransactionsScreenState extends State<TransactionsScreen>
           body: Column(
             children: [
               // Active Filters Indicator
-              Consumer<TransactionProvider>(
-                builder: (context, provider, child) {
-                  if (!provider.currentFilter.hasActiveFilters) {
-                    return const SizedBox.shrink();
-                  }
-
-                  return Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
-                    color: colorScheme.primaryContainer.withValues(alpha: 0.3),
-                    child: Row(
-                      children: [
-                        Icon(
-                          Iconsax.filter_tick_outline,
-                          size: 16,
-                          color: colorScheme.primary,
+              if (transactionProvider.currentFilter.hasActiveFilters)
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
+                  color: colorScheme.primaryContainer.withValues(alpha: 0.3),
+                  child: Row(
+                    children: [
+                      Icon(
+                        Iconsax.filter_tick_outline,
+                        size: 16,
+                        color: colorScheme.primary,
+                      ),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: Text(
+                          _getActiveFiltersText(
+                            transactionProvider.currentFilter,
+                          ),
+                          style: Theme.of(context).textTheme.bodySmall
+                              ?.copyWith(
+                                color: colorScheme.primary,
+                                fontWeight: FontWeight.w500,
+                              ),
                         ),
-                        const SizedBox(width: 8),
-                        Expanded(
-                          child: Text(
-                            _getActiveFiltersText(provider.currentFilter),
-                            style: Theme.of(context).textTheme.bodySmall
-                                ?.copyWith(
-                                  color: colorScheme.primary,
-                                  fontWeight: FontWeight.w500,
-                                ),
+                      ),
+                      TextButton(
+                        onPressed: () => transactionProvider.clearFilters(),
+                        style: TextButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 12,
+                            vertical: 4,
+                          ),
+                          minimumSize: Size.zero,
+                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                        ),
+                        child: Text(
+                          'Clear',
+                          style: TextStyle(
+                            color: colorScheme.primary,
+                            fontSize: 12,
+                            fontWeight: FontWeight.w600,
                           ),
                         ),
-                        TextButton(
-                          onPressed: () => provider.clearFilters(),
-                          style: TextButton.styleFrom(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 12,
-                              vertical: 4,
-                            ),
-                            minimumSize: Size.zero,
-                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                          ),
-                          child: Text(
-                            'Clear',
-                            style: TextStyle(
-                              color: colorScheme.primary,
-                              fontSize: 12,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  );
-                },
-              ),
+                      ),
+                    ],
+                  ),
+                ),
 
               // Transaction List
               Expanded(
@@ -169,6 +189,7 @@ class _TransactionsScreenState extends State<TransactionsScreen>
                     );
                   },
                   groupedTransactions: groupedTransactions,
+                  isLoadingMore: transactionProvider.isLoadingMore,
                 ),
               ),
             ],

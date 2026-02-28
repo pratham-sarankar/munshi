@@ -14,6 +14,7 @@ class GroupedTransactionList extends StatefulWidget {
     this.onEdit,
     this.onCategoryTap,
     this.controller,
+    this.isLoadingMore = false,
   });
   // Indent for dividers to align with ListTile title text
   // Accounts for leading widget (56dp) + horizontal padding (16dp)
@@ -25,6 +26,7 @@ class GroupedTransactionList extends StatefulWidget {
   final Future<void> Function(TransactionWithCategory transaction)? onEdit;
   final void Function(TransactionWithCategory)? onCategoryTap;
   final ScrollController? controller;
+  final bool isLoadingMore;
 
   @override
   State<GroupedTransactionList> createState() => _GroupedTransactionListState();
@@ -71,7 +73,7 @@ class _GroupedTransactionListState extends State<GroupedTransactionList>
           opacity: _fadeAnimation,
           child: Transform.translate(
             offset: Offset(0, _slideAnimation.value),
-            child: widget.groupedTransactions.isEmpty
+            child: widget.groupedTransactions.isEmpty && !widget.isLoadingMore
                 ? _buildEmptyState(colorScheme)
                 : SlidableAutoCloseBehavior(
                     child: Scrollbar(
@@ -82,7 +84,16 @@ class _GroupedTransactionListState extends State<GroupedTransactionList>
                       radius: const Radius.circular(4),
                       child: ListView(
                         controller: widget.controller,
-                        children: _buildGroupedTransactionWidgets(),
+                        children: [
+                          ..._buildGroupedTransactionWidgets(),
+                          if (widget.isLoadingMore)
+                            const Padding(
+                              padding: EdgeInsets.symmetric(vertical: 16),
+                              child: Center(
+                                child: CircularProgressIndicator.adaptive(),
+                              ),
+                            ),
+                        ],
                       ),
                     ),
                   ),

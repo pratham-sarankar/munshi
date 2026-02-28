@@ -174,6 +174,83 @@ class TransactionsDao extends DatabaseAccessor<AppDatabase>
     });
   }
 
+  /// Get a page of transactions with all filtering done in SQL.
+  ///
+  /// All filters are applied in SQL — nothing is processed on the Dart side.
+  /// Use [limit] and [offset] to paginate through results.
+  Future<List<TransactionWithCategory>> getTransactionsPaged({
+    required int limit,
+    required int offset,
+    DateTime? startDate,
+    DateTime? endDate,
+    Set<TransactionType>? types,
+    double? minAmount,
+    double? maxAmount,
+    Set<int>? categoryIds,
+  }) async {
+    final query = select(transactions).join([
+      leftOuterJoin(
+        transactionCategories,
+        transactions.categoryId.equalsExp(transactionCategories.id),
+      ),
+    ]);
+
+    final conditions = <Expression<bool>>[];
+
+    if (startDate != null) {
+      conditions.add(transactions.date.isBiggerOrEqualValue(startDate));
+    }
+    if (endDate != null) {
+      final endOfDay = DateTime(
+        endDate.year,
+        endDate.month,
+        endDate.day,
+        23,
+        59,
+        59,
+        999,
+      );
+      conditions.add(transactions.date.isSmallerOrEqualValue(endOfDay));
+    }
+    if (types != null && types.isNotEmpty) {
+      final typeValues =
+          types
+              .map((t) => const TransactionTypeConverter().toSql(t))
+              .toList();
+      conditions.add(transactions.type.isIn(typeValues));
+    }
+    if (minAmount != null) {
+      conditions.add(transactions.amount.isBiggerOrEqualValue(minAmount));
+    }
+    if (maxAmount != null) {
+      conditions.add(transactions.amount.isSmallerOrEqualValue(maxAmount));
+    }
+    if (categoryIds != null && categoryIds.isNotEmpty) {
+      conditions.add(transactions.categoryId.isIn(categoryIds.toList()));
+    }
+
+    if (conditions.isNotEmpty) {
+      query.where(conditions.reduce((a, b) => a & b));
+    }
+
+    query
+      ..orderBy([
+        OrderingTerm.desc(transactions.date),
+        OrderingTerm.desc(transactions.id),
+      ])
+      ..limit(limit, offset: offset);
+
+    final result = await query.get();
+    return result.map((row) {
+      final transaction = row.readTable(transactions);
+      final category = row.readTableOrNull(transactionCategories);
+      return TransactionWithCategory(
+        transaction: transaction,
+        category: category,
+      );
+    }).toList();
+  }
+
   /// Alternative: More efficient SQL-based calculation (requires custom SQL)
   Future<PeriodSummaryData> getPeriodSummarySql(DatePeriod period) async {
     final startDate = period.startDate;
