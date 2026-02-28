@@ -234,7 +234,10 @@ class TransactionsDao extends DatabaseAccessor<AppDatabase>
     }
 
     query
-      ..orderBy([OrderingTerm.desc(transactions.date)])
+      ..orderBy([
+        OrderingTerm.desc(transactions.date),
+        OrderingTerm.desc(transactions.id),
+      ])
       ..limit(limit, offset: offset);
 
     final result = await query.get();
