@@ -1,14 +1,17 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:munshi/core/database/daos/transaction_dao.dart';
 import 'package:munshi/core/service_locator.dart';
 import 'package:munshi/core/theme.dart';
 import 'package:munshi/features/categories/providers/category_provider.dart';
 import 'package:munshi/features/dashboard/providers/dashboard_provider.dart';
 import 'package:munshi/features/dashboard/services/dashboard_data_service.dart';
-import 'package:munshi/features/transactions/providers/transaction_provider.dart';
+import 'package:munshi/features/transactions/bloc/transaction_bloc.dart';
+import 'package:munshi/features/transactions/bloc/transaction_event.dart';
+import 'package:munshi/features/transactions/domain/usecases/get_transactions_use_case.dart';
+import 'package:munshi/features/transactions/domain/usecases/transaction_mutation_use_cases.dart';
 import 'package:munshi/providers/currency_provider.dart';
 import 'package:munshi/providers/period_provider.dart';
 import 'package:munshi/providers/theme_provider.dart';
@@ -54,13 +57,18 @@ void main() async {
             locator<CurrencyProvider>(),
           ),
         ),
-        ChangeNotifierProxyProvider<DashboardProvider, TransactionProvider>(
-          create: (_) => TransactionProvider(locator<TransactionsDao>()),
-          update: (_, dashboardProvider, transactionProvider) =>
-              transactionProvider!
-                ..onTransactionChanged = dashboardProvider.refresh,
-        ),
         ChangeNotifierProvider(create: (_) => CategoryProvider()),
+        // BLoC-based transaction management (clean architecture).
+        BlocProvider<TransactionBloc>(
+          create: (context) => TransactionBloc(
+            getTransactions: locator<GetTransactionsUseCase>(),
+            addTransaction: locator<AddTransactionUseCase>(),
+            updateTransaction: locator<UpdateTransactionUseCase>(),
+            deleteTransaction: locator<DeleteTransactionUseCase>(),
+            onTransactionChanged:
+                context.read<DashboardProvider>().refresh,
+          )..add(const TransactionLoadRequested()),
+        ),
       ],
       child: const Munshi(),
     ),

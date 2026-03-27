@@ -1,10 +1,13 @@
 import 'package:drift/drift.dart' as drift;
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:icons_plus/icons_plus.dart';
 import 'package:munshi/features/categories/providers/category_provider.dart';
+import 'package:munshi/features/transactions/bloc/transaction_bloc.dart';
+import 'package:munshi/features/transactions/bloc/transaction_event.dart';
+import 'package:munshi/features/transactions/bloc/transaction_state.dart';
 import 'package:munshi/features/transactions/models/transaction_filter.dart';
 import 'package:munshi/features/transactions/models/transaction_with_category.dart';
-import 'package:munshi/features/transactions/providers/transaction_provider.dart';
 import 'package:munshi/features/transactions/screens/transaction_form_screen.dart';
 import 'package:munshi/features/transactions/widgets/category_selection_bottom_sheet.dart';
 import 'package:munshi/features/transactions/widgets/grouped_transaction_list.dart';
@@ -41,12 +44,10 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
     final position = _scrollController.position;
     // Trigger load when within 200px of the bottom
     if (position.pixels >= position.maxScrollExtent - 200) {
-      final provider = Provider.of<TransactionProvider>(
-        context,
-        listen: false,
-      );
-      if (!provider.isLoadingMore && provider.hasMore) {
-        provider.loadNextPage();
+      final bloc = context.read<TransactionBloc>();
+      final state = bloc.state;
+      if (state.status != TransactionStatus.loadingMore && state.hasMore) {
+        bloc.add(const TransactionNextPageRequested());
       }
     }
   }
@@ -58,9 +59,10 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
     // This is necessary because currency formatting occurs throughout the widget tree
     // in transaction tiles, filter displays, and detail modals.
     context.watch<CurrencyProvider>();
-    return Consumer<TransactionProvider>(
-      builder: (context, transactionProvider, child) {
-        final groupedTransactions = transactionProvider.groupedTransactions;
+    return BlocBuilder<TransactionBloc, TransactionState>(
+      builder: (context, state) {
+        final groupedTransactions = state.groupedTransactions;
+        final isLoadingMore = state.status == TransactionStatus.loadingMore;
         return Scaffold(
           backgroundColor: colorScheme.surface,
           appBar: AppBar(
@@ -77,11 +79,11 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
                 children: [
                   IconButton(
                     onPressed: () =>
-                        _showFilterBottomSheet(context, transactionProvider),
+                        _showFilterBottomSheet(context, state.filter),
                     icon: const Icon(Iconsax.filter_outline),
                     tooltip: 'Filter transactions',
                   ),
-                  if (transactionProvider.currentFilter.hasActiveFilters)
+                  if (state.filter.hasActiveFilters)
                     Positioned(
                       right: 8,
                       top: 8,
@@ -96,7 +98,7 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
                           minHeight: 16,
                         ),
                         child: Text(
-                          '${transactionProvider.currentFilter.activeFilterCount}',
+                          '${state.filter.activeFilterCount}',
                           style: TextStyle(
                             color: colorScheme.onPrimary,
                             fontSize: 10,
@@ -114,7 +116,7 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
           body: Column(
             children: [
               // Active Filters Indicator
-              if (transactionProvider.currentFilter.hasActiveFilters)
+              if (state.filter.hasActiveFilters)
                 Container(
                   width: double.infinity,
                   padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
@@ -129,9 +131,7 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
                       const SizedBox(width: 8),
                       Expanded(
                         child: Text(
-                          _getActiveFiltersText(
-                            transactionProvider.currentFilter,
-                          ),
+                          _getActiveFiltersText(state.filter),
                           style: Theme.of(context).textTheme.bodySmall
                               ?.copyWith(
                                 color: colorScheme.primary,
@@ -140,7 +140,9 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
                         ),
                       ),
                       TextButton(
-                        onPressed: () => transactionProvider.clearFilters(),
+                        onPressed: () => context
+                            .read<TransactionBloc>()
+                            .add(const TransactionFilterCleared()),
                         style: TextButton.styleFrom(
                           padding: const EdgeInsets.symmetric(
                             horizontal: 12,
@@ -169,27 +171,28 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
                   onTap: (transaction) {
                     _showTransactionDetails(transaction, colorScheme);
                   },
-                  onDelete: (transaction) async {
-                    await transactionProvider.deleteTransaction(transaction);
+                  onDelete: (transaction) {
+                    context
+                        .read<TransactionBloc>()
+                        .add(TransactionDeleted(transaction));
                   },
-                  onEdit: (transaction) async {
+                  onEdit: (transaction) {
                     Navigator.of(context).push(
                       MaterialPageRoute<void>(
                         builder: (context) => TransactionFormScreen(
                           transaction: transaction,
-                          onSubmit: transactionProvider.updateTransaction,
+                          onSubmit: (t) => context
+                              .read<TransactionBloc>()
+                              .add(TransactionUpdated(t)),
                         ),
                       ),
                     );
                   },
                   onCategoryTap: (transaction) {
-                    _showCategorySelectionSheet(
-                      transaction,
-                      transactionProvider,
-                    );
+                    _showCategorySelectionSheet(transaction);
                   },
                   groupedTransactions: groupedTransactions,
-                  isLoadingMore: transactionProvider.isLoadingMore,
+                  isLoadingMore: isLoadingMore,
                 ),
               ),
             ],
@@ -213,16 +216,18 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
 
   Future<void> _showFilterBottomSheet(
     BuildContext context,
-    TransactionProvider provider,
+    TransactionFilter currentFilter,
   ) async {
     await showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (context) => TransactionFilterBottomSheet(
-        initialFilter: provider.currentFilter,
+        initialFilter: currentFilter,
         onApplyFilter: (filter) {
-          provider.applyFilter(filter);
+          context
+              .read<TransactionBloc>()
+              .add(TransactionFilterApplied(filter));
         },
       ),
     );
@@ -267,7 +272,6 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
 
   Future<void> _showCategorySelectionSheet(
     TransactionWithCategory transaction,
-    TransactionProvider transactionProvider,
   ) async {
     final categoryProvider = Provider.of<CategoryProvider>(
       context,
@@ -287,13 +291,15 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
         categories: categories,
         currentCategoryId: transaction.categoryId,
         transactionType: transaction.type,
-        onCategorySelected: (selectedCategory) async {
+        onCategorySelected: (selectedCategory) {
           // Update the transaction with the new category
           final updatedTransaction = transaction.transaction.copyWith(
             categoryId: drift.Value(selectedCategory.id),
           );
 
-          await transactionProvider.updateTransaction(updatedTransaction);
+          context
+              .read<TransactionBloc>()
+              .add(TransactionUpdated(updatedTransaction));
 
           if (mounted) {
             ScaffoldMessenger.of(context).showSnackBar(
@@ -308,3 +314,4 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
     );
   }
 }
+
