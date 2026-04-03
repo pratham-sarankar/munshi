@@ -98,18 +98,20 @@ class _TransactionFormScreenState extends State<TransactionFormScreen>
                     prefixIcon: Icon(Iconsax.wallet_outline),
                     hintText: 'Enter amount',
                   ),
-                  validator: FormBuilderValidators.compose([
-                    FormBuilderValidators.required(
-                      errorText: 'Amount is required',
-                    ),
-                    FormBuilderValidators.numeric(
-                      errorText: 'Please enter a valid number',
-                    ),
-                    FormBuilderValidators.min(
-                      0.01,
-                      errorText: 'Amount must be greater than zero',
-                    ),
-                  ]),
+                  validator: FormBuilderValidators.compose(
+                    [
+                      FormBuilderValidators.required(
+                        errorText: 'Amount is required',
+                      ),
+                      FormBuilderValidators.numeric(
+                        errorText: 'Please enter a valid number',
+                      ),
+                      FormBuilderValidators.min(
+                        0.01,
+                        errorText: 'Amount must be greater than zero',
+                      ),
+                    ],
+                  ),
                 ),
                 const SizedBox(height: 20),
                 const Text('Note'),
@@ -130,6 +132,7 @@ class _TransactionFormScreenState extends State<TransactionFormScreen>
                     errorText: 'Note too long',
                     checkNullOrEmpty: false,
                   ),
+                  textCapitalization: TextCapitalization.sentences,
                 ),
                 const SizedBox(height: 20),
                 Text(
