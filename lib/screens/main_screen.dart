@@ -1,14 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:icons_plus/icons_plus.dart';
 import 'package:munshi/features/categories/screens/categories_screen.dart';
+import 'package:munshi/features/dashboard/providers/dashboard_provider.dart';
 import 'package:munshi/features/dashboard/screens/home_screen.dart';
 import 'package:munshi/features/settings/screens/settings_screen.dart';
-import 'package:munshi/features/transactions/providers/transaction_provider.dart';
+import 'package:munshi/features/transactions/bloc/transaction_bloc.dart';
+import 'package:munshi/features/transactions/bloc/transaction_event.dart';
+import 'package:munshi/features/transactions/bloc/transaction_state.dart';
 import 'package:munshi/features/transactions/screens/transaction_form_screen.dart';
 import 'package:munshi/features/transactions/screens/transactions_screen.dart';
 import 'package:provider/provider.dart';
 
+/// The root scaffold that hosts bottom navigation and the floating action button.
+///
+/// It also listens for [TransactionState.transactionMutated] and refreshes the
+/// [DashboardProvider] whenever a transaction is added, updated, or deleted.
 class MainScreen extends StatefulWidget {
+  /// Creates a [MainScreen].
   const MainScreen({super.key});
 
   @override
@@ -54,50 +63,58 @@ class _MainScreenState extends State<MainScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        onPressed: () async {
-          await Navigator.of(context).push(
-            MaterialPageRoute<void>(
-              builder: (context) {
-                return TransactionFormScreen(
-                  onSubmit: (transaction) async {
-                    final provider = context.read<TransactionProvider>();
-                    await provider.addTransaction(transaction);
-                    if (!context.mounted) return;
-                  },
-                );
-              },
-            ),
-          );
-          // Handle floating action button press
-        },
-        shape: const CircleBorder(),
-        elevation: 2,
-        child: const Icon(Iconsax.add_outline),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      bottomNavigationBar: BottomAppBar(
-        notchMargin: 10,
-        shape: const CircularNotchedRectangle(),
-        elevation: 10,
-        child: NavigationBar(
-          backgroundColor: Colors.transparent,
-          selectedIndex: _selectedIndex,
-          onDestinationSelected: (value) {
-            setState(() {
-              _selectedIndex = value;
-            });
+    return BlocListener<TransactionBloc, TransactionState>(
+      listenWhen: (previous, current) =>
+          !previous.transactionMutated && current.transactionMutated,
+      listener: (context, state) {
+        // Refresh the dashboard whenever a transaction is mutated.
+        context.read<DashboardProvider>().refresh();
+      },
+      child: Scaffold(
+        floatingActionButton: FloatingActionButton(
+          onPressed: () async {
+            await Navigator.of(context).push(
+              MaterialPageRoute<void>(
+                builder: (context) {
+                  return TransactionFormScreen(
+                    onSubmit: (transaction) {
+                      context
+                          .read<TransactionBloc>()
+                          .add(TransactionAdded(transaction));
+                    },
+                  );
+                },
+              ),
+            );
           },
-          labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
-          destinations: _destinations,
+          shape: const CircleBorder(),
+          elevation: 2,
+          child: const Icon(Iconsax.add_outline),
         ),
-      ),
-      body: IndexedStack(
-        alignment: Alignment.topCenter,
-        index: _selectedIndex,
-        children: _screens,
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+        bottomNavigationBar: BottomAppBar(
+          notchMargin: 10,
+          shape: const CircularNotchedRectangle(),
+          elevation: 10,
+          child: NavigationBar(
+            backgroundColor: Colors.transparent,
+            selectedIndex: _selectedIndex,
+            onDestinationSelected: (value) {
+              setState(() {
+                _selectedIndex = value;
+              });
+            },
+            labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
+            destinations: _destinations,
+          ),
+        ),
+        body: IndexedStack(
+          alignment: Alignment.topCenter,
+          index: _selectedIndex,
+          children: _screens,
+        ),
       ),
     );
   }
 }
+
