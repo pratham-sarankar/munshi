@@ -226,7 +226,7 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (ctx) => TransactionFilterBottomSheet(
+      builder: (_) => TransactionFilterBottomSheet(
         initialFilter: state.currentFilter,
         onApplyFilter: (filter) {
           context
