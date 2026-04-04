@@ -2,7 +2,7 @@ import 'package:drift/drift.dart';
 import 'package:munshi/core/database/app_database.dart';
 import 'package:munshi/core/database/tables/transaction_categories.dart';
 import 'package:munshi/core/database/tables/transactions.dart';
-import 'package:munshi/features/transactions/domain/entities/transaction_type.dart';
+import 'package:munshi/core/enums/transaction_type.dart';
 
 part 'category_dao.g.dart';
 

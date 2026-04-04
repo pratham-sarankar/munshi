@@ -209,7 +209,7 @@ class _GroupedTransactionListState extends State<GroupedTransactionList>
     int index,
   ) {
     return TweenAnimationBuilder<double>(
-      key: ValueKey(transaction.id),
+      key: ValueKey(transaction.transaction.id),
       duration: Duration(milliseconds: 600 + (index * 80)),
       tween: Tween<double>(begin: 0, end: 1),
       curve: Curves.easeOutCubic,

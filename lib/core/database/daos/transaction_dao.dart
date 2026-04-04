@@ -6,7 +6,7 @@ import 'package:munshi/core/database/tables/transactions.dart';
 import 'package:munshi/core/models/date_period.dart';
 import 'package:munshi/features/dashboard/models/category_spending_data.dart';
 import 'package:munshi/features/dashboard/services/dashboard_data_service.dart';
-import 'package:munshi/features/transactions/domain/entities/transaction_type.dart';
+import 'package:munshi/core/enums/transaction_type.dart';
 import 'package:munshi/features/transactions/domain/entities/transaction_with_category.dart';
 
 part 'transaction_dao.g.dart';
