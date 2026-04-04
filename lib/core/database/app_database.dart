@@ -9,7 +9,7 @@ import 'package:munshi/core/database/daos/category_dao.dart';
 import 'package:munshi/core/database/daos/transaction_dao.dart';
 import 'package:munshi/core/database/tables/transaction_categories.dart';
 import 'package:munshi/core/database/tables/transactions.dart';
-import 'package:munshi/features/transactions/models/transaction_type.dart';
+import 'package:munshi/features/transactions/domain/entities/transaction_type.dart';
 import 'package:path_provider/path_provider.dart';
 
 part 'app_database.g.dart';

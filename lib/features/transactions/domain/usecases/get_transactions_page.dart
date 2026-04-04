@@ -1,6 +1,6 @@
 import 'package:munshi/features/transactions/domain/repositories/transaction_repository.dart';
-import 'package:munshi/features/transactions/models/transaction_filter.dart';
-import 'package:munshi/features/transactions/models/transaction_with_category.dart';
+import 'package:munshi/features/transactions/domain/entities/transaction_filter.dart';
+import 'package:munshi/features/transactions/domain/entities/transaction_with_category.dart';
 
 /// Use case that retrieves a paginated page of [TransactionWithCategory] items.
 ///

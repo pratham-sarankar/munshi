@@ -1,4 +1,4 @@
-import 'package:munshi/features/transactions/models/transaction_with_category.dart';
+import 'package:munshi/features/transactions/domain/entities/transaction_with_category.dart';
 
 class GroupedTransactions {
 

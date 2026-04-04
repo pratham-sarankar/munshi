@@ -2,8 +2,8 @@ import 'package:drift/drift.dart';
 import 'package:munshi/core/database/app_database.dart';
 import 'package:munshi/core/database/daos/transaction_dao.dart';
 import 'package:munshi/features/transactions/domain/repositories/transaction_repository.dart';
-import 'package:munshi/features/transactions/models/transaction_filter.dart';
-import 'package:munshi/features/transactions/models/transaction_with_category.dart';
+import 'package:munshi/features/transactions/domain/entities/transaction_filter.dart';
+import 'package:munshi/features/transactions/domain/entities/transaction_with_category.dart';
 
 /// Concrete [TransactionRepository] backed by the Drift (SQLite) database.
 ///

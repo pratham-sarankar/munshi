@@ -5,11 +5,11 @@ import 'package:munshi/features/categories/screens/categories_screen.dart';
 import 'package:munshi/features/dashboard/providers/dashboard_provider.dart';
 import 'package:munshi/features/dashboard/screens/home_screen.dart';
 import 'package:munshi/features/settings/screens/settings_screen.dart';
-import 'package:munshi/features/transactions/bloc/transaction_bloc.dart';
-import 'package:munshi/features/transactions/bloc/transaction_event.dart';
-import 'package:munshi/features/transactions/bloc/transaction_state.dart';
-import 'package:munshi/features/transactions/screens/transaction_form_screen.dart';
-import 'package:munshi/features/transactions/screens/transactions_screen.dart';
+import 'package:munshi/features/transactions/presentation/bloc/transaction_bloc.dart';
+import 'package:munshi/features/transactions/presentation/bloc/transaction_event.dart';
+import 'package:munshi/features/transactions/presentation/bloc/transaction_state.dart';
+import 'package:munshi/features/transactions/presentation/screens/transaction_form_screen.dart';
+import 'package:munshi/features/transactions/presentation/screens/transactions_screen.dart';
 import 'package:provider/provider.dart';
 
 /// The root scaffold that hosts bottom navigation and the floating action button.

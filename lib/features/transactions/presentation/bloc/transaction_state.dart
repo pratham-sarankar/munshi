@@ -1,7 +1,7 @@
 import 'package:equatable/equatable.dart';
-import 'package:munshi/features/transactions/models/grouped_transactions.dart';
-import 'package:munshi/features/transactions/models/transaction_filter.dart';
-import 'package:munshi/features/transactions/models/transaction_with_category.dart';
+import 'package:munshi/features/transactions/domain/entities/grouped_transactions.dart';
+import 'package:munshi/features/transactions/domain/entities/transaction_filter.dart';
+import 'package:munshi/features/transactions/domain/entities/transaction_with_category.dart';
 
 /// Describes the overall loading status of the transaction list.
 enum TransactionStatus {

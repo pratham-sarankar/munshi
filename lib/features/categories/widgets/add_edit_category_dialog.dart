@@ -4,7 +4,7 @@ import 'package:munshi/core/database/app_database.dart';
 import 'package:munshi/features/categories/providers/category_provider.dart';
 import 'package:munshi/features/categories/widgets/color_picker_dialog.dart';
 import 'package:munshi/features/categories/widgets/icon_picker_dialog.dart';
-import 'package:munshi/features/transactions/models/transaction_type.dart';
+import 'package:munshi/features/transactions/domain/entities/transaction_type.dart';
 import 'package:provider/provider.dart';
 
 class AddEditCategoryDialog extends StatefulWidget {

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:munshi/core/database/app_database.dart';
-import 'package:munshi/features/transactions/models/transaction_type.dart';
+import 'package:munshi/features/transactions/domain/entities/transaction_type.dart';
 
 /// A transaction with its optional category information.
 ///

@@ -3,8 +3,8 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:icons_plus/icons_plus.dart';
 import 'package:intl/intl.dart';
 import 'package:munshi/core/extensions/currency_extensions.dart';
-import 'package:munshi/features/transactions/models/transaction_type.dart';
-import 'package:munshi/features/transactions/models/transaction_with_category.dart';
+import 'package:munshi/features/transactions/domain/entities/transaction_type.dart';
+import 'package:munshi/features/transactions/domain/entities/transaction_with_category.dart';
 
 class TransactionTile extends StatefulWidget {
   const TransactionTile({

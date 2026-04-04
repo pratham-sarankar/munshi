@@ -1,8 +1,8 @@
 import 'package:drift/drift.dart';
 import 'package:equatable/equatable.dart';
 import 'package:munshi/core/database/app_database.dart';
-import 'package:munshi/features/transactions/models/transaction_filter.dart';
-import 'package:munshi/features/transactions/models/transaction_with_category.dart';
+import 'package:munshi/features/transactions/domain/entities/transaction_filter.dart';
+import 'package:munshi/features/transactions/domain/entities/transaction_with_category.dart';
 
 /// Base class for all events handled by [TransactionBloc].
 ///

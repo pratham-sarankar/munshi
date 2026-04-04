@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:intl/intl.dart';
-import 'package:munshi/features/transactions/models/grouped_transactions.dart';
-import 'package:munshi/features/transactions/models/transaction_with_category.dart';
-import 'package:munshi/features/transactions/widgets/transaction_tile.dart';
+import 'package:munshi/features/transactions/domain/entities/grouped_transactions.dart';
+import 'package:munshi/features/transactions/domain/entities/transaction_with_category.dart';
+import 'package:munshi/features/transactions/presentation/widgets/transaction_tile.dart';
 
 class GroupedTransactionList extends StatefulWidget {
   const GroupedTransactionList({
