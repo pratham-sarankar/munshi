@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:icons_plus/icons_plus.dart';
 import 'package:munshi/core/database/app_database.dart';
 import 'package:munshi/features/categories/providers/category_provider.dart';
@@ -219,17 +220,19 @@ class _CategoryList extends StatelessWidget {
           );
         }
 
-        return ListView.builder(
-          padding: const EdgeInsets.all(16),
-          itemCount: categories.length,
-          itemBuilder: (context, index) {
-            final category = categories[index];
-            return CategoryListTile(
-              category: category,
-              onTap: () => onEdit(category),
-              onDelete: () => onDelete(category),
-            );
-          },
+        return SlidableAutoCloseBehavior(
+          child: ListView.builder(
+            padding: const EdgeInsets.symmetric(vertical: 8),
+            itemCount: categories.length,
+            itemBuilder: (context, index) {
+              final category = categories[index];
+              return CategoryListTile(
+                category: category,
+                onTap: () => onEdit(category),
+                onDelete: () => onDelete(category),
+              );
+            },
+          ),
         );
       },
     );

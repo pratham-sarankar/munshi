@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:icons_plus/icons_plus.dart';
 import 'package:munshi/core/database/app_database.dart';
 
-class CategoryListTile extends StatelessWidget {
+class CategoryListTile extends StatefulWidget {
   const CategoryListTile({
-    required this.category, required this.onTap, required this.onDelete, super.key,
+    required this.category,
+    required this.onTap,
+    required this.onDelete,
+    super.key,
   });
 
   final TransactionCategory category;
@@ -12,116 +16,86 @@ class CategoryListTile extends StatelessWidget {
   final VoidCallback onDelete;
 
   @override
+  State<CategoryListTile> createState() => _CategoryListTileState();
+}
+
+class _CategoryListTileState extends State<CategoryListTile>
+    with SingleTickerProviderStateMixin {
+  late final SlidableController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = SlidableController(this);
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
-    final categoryIcon = category.icon;
-    final categoryColor = category.color;
+    final categoryColor = widget.category.color;
 
-    return Container(
-      margin: const EdgeInsets.only(bottom: 8),
-      decoration: BoxDecoration(
-        color: colorScheme.surface,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: colorScheme.outline.withValues(alpha: 0.1)),
-        boxShadow: [
-          BoxShadow(
-            color: colorScheme.shadow.withValues(alpha: 0.05),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
+    return Slidable(
+      controller: _controller,
+      key: ValueKey(widget.category.id),
+      groupTag: 'categories',
+      endActionPane: ActionPane(
+        motion: const BehindMotion(),
+        children: [
+          SlidableAction(
+            onPressed: (context) => widget.onTap(),
+            backgroundColor: colorScheme.inverseSurface,
+            foregroundColor: colorScheme.onInverseSurface,
+            icon: Iconsax.edit_outline,
+            label: 'Edit',
           ),
+          if (!widget.category.isDefault)
+            SlidableAction(
+              onPressed: (context) => widget.onDelete(),
+              backgroundColor: colorScheme.error,
+              foregroundColor: colorScheme.onError,
+              icon: Iconsax.trash_outline,
+              label: 'Delete',
+            ),
         ],
       ),
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          onTap: onTap,
-          borderRadius: BorderRadius.circular(16),
-          child: Padding(
-            padding: const EdgeInsets.all(16),
-            child: Row(
-              children: [
-                // Icon
-                Container(
-                  width: 48,
-                  height: 48,
-                  decoration: BoxDecoration(
-                    color: categoryColor.withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(
-                      color: categoryColor.withValues(alpha: 0.3),
-                      width: 1.5,
-                    ),
-                  ),
-                  child: Icon(categoryIcon, color: categoryColor, size: 24),
-                ),
-                const SizedBox(width: 16),
-
-                // Category name
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(
-                        category.name,
-                        style: theme.textTheme.titleMedium?.copyWith(
-                          fontWeight: FontWeight.w600,
-                          color: colorScheme.onSurface,
-                        ),
-                      ),
-                      if (category.isDefault)
-                        Padding(
-                          padding: const EdgeInsets.only(top: 4),
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 8,
-                              vertical: 2,
-                            ),
-                            decoration: BoxDecoration(
-                              color: colorScheme.primaryContainer,
-                              borderRadius: BorderRadius.circular(6),
-                            ),
-                            child: Text(
-                              'Default',
-                              style: theme.textTheme.labelSmall?.copyWith(
-                                color: colorScheme.onPrimaryContainer,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ),
-                        ),
-                    ],
-                  ),
-                ),
-
-                // Actions
-                Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    IconButton(
-                      onPressed: onTap,
-                      icon: Icon(
-                        Iconsax.edit_outline,
-                        color: colorScheme.primary,
-                      ),
-                      tooltip: 'Edit',
-                    ),
-                    if (!category.isDefault)
-                      IconButton(
-                        onPressed: onDelete,
-                        icon: Icon(
-                          Iconsax.trash_outline,
-                          color: colorScheme.error,
-                        ),
-                        tooltip: 'Delete',
-                      ),
-                  ],
-                ),
-              ],
-            ),
+      child: ListTile(
+        onTap: widget.onTap,
+        leading: Container(
+          padding: const EdgeInsets.all(10),
+          decoration: BoxDecoration(
+            color: categoryColor.withValues(alpha: 0.12),
+            borderRadius: BorderRadius.circular(12),
           ),
+          child: Icon(widget.category.icon, color: categoryColor, size: 22),
         ),
+        title: Text(
+          widget.category.name,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+        ),
+        trailing: widget.category.isDefault
+            ? Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                decoration: BoxDecoration(
+                  color: colorScheme.primaryContainer,
+                  borderRadius: BorderRadius.circular(6),
+                ),
+                child: Text(
+                  'Default',
+                  style: theme.textTheme.labelSmall?.copyWith(
+                    color: colorScheme.onPrimaryContainer,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              )
+            : null,
       ),
     );
   }
