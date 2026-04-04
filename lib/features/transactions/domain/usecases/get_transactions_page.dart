@@ -21,10 +21,9 @@ class GetTransactionsPage {
     required int limit,
     required int offset,
     required TransactionFilter filter,
-  }) =>
-      _repository.getTransactionsPage(
-        limit: limit,
-        offset: offset,
-        filter: filter,
-      );
+  }) => _repository.getTransactionsPage(
+    limit: limit,
+    offset: offset,
+    filter: filter,
+  );
 }

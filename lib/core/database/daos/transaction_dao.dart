@@ -6,173 +6,20 @@ import 'package:munshi/core/database/tables/transactions.dart';
 import 'package:munshi/core/models/date_period.dart';
 import 'package:munshi/features/dashboard/models/category_spending_data.dart';
 import 'package:munshi/features/dashboard/services/dashboard_data_service.dart';
-import 'package:munshi/features/transactions/domain/entities/grouped_transactions.dart';
 import 'package:munshi/features/transactions/domain/entities/transaction_type.dart';
 import 'package:munshi/features/transactions/domain/entities/transaction_with_category.dart';
 
 part 'transaction_dao.g.dart';
 
+/// Data access object for managing transaction queries and operations.
+///
+/// Provides methods for querying, inserting, updating, and deleting transactions
+/// from the database with support for filtering, pagination, and aggregations.
 @DriftAccessor(tables: [Transactions, TransactionCategories])
 class TransactionsDao extends DatabaseAccessor<AppDatabase>
     with _$TransactionsDaoMixin {
-  TransactionsDao(super.db);
-
-  Future<List<Transaction>> getAllTransactions() => select(transactions).get();
-
-  Stream<List<TransactionWithCategory>> watchAllTransactions() {
-    final query = select(transactions).join([
-      leftOuterJoin(
-        transactionCategories,
-        transactions.categoryId.equalsExp(transactionCategories.id),
-      ),
-    ])..orderBy([OrderingTerm.desc(transactions.date)]);
-
-    return query.watch().map((rows) {
-      return rows.map((row) {
-        final transaction = row.readTable(transactions);
-        final category = row.readTableOrNull(transactionCategories);
-        return TransactionWithCategory(
-          transaction: transaction,
-          category: category,
-        );
-      }).toList();
-    });
-  }
-
-  Future<int> insertTransaction(Insertable<Transaction> transaction) =>
-      into(transactions).insert(transaction);
-
-  Future<bool> updateTransaction(Insertable<Transaction> transaction) =>
-      update(transactions).replace(transaction);
-
-  Future<int> deleteTransaction(Insertable<Transaction> transaction) =>
-      delete(transactions).delete(transaction);
-
-  /// Get all transactions with their category information
-  Future<List<TransactionWithCategory>>
-  getAllTransactionsWithCategories() async {
-    final query = select(transactions).join([
-      leftOuterJoin(
-        transactionCategories,
-        transactions.categoryId.equalsExp(transactionCategories.id),
-      ),
-    ])..orderBy([OrderingTerm.desc(transactions.date)]);
-
-    final result = await query.get();
-    return result.map((row) {
-      final transaction = row.readTable(transactions);
-      final category = row.readTableOrNull(transactionCategories);
-      return TransactionWithCategory(
-        transaction: transaction,
-        category: category,
-      );
-    }).toList();
-  }
-
-  Future<List<Transaction>> getTransactionsByType(TransactionType type) {
-    return (select(transactions)..where(
-          (tbl) =>
-              tbl.type.equals(const TransactionTypeConverter().toSql(type)),
-        ))
-        .get();
-  }
-
-  /// Get transactions with categories by type
-  Future<List<TransactionWithCategory>> getTransactionsWithCategoriesByType(
-    TransactionType type,
-  ) async {
-    final query =
-        select(transactions).join([
-            leftOuterJoin(
-              transactionCategories,
-              transactions.categoryId.equalsExp(transactionCategories.id),
-            ),
-          ])
-          ..where(
-            transactions.type.equals(
-              const TransactionTypeConverter().toSql(type),
-            ),
-          )
-          ..orderBy([OrderingTerm.desc(transactions.date)]);
-
-    final result = await query.get();
-    return result.map((row) {
-      final transaction = row.readTable(transactions);
-      final category = row.readTableOrNull(transactionCategories);
-      return TransactionWithCategory(
-        transaction: transaction,
-        category: category,
-      );
-    }).toList();
-  }
-
-  /// Watch transactions grouped by date with real-time updates
-  Stream<List<GroupedTransactions>> watchTransactionsGroupedByDate({
-    DateTime? startDate,
-    DateTime? endDate,
-  }) {
-    // For simplicity, we'll use the existing watchAllTransactions and group in Dart
-    // A more advanced implementation could use custom SQL with triggers
-    return watchAllTransactions().asyncMap((transactions) async {
-      if (transactions.isEmpty) return <GroupedTransactions>[];
-
-      // Filter transactions by date range if provided
-      var filteredTransactions = transactions;
-      if (startDate != null) {
-        filteredTransactions = filteredTransactions
-            .where(
-              (t) =>
-                  t.date.isAtSameMomentAs(startDate) ||
-                  t.date.isAfter(startDate),
-            )
-            .toList();
-      }
-      if (endDate != null) {
-        final endOfDay = DateTime(
-          endDate.year,
-          endDate.month,
-          endDate.day,
-          23,
-          59,
-          59,
-          999,
-        );
-        filteredTransactions = filteredTransactions
-            .where((t) => !t.date.isAfter(endOfDay))
-            .toList();
-      }
-
-      // Group by date
-      final groupedMap = <String, List<TransactionWithCategory>>{};
-      for (final transaction in filteredTransactions) {
-        final dateKey = DateTime(
-          transaction.date.year,
-          transaction.date.month,
-          transaction.date.day,
-        );
-        final dateString =
-            '${dateKey.year}-${dateKey.month.toString().padLeft(2, '0')}-${dateKey.day.toString().padLeft(2, '0')}';
-        groupedMap.putIfAbsent(dateString, () => []).add(transaction);
-      }
-
-      // Convert to GroupedTransactions and sort by date descending
-      final result = <GroupedTransactions>[];
-      final sortedDates = groupedMap.keys.toList()
-        ..sort((a, b) => b.compareTo(a));
-
-      for (final dateString in sortedDates) {
-        final date = DateTime.parse(dateString);
-        final transactionsForDate = groupedMap[dateString]!;
-        // Sort transactions within the day by time descending
-        transactionsForDate.sort((a, b) => b.date.compareTo(a.date));
-        result.add(
-          GroupedTransactions(date: date, transactions: transactionsForDate),
-        );
-      }
-
-      return result;
-    });
-  }
+  /// Creates a new instance of [TransactionsDao].
+  TransactionsDao(super.attachedDatabase);
 
   /// Get a page of transactions with all filtering done in SQL.
   ///
@@ -213,10 +60,9 @@ class TransactionsDao extends DatabaseAccessor<AppDatabase>
       conditions.add(transactions.date.isSmallerOrEqualValue(endOfDay));
     }
     if (types != null && types.isNotEmpty) {
-      final typeValues =
-          types
-              .map((t) => const TransactionTypeConverter().toSql(t))
-              .toList();
+      final typeValues = types
+          .map(const TransactionTypeConverter().toSql)
+          .toList();
       conditions.add(transactions.type.isIn(typeValues));
     }
     if (minAmount != null) {
@@ -250,6 +96,18 @@ class TransactionsDao extends DatabaseAccessor<AppDatabase>
       );
     }).toList();
   }
+
+  /// Insert a new transaction into the database.
+  Future<int> insertTransaction(Insertable<Transaction> transaction) =>
+      into(transactions).insert(transaction);
+
+  /// Update an existing transaction in the database.
+  Future<bool> updateTransaction(Insertable<Transaction> transaction) =>
+      update(transactions).replace(transaction);
+
+  /// Delete a transaction from the database.
+  Future<int> deleteTransaction(Insertable<Transaction> transaction) =>
+      delete(transactions).delete(transaction);
 
   /// Alternative: More efficient SQL-based calculation (requires custom SQL)
   Future<PeriodSummaryData> getPeriodSummarySql(DatePeriod period) async {

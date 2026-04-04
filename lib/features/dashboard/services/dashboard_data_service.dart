@@ -4,7 +4,6 @@ import 'package:munshi/core/models/date_period.dart';
 import 'package:munshi/features/dashboard/models/category_spending_data.dart';
 
 class PeriodSummaryData {
-
   const PeriodSummaryData({
     required this.totalSpent,
     required this.totalIncome,
@@ -36,7 +35,6 @@ class PeriodSummaryData {
 }
 
 class DashboardDataService {
-
   DashboardDataService(this._transactionsDao);
   final TransactionsDao _transactionsDao;
 
