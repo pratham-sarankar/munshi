@@ -3,11 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:icons_plus/icons_plus.dart';
 import 'package:munshi/features/categories/providers/category_provider.dart';
+import 'package:munshi/features/transactions/domain/entities/transaction_filter.dart';
+import 'package:munshi/features/transactions/domain/entities/transaction_with_category.dart';
 import 'package:munshi/features/transactions/presentation/bloc/transaction_bloc.dart';
 import 'package:munshi/features/transactions/presentation/bloc/transaction_event.dart';
 import 'package:munshi/features/transactions/presentation/bloc/transaction_state.dart';
-import 'package:munshi/features/transactions/domain/entities/transaction_filter.dart';
-import 'package:munshi/features/transactions/domain/entities/transaction_with_category.dart';
 import 'package:munshi/features/transactions/presentation/screens/transaction_form_screen.dart';
 import 'package:munshi/features/transactions/presentation/widgets/category_selection_bottom_sheet.dart';
 import 'package:munshi/features/transactions/presentation/widgets/grouped_transaction_list.dart';
@@ -192,9 +192,7 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
                       ),
                     );
                   },
-                  onCategoryTap: (transaction) {
-                    _showCategorySelectionSheet(transaction);
-                  },
+                  onCategoryTap: _showCategorySelectionSheet,
                   groupedTransactions: groupedTransactions,
                   isLoadingMore: state.isLoadingMore,
                 ),

@@ -11,41 +11,43 @@ class CategoriesDao extends DatabaseAccessor<AppDatabase>
     with _$CategoriesDaoMixin {
   CategoriesDao(super.db);
 
-  // Get all categories
+  /// Retrieves all transaction categories from the database.
   Future<List<TransactionCategory>> getAllCategories() =>
       select(transactionCategories).get();
 
-  // Get categories by type
+  /// Retrieves all transaction categories filtered by the specified [type].
   Future<List<TransactionCategory>> getCategoriesByType(String type) => (select(
     transactionCategories,
   )..where((tbl) => tbl.type.equals(type))).get();
 
-  // Get expense categories
+  /// Retrieves all expense categories.
   Future<List<TransactionCategory>> getExpenseCategories() =>
       getCategoriesByType('expense');
 
-  // Get income categories
+  /// Retrieves all income categories.
   Future<List<TransactionCategory>> getIncomeCategories() =>
       getCategoriesByType('income');
 
-  // Get category by id
+  /// Retrieves a single transaction category by its [id].
   Future<TransactionCategory?> getCategoryById(int id) => (select(
     transactionCategories,
   )..where((tbl) => tbl.id.equals(id))).getSingleOrNull();
 
-  // Insert category
+  /// Inserts a new transaction category into the database.
   Future<int> insertCategory(TransactionCategoriesCompanion category) =>
       into(transactionCategories).insert(category);
 
-  // Update category
+  /// Updates an existing transaction [category] in the database.
   Future<bool> updateCategory(TransactionCategory category) =>
       update(transactionCategories).replace(category);
 
-  // Delete category (will cascade delete all transactions with this category due to foreign key constraint)
+  /// Deletes a transaction category by its [id]. Cascades to delete all
+  /// transactions with this category due to foreign key constraint.
   Future<int> deleteCategory(int id) =>
       (delete(transactionCategories)..where((tbl) => tbl.id.equals(id))).go();
 
-  // Check if category has transactions
+  /// Checks if a category with the specified [categoryId] has any
+  /// associated transactions.
   Future<bool> categoryHasTransactions(int categoryId) async {
     final count =
         await (selectOnly(transactions)
@@ -55,7 +57,7 @@ class CategoriesDao extends DatabaseAccessor<AppDatabase>
     return count.read(transactions.id.count())! > 0;
   }
 
-  // Get transaction count for category
+  /// Gets the total transaction count for the category with the specified [categoryId].
   Future<int> getTransactionCountForCategory(int categoryId) async {
     final count =
         await (selectOnly(transactions)
@@ -65,7 +67,8 @@ class CategoriesDao extends DatabaseAccessor<AppDatabase>
     return count.read(transactions.id.count())!;
   }
 
-  // Check if category name exists
+  /// Checks if a category with the specified [name] and [type] already
+  /// exists. Optionally excludes a category by [excludeId] from the check.
   Future<bool> categoryNameExists(
     String name,
     TransactionType type, {

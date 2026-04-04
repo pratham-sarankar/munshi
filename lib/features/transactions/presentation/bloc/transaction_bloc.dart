@@ -1,12 +1,13 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:munshi/features/transactions/presentation/bloc/transaction_event.dart';
-import 'package:munshi/features/transactions/presentation/bloc/transaction_state.dart';
+import 'package:munshi/features/transactions/domain/entities/transaction_filter.dart';
+import 'package:munshi/features/transactions/domain/entities/transaction_with_category.dart' show TransactionWithCategory;
 import 'package:munshi/features/transactions/domain/usecases/add_transaction.dart';
 import 'package:munshi/features/transactions/domain/usecases/delete_transaction.dart';
 import 'package:munshi/features/transactions/domain/usecases/get_transactions_page.dart';
 import 'package:munshi/features/transactions/domain/usecases/update_transaction.dart';
-import 'package:munshi/features/transactions/domain/entities/transaction_filter.dart';
+import 'package:munshi/features/transactions/presentation/bloc/transaction_event.dart';
+import 'package:munshi/features/transactions/presentation/bloc/transaction_state.dart';
 
 /// Manages all state for the transaction list using the BLoC pattern.
 ///
@@ -29,11 +30,11 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
     required AddTransaction addTransaction,
     required UpdateTransaction updateTransaction,
     required DeleteTransaction deleteTransaction,
-  })  : _getTransactionsPage = getTransactionsPage,
-        _addTransaction = addTransaction,
-        _updateTransaction = updateTransaction,
-        _deleteTransaction = deleteTransaction,
-        super(const TransactionState()) {
+  }) : _getTransactionsPage = getTransactionsPage,
+       _addTransaction = addTransaction,
+       _updateTransaction = updateTransaction,
+       _deleteTransaction = deleteTransaction,
+       super(const TransactionState()) {
     on<TransactionPageRequested>(_onPageRequested);
     on<TransactionNextPageRequested>(_onNextPageRequested);
     on<TransactionFilterApplied>(_onFilterApplied);

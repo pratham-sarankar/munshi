@@ -3,6 +3,8 @@ import 'package:equatable/equatable.dart';
 import 'package:munshi/core/database/app_database.dart';
 import 'package:munshi/features/transactions/domain/entities/transaction_filter.dart';
 import 'package:munshi/features/transactions/domain/entities/transaction_with_category.dart';
+import 'package:munshi/features/transactions/presentation/bloc/transaction_bloc.dart' show TransactionBloc;
+import 'package:munshi/features/transactions/presentation/bloc/transaction_state.dart' show TransactionState;
 
 /// Base class for all events handled by [TransactionBloc].
 ///

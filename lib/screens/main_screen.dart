@@ -10,7 +10,6 @@ import 'package:munshi/features/transactions/presentation/bloc/transaction_event
 import 'package:munshi/features/transactions/presentation/bloc/transaction_state.dart';
 import 'package:munshi/features/transactions/presentation/screens/transaction_form_screen.dart';
 import 'package:munshi/features/transactions/presentation/screens/transactions_screen.dart';
-import 'package:provider/provider.dart';
 
 /// The root scaffold that hosts bottom navigation and the floating action button.
 ///
