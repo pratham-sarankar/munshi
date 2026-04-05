@@ -2,6 +2,7 @@ import 'package:drift/drift.dart';
 import 'package:munshi/core/database/converters/transaction_type_converter.dart';
 import 'package:munshi/core/database/tables/transaction_categories.dart';
 
+@DataClassName('TransactionRow')
 class Transactions extends Table {
   IntColumn get id => integer().autoIncrement()();
   RealColumn get amount => real()();
