@@ -192,12 +192,25 @@ class $TransactionCategoriesTable extends TransactionCategories
 
 class TransactionCategory extends DataClass
     implements Insertable<TransactionCategory> {
+  /// Unique identifier for the category.
   final int id;
+
+  /// Name of the category.
   final String name;
+
+  /// Icon data associated with the category.
   final IconData icon;
+
+  /// Color value for the category.
   final Color color;
+
+  /// Transaction type (income or expense).
   final TransactionType type;
+
+  /// Whether this is a default system category.
   final bool isDefault;
+
+  /// Timestamp when the category was created.
   final DateTime createdAt;
   const TransactionCategory({
     required this.id,
@@ -452,7 +465,7 @@ class TransactionCategoriesCompanion
 }
 
 class $TransactionsTable extends Transactions
-    with TableInfo<$TransactionsTable, Transaction> {
+    with TableInfo<$TransactionsTable, TransactionRow> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
@@ -536,7 +549,7 @@ class $TransactionsTable extends Transactions
   static const String $name = 'transactions';
   @override
   VerificationContext validateIntegrity(
-    Insertable<Transaction> instance, {
+    Insertable<TransactionRow> instance, {
     bool isInserting = false,
   }) {
     final context = VerificationContext();
@@ -578,9 +591,9 @@ class $TransactionsTable extends Transactions
   @override
   Set<GeneratedColumn> get $primaryKey => {id};
   @override
-  Transaction map(Map<String, dynamic> data, {String? tablePrefix}) {
+  TransactionRow map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return Transaction(
+    return TransactionRow(
       id: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
         data['${effectivePrefix}id'],
@@ -619,14 +632,14 @@ class $TransactionsTable extends Transactions
       const TransactionTypeConverter();
 }
 
-class Transaction extends DataClass implements Insertable<Transaction> {
+class TransactionRow extends DataClass implements Insertable<TransactionRow> {
   final int id;
   final double amount;
   final int? categoryId;
   final DateTime date;
   final String? note;
   final TransactionType type;
-  const Transaction({
+  const TransactionRow({
     required this.id,
     required this.amount,
     this.categoryId,
@@ -667,12 +680,12 @@ class Transaction extends DataClass implements Insertable<Transaction> {
     );
   }
 
-  factory Transaction.fromJson(
+  factory TransactionRow.fromJson(
     Map<String, dynamic> json, {
     ValueSerializer? serializer,
   }) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
-    return Transaction(
+    return TransactionRow(
       id: serializer.fromJson<int>(json['id']),
       amount: serializer.fromJson<double>(json['amount']),
       categoryId: serializer.fromJson<int?>(json['categoryId']),
@@ -694,14 +707,14 @@ class Transaction extends DataClass implements Insertable<Transaction> {
     };
   }
 
-  Transaction copyWith({
+  TransactionRow copyWith({
     int? id,
     double? amount,
     Value<int?> categoryId = const Value.absent(),
     DateTime? date,
     Value<String?> note = const Value.absent(),
     TransactionType? type,
-  }) => Transaction(
+  }) => TransactionRow(
     id: id ?? this.id,
     amount: amount ?? this.amount,
     categoryId: categoryId.present ? categoryId.value : this.categoryId,
@@ -709,8 +722,8 @@ class Transaction extends DataClass implements Insertable<Transaction> {
     note: note.present ? note.value : this.note,
     type: type ?? this.type,
   );
-  Transaction copyWithCompanion(TransactionsCompanion data) {
-    return Transaction(
+  TransactionRow copyWithCompanion(TransactionsCompanion data) {
+    return TransactionRow(
       id: data.id.present ? data.id.value : this.id,
       amount: data.amount.present ? data.amount.value : this.amount,
       categoryId: data.categoryId.present
@@ -724,7 +737,7 @@ class Transaction extends DataClass implements Insertable<Transaction> {
 
   @override
   String toString() {
-    return (StringBuffer('Transaction(')
+    return (StringBuffer('TransactionRow(')
           ..write('id: $id, ')
           ..write('amount: $amount, ')
           ..write('categoryId: $categoryId, ')
@@ -740,7 +753,7 @@ class Transaction extends DataClass implements Insertable<Transaction> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is Transaction &&
+      (other is TransactionRow &&
           other.id == this.id &&
           other.amount == this.amount &&
           other.categoryId == this.categoryId &&
@@ -749,7 +762,7 @@ class Transaction extends DataClass implements Insertable<Transaction> {
           other.type == this.type);
 }
 
-class TransactionsCompanion extends UpdateCompanion<Transaction> {
+class TransactionsCompanion extends UpdateCompanion<TransactionRow> {
   final Value<int> id;
   final Value<double> amount;
   final Value<int?> categoryId;
@@ -774,7 +787,7 @@ class TransactionsCompanion extends UpdateCompanion<Transaction> {
   }) : amount = Value(amount),
        date = Value(date),
        type = Value(type);
-  static Insertable<Transaction> custom({
+  static Insertable<TransactionRow> custom({
     Expression<int>? id,
     Expression<double>? amount,
     Expression<int>? categoryId,
@@ -914,7 +927,7 @@ final class $$TransactionCategoriesTableReferences
     super.$_typedResult,
   );
 
-  static MultiTypedResultKey<$TransactionsTable, List<Transaction>>
+  static MultiTypedResultKey<$TransactionsTable, List<TransactionRow>>
   _transactionsRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
     db.transactions,
     aliasName: $_aliasNameGenerator(
@@ -1202,7 +1215,7 @@ class $$TransactionCategoriesTableTableManager
                     await $_getPrefetchedData<
                       TransactionCategory,
                       $TransactionCategoriesTable,
-                      Transaction
+                      TransactionRow
                     >(
                       currentTable: table,
                       referencedTable: $$TransactionCategoriesTableReferences
@@ -1259,7 +1272,7 @@ typedef $$TransactionsTableUpdateCompanionBuilder =
     });
 
 final class $$TransactionsTableReferences
-    extends BaseReferences<_$AppDatabase, $TransactionsTable, Transaction> {
+    extends BaseReferences<_$AppDatabase, $TransactionsTable, TransactionRow> {
   $$TransactionsTableReferences(super.$_db, super.$_table, super.$_typedResult);
 
   static $TransactionCategoriesTable _categoryIdTable(_$AppDatabase db) =>
@@ -1458,14 +1471,14 @@ class $$TransactionsTableTableManager
         RootTableManager<
           _$AppDatabase,
           $TransactionsTable,
-          Transaction,
+          TransactionRow,
           $$TransactionsTableFilterComposer,
           $$TransactionsTableOrderingComposer,
           $$TransactionsTableAnnotationComposer,
           $$TransactionsTableCreateCompanionBuilder,
           $$TransactionsTableUpdateCompanionBuilder,
-          (Transaction, $$TransactionsTableReferences),
-          Transaction,
+          (TransactionRow, $$TransactionsTableReferences),
+          TransactionRow,
           PrefetchHooks Function({bool categoryId})
         > {
   $$TransactionsTableTableManager(_$AppDatabase db, $TransactionsTable table)
@@ -1568,14 +1581,14 @@ typedef $$TransactionsTableProcessedTableManager =
     ProcessedTableManager<
       _$AppDatabase,
       $TransactionsTable,
-      Transaction,
+      TransactionRow,
       $$TransactionsTableFilterComposer,
       $$TransactionsTableOrderingComposer,
       $$TransactionsTableAnnotationComposer,
       $$TransactionsTableCreateCompanionBuilder,
       $$TransactionsTableUpdateCompanionBuilder,
-      (Transaction, $$TransactionsTableReferences),
-      Transaction,
+      (TransactionRow, $$TransactionsTableReferences),
+      TransactionRow,
       PrefetchHooks Function({bool categoryId})
     >;
 
