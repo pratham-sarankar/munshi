@@ -125,12 +125,17 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
   // ---------------------------------------------------------------------------
 
   /// Resets pagination and loads the first page using [state.currentFilter].
+  ///
+  /// Always clears [TransactionState.isLoadingMore] so an in-flight next-page
+  /// request cannot leave the indicator stuck after a refresh, filter change,
+  /// or mutation triggers a first-page reload.
   Future<void> _fetchFirstPage(Emitter<TransactionState> emit) async {
     emit(
       state.copyWith(
         status: TransactionStatus.loading,
         transactions: const [],
         hasMore: true,
+        isLoadingMore: false,
         clearError: true,
       ),
     );
@@ -145,11 +150,18 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
           status: TransactionStatus.success,
           transactions: results,
           hasMore: results.length == _pageSize,
+          isLoadingMore: false,
         ),
       );
     } on Exception catch (error) {
       debugPrint('TransactionBloc: failed to load page: $error');
-      emit(state.copyWith(status: TransactionStatus.failure, error: error));
+      emit(
+        state.copyWith(
+          status: TransactionStatus.failure,
+          isLoadingMore: false,
+          error: error,
+        ),
+      );
     }
   }
 
