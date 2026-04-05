@@ -2,7 +2,7 @@ import 'package:munshi/features/transactions/data/datasources/transaction_local_
 import 'package:munshi/features/transactions/data/extensions/transaction_extensions.dart';
 import 'package:munshi/features/transactions/domain/entities/transaction.dart';
 import 'package:munshi/features/transactions/domain/repositories/transaction_repository.dart';
-import 'package:munshi/features/transactions/presentation/transaction_filter.dart';
+import 'package:munshi/features/transactions/domain/value_objects/transaction_filter.dart';
 
 class TransactionRepositoryImpl implements TransactionRepository {
   const TransactionRepositoryImpl(this._dataSource);

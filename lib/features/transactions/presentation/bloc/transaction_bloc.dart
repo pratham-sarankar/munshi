@@ -4,9 +4,9 @@ import 'package:munshi/features/transactions/domain/usecases/add_transaction.dar
 import 'package:munshi/features/transactions/domain/usecases/delete_transaction.dart';
 import 'package:munshi/features/transactions/domain/usecases/get_transactions_page.dart';
 import 'package:munshi/features/transactions/domain/usecases/update_transaction.dart';
+import 'package:munshi/features/transactions/domain/value_objects/transaction_filter.dart';
 import 'package:munshi/features/transactions/presentation/bloc/transaction_event.dart';
 import 'package:munshi/features/transactions/presentation/bloc/transaction_state.dart';
-import 'package:munshi/features/transactions/presentation/transaction_filter.dart';
 
 /// BLoC for managing transaction state and operations.
 ///

@@ -5,7 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:munshi/core/enums/transaction_type.dart';
 import 'package:munshi/features/categories/providers/category_provider.dart';
 import 'package:munshi/features/transactions/domain/entities/transaction_category.dart';
-import 'package:munshi/features/transactions/presentation/transaction_filter.dart';
+import 'package:munshi/features/transactions/domain/value_objects/transaction_filter.dart';
 import 'package:munshi/providers/currency_provider.dart';
 import 'package:provider/provider.dart';
 

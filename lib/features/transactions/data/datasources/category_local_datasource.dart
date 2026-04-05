@@ -96,7 +96,7 @@ class CategoryLocalDataSource extends DatabaseAccessor<AppDatabase>
     int? excludeId,
   }) async {
     final query = select(transactionCategories)
-      ..where((tbl) => tbl.name.equals(name) & tbl.type.equals(type));
+      ..where((tbl) => tbl.name.equals(name) & tbl.type.equals(type.name));
 
     if (excludeId != null) {
       query.where((tbl) => tbl.id.equals(excludeId).not());

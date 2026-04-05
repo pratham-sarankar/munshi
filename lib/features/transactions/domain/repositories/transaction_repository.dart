@@ -1,5 +1,5 @@
 import 'package:munshi/features/transactions/domain/entities/transaction.dart';
-import 'package:munshi/features/transactions/presentation/transaction_filter.dart';
+import 'package:munshi/features/transactions/domain/value_objects/transaction_filter.dart';
 
 /// Abstract repository contract for all transaction data-access operations.
 ///

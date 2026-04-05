@@ -1,6 +1,6 @@
 import 'package:munshi/features/transactions/domain/entities/transaction.dart';
 import 'package:munshi/features/transactions/domain/repositories/transaction_repository.dart';
-import 'package:munshi/features/transactions/presentation/transaction_filter.dart';
+import 'package:munshi/features/transactions/domain/value_objects/transaction_filter.dart';
 
 /// Use case for fetching a paginated list of transactions with optional
 /// filtering.
