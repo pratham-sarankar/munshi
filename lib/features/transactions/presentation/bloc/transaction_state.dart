@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:munshi/features/transactions/domain/entities/transaction.dart';
-import 'package:munshi/features/transactions/presentation/transaction_filter.dart';
+import 'package:munshi/features/transactions/domain/value_objects/transaction_filter.dart';
 
 /// Describes the overall loading status of the transaction list.
 enum TransactionStatus {
