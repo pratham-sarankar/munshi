@@ -15,7 +15,7 @@ part 'category_local_datasource.g.dart';
 @DriftAccessor(tables: [TransactionCategories, Transactions])
 class CategoryLocalDataSource extends DatabaseAccessor<AppDatabase>
     with _$CategoryLocalDataSourceMixin {
-  CategoryLocalDataSource(super.db);
+  CategoryLocalDataSource(super.attachedDatabase);
 
   /// Retrieves all transaction categories from the database.
   Future<List<TransactionCategory>> getAllCategories() async {
