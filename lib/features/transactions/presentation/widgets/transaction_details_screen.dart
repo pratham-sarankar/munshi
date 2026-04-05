@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:icons_plus/icons_plus.dart';
 import 'package:intl/intl.dart';
 import 'package:munshi/core/extensions/currency_extensions.dart';
-import 'package:munshi/features/transactions/domain/entities/transaction_with_category.dart';
+import 'package:munshi/features/transactions/domain/entities/transaction.dart';
 
 class TransactionDetailsScreen extends StatefulWidget {
   const TransactionDetailsScreen({required this.transaction, super.key});
-  final TransactionWithCategory transaction;
+  final Transaction transaction;
   @override
   State<TransactionDetailsScreen> createState() =>
       _TransactionDetailsScreenState();
@@ -60,7 +60,7 @@ class _TransactionDetailsScreenState extends State<TransactionDetailsScreen> {
                   ),
                   _buildModernDetailRow(
                     'Category',
-                    widget.transaction.categoryName,
+                    widget.transaction.category?.name ?? 'No category',
                     Iconsax.category_outline,
                     colorScheme,
                   ),

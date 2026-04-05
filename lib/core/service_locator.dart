@@ -1,8 +1,7 @@
 import 'package:get_it/get_it.dart';
 import 'package:munshi/core/database/app_database.dart';
-import 'package:munshi/core/database/daos/transaction_dao.dart'
-    show TransactionsDao;
 import 'package:munshi/features/dashboard/services/dashboard_data_service.dart';
+import 'package:munshi/features/transactions/data/datasources/transaction_local_datasource.dart';
 import 'package:munshi/features/transactions/data/repositories/transaction_repository_impl.dart';
 import 'package:munshi/features/transactions/domain/repositories/transaction_repository.dart';
 import 'package:munshi/features/transactions/domain/usecases/add_transaction.dart';
@@ -43,15 +42,15 @@ Future<void> setupLocator() async {
     )
     ..registerLazySingleton<PeriodProvider>(() => PeriodProvider(prefs))
     ..registerLazySingleton<AppDatabase>(AppDatabase.new)
-    ..registerLazySingleton<TransactionsDao>(
-      () => TransactionsDao(locator<AppDatabase>()),
+    ..registerLazySingleton<TransactionLocalDataSource>(
+      () => TransactionLocalDataSource(locator<AppDatabase>()),
     )
     ..registerLazySingleton<DashboardDataService>(
-      () => DashboardDataService(locator<TransactionsDao>()),
+      () => DashboardDataService(locator<TransactionLocalDataSource>()),
     )
     // Clean-architecture transaction wiring
     ..registerLazySingleton<TransactionRepository>(
-      () => TransactionRepositoryImpl(locator<TransactionsDao>()),
+      () => TransactionRepositoryImpl(locator<TransactionLocalDataSource>()),
     )
     ..registerLazySingleton<GetTransactionsPage>(
       () => GetTransactionsPage(locator<TransactionRepository>()),

@@ -1,18 +1,19 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'category_dao.dart';
+part of 'category_local_datasource.dart';
 
 // ignore_for_file: type=lint
-mixin _$CategoriesDaoMixin on DatabaseAccessor<AppDatabase> {
+mixin _$CategoryLocalDataSourceMixin on DatabaseAccessor<AppDatabase> {
   $TransactionCategoriesTable get transactionCategories =>
       attachedDatabase.transactionCategories;
   $TransactionsTable get transactions => attachedDatabase.transactions;
-  CategoriesDaoManager get managers => CategoriesDaoManager(this);
+  CategoryLocalDataSourceManager get managers =>
+      CategoryLocalDataSourceManager(this);
 }
 
-class CategoriesDaoManager {
-  final _$CategoriesDaoMixin _db;
-  CategoriesDaoManager(this._db);
+class CategoryLocalDataSourceManager {
+  final _$CategoryLocalDataSourceMixin _db;
+  CategoryLocalDataSourceManager(this._db);
   $$TransactionCategoriesTableTableManager get transactionCategories =>
       $$TransactionCategoriesTableTableManager(
         _db.attachedDatabase,

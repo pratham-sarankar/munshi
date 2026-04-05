@@ -1,12 +1,11 @@
-import 'package:drift/drift.dart' as drift;
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:icons_plus/icons_plus.dart';
 import 'package:intl/intl.dart';
-import 'package:munshi/core/database/app_database.dart';
 import 'package:munshi/core/enums/transaction_type.dart';
-import 'package:munshi/features/transactions/domain/entities/transaction_with_category.dart';
+import 'package:munshi/features/transactions/domain/entities/transaction.dart';
+import 'package:munshi/features/transactions/domain/entities/transaction_category.dart';
 import 'package:munshi/features/transactions/presentation/widgets/form_builder_category_chips.dart';
 
 class TransactionFormScreen extends StatefulWidget {
@@ -15,8 +14,8 @@ class TransactionFormScreen extends StatefulWidget {
     super.key,
     this.transaction,
   });
-  final TransactionWithCategory? transaction;
-  final void Function(drift.Insertable<Transaction> transaction) onSubmit;
+  final Transaction? transaction;
+  final void Function(Transaction transaction) onSubmit;
 
   @override
   State<TransactionFormScreen> createState() => _TransactionFormScreenState();
@@ -196,32 +195,15 @@ class _TransactionFormScreenState extends State<TransactionFormScreen>
               as TransactionCategory?;
       final datetime = formData['datetime'] as DateTime;
       final description = formData['note'] as String?;
-
-      final transaction = widget.transaction != null
-          ? TransactionsCompanion(
-              id: drift.Value(
-                widget.transaction!.id,
-              ), // Keep existing ID for updates
-              amount: drift.Value(amount),
-              categoryId: category != null
-                  ? drift.Value(category.id)
-                  : const drift.Value(
-                      null,
-                    ), // Explicitly set to null for updates
-              type: drift.Value(type),
-              date: drift.Value(datetime),
-              note: drift.Value(description),
-            )
-          : TransactionsCompanion(
-              amount: drift.Value(amount),
-              categoryId: category != null
-                  ? drift.Value(category.id)
-                  : const drift.Value(null), // Use absent for new transactions
-              type: drift.Value(type),
-              date: drift.Value(datetime),
-              note: drift.Value(description),
-            );
-
+      final transaction = Transaction(
+        id: widget.transaction?.id ?? 0,
+        amount: amount,
+        date: datetime,
+        type: type,
+        categoryId: category?.id,
+        note: description,
+        category: category,
+      );
       widget.onSubmit(transaction);
       Navigator.pop(context);
     } else {

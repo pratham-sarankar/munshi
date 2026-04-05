@@ -635,11 +635,22 @@ class $TransactionsTable extends Transactions
 }
 
 class TransactionRow extends DataClass implements Insertable<TransactionRow> {
+  /// Unique identifier for the transaction, auto-incremented.
   final int id;
+
+  /// Transaction amount in the base currency.
   final double amount;
+
+  /// Foreign key reference to the transaction category.
   final int? categoryId;
+
+  /// Date and time when the transaction occurred.
   final DateTime date;
+
+  /// Optional note or description for the transaction.
   final String? note;
+
+  /// Type of transaction (income or expense).
   final TransactionType type;
   const TransactionRow({
     required this.id,
@@ -871,10 +882,10 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $TransactionCategoriesTable transactionCategories =
       $TransactionCategoriesTable(this);
   late final $TransactionsTable transactions = $TransactionsTable(this);
-  late final TransactionsDao transactionsDao = TransactionsDao(
-    this as AppDatabase,
-  );
-  late final CategoriesDao categoriesDao = CategoriesDao(this as AppDatabase);
+  late final TransactionLocalDataSource transactionLocalDataSource =
+      TransactionLocalDataSource(this as AppDatabase);
+  late final CategoryLocalDataSource categoryLocalDataSource =
+      CategoryLocalDataSource(this as AppDatabase);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();

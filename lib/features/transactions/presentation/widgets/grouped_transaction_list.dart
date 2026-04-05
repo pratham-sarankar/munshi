@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:intl/intl.dart';
-import 'package:munshi/features/transactions/domain/entities/grouped_transactions.dart';
-import 'package:munshi/features/transactions/domain/entities/transaction_with_category.dart';
+import 'package:munshi/features/transactions/domain/entities/transaction.dart';
 import 'package:munshi/features/transactions/presentation/widgets/transaction_tile.dart';
 
 class GroupedTransactionList extends StatefulWidget {
@@ -20,11 +19,11 @@ class GroupedTransactionList extends StatefulWidget {
   // Accounts for leading widget (56dp) + horizontal padding (16dp)
   static const double _kDividerIndent = 72;
 
-  final List<GroupedTransactions> groupedTransactions;
-  final void Function(TransactionWithCategory) onTap;
-  final Future<void> Function(TransactionWithCategory transaction)? onDelete;
-  final Future<void> Function(TransactionWithCategory transaction)? onEdit;
-  final void Function(TransactionWithCategory)? onCategoryTap;
+  final List<Map<DateTime, List<Transaction>>> groupedTransactions;
+  final void Function(Transaction) onTap;
+  final Future<void> Function(Transaction transaction)? onDelete;
+  final Future<void> Function(Transaction transaction)? onEdit;
+  final void Function(Transaction)? onCategoryTap;
   final ScrollController? controller;
   final bool isLoadingMore;
 
@@ -108,22 +107,25 @@ class _GroupedTransactionListState extends State<GroupedTransactionList>
     var globalIndex = 0;
 
     for (final (groupIndex, group) in widget.groupedTransactions.indexed) {
+      final date = group.keys.first;
+      final transactions = group.values.first;
+
       // Add date divider
-      widgets.add(_buildDateDivider(group.date, globalIndex));
+      widgets.add(_buildDateDivider(date, globalIndex));
       globalIndex++;
 
       // Add transactions for this date
       for (
         var transactionIndex = 0;
-        transactionIndex < group.transactions.length;
+        transactionIndex < transactions.length;
         transactionIndex++
       ) {
-        final transaction = group.transactions[transactionIndex];
+        final transaction = transactions[transactionIndex];
         widgets.add(_buildAnimatedTransactionTile(transaction, globalIndex));
         globalIndex++;
 
         // Add separator if not the last transaction of the date
-        if (transactionIndex < group.transactions.length - 1) {
+        if (transactionIndex < transactions.length - 1) {
           widgets.add(
             const Divider(
               height: 1,
@@ -205,11 +207,11 @@ class _GroupedTransactionListState extends State<GroupedTransactionList>
   }
 
   Widget _buildAnimatedTransactionTile(
-    TransactionWithCategory transaction,
+    Transaction transaction,
     int index,
   ) {
     return TweenAnimationBuilder<double>(
-      key: ValueKey(transaction.transaction.id),
+      key: ValueKey(transaction.id),
       duration: Duration(milliseconds: 600 + (index * 80)),
       tween: Tween<double>(begin: 0, end: 1),
       curve: Curves.easeOutCubic,

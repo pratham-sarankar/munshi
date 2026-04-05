@@ -1,7 +1,7 @@
-import 'package:munshi/core/database/app_database.dart';
-import 'package:munshi/core/database/daos/transaction_dao.dart';
 import 'package:munshi/core/models/date_period.dart';
 import 'package:munshi/features/dashboard/models/category_spending_data.dart';
+import 'package:munshi/features/transactions/data/datasources/transaction_local_datasource.dart';
+import 'package:munshi/features/transactions/domain/entities/transaction_category.dart';
 
 class PeriodSummaryData {
   const PeriodSummaryData({
@@ -35,19 +35,19 @@ class PeriodSummaryData {
 }
 
 class DashboardDataService {
-  DashboardDataService(this._transactionsDao);
-  final TransactionsDao _transactionsDao;
+  DashboardDataService(this._dataSource);
+  final TransactionLocalDataSource _dataSource;
 
   /// Alternative method using SQL-based calculation for better performance
   Future<PeriodSummaryData> getPeriodSummarySql(DatePeriod period) async {
     // Use the SQL-based DAO method for maximum efficiency
-    return _transactionsDao.getPeriodSummarySql(period);
+    return _dataSource.getPeriodSummarySql(period);
   }
 
   /// Get spending breakdown by category with transaction count for the period
   Future<Map<TransactionCategory?, CategorySpendingData>>
   getSpendingByCategoryWithCount(DatePeriod period) async {
-    return _transactionsDao.getSpendingByCategoryWithCount(period);
+    return _dataSource.getSpendingByCategoryWithCount(period);
   }
 
   // Future<List<Transaction>> getTransactionsForPeriod(DatePeriod period) async {

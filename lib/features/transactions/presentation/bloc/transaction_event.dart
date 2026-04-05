@@ -1,10 +1,10 @@
-import 'package:drift/drift.dart';
 import 'package:equatable/equatable.dart';
-import 'package:munshi/core/database/app_database.dart';
-import 'package:munshi/features/transactions/domain/entities/transaction_filter.dart';
-import 'package:munshi/features/transactions/domain/entities/transaction_with_category.dart';
-import 'package:munshi/features/transactions/presentation/bloc/transaction_bloc.dart' show TransactionBloc;
-import 'package:munshi/features/transactions/presentation/bloc/transaction_state.dart' show TransactionState;
+import 'package:munshi/features/transactions/domain/entities/transaction.dart';
+import 'package:munshi/features/transactions/presentation/bloc/transaction_bloc.dart'
+    show TransactionBloc;
+import 'package:munshi/features/transactions/presentation/bloc/transaction_state.dart'
+    show TransactionState;
+import 'package:munshi/features/transactions/presentation/transaction_filter.dart';
 
 /// Base class for all events handled by [TransactionBloc].
 ///
@@ -60,7 +60,7 @@ final class TransactionAdded extends TransactionEvent {
   const TransactionAdded(this.transaction);
 
   /// The transaction data to persist.
-  final Insertable<Transaction> transaction;
+  final Transaction transaction;
 
   @override
   List<Object?> get props => [transaction];
@@ -72,7 +72,7 @@ final class TransactionUpdated extends TransactionEvent {
   const TransactionUpdated(this.transaction);
 
   /// The updated transaction data to persist.
-  final Insertable<Transaction> transaction;
+  final Transaction transaction;
 
   @override
   List<Object?> get props => [transaction];
@@ -84,7 +84,7 @@ final class TransactionDeleted extends TransactionEvent {
   const TransactionDeleted(this.transaction);
 
   /// The transaction to remove.
-  final TransactionWithCategory transaction;
+  final Transaction transaction;
 
   @override
   List<Object?> get props => [transaction];

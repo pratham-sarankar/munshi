@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:icons_plus/icons_plus.dart';
-import 'package:munshi/core/database/app_database.dart';
+import 'package:munshi/features/transactions/domain/entities/transaction_category.dart';
 
 class CategoryListTile extends StatelessWidget {
   const CategoryListTile({
-    required this.category, required this.onTap, required this.onDelete, super.key,
+    required this.category,
+    required this.onTap,
+    required this.onDelete,
+    super.key,
   });
 
   final TransactionCategory category;

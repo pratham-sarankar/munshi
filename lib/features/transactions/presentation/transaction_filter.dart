@@ -1,6 +1,6 @@
-import 'package:munshi/core/database/app_database.dart';
-import 'package:munshi/core/models/date_period.dart';
 import 'package:munshi/core/enums/transaction_type.dart';
+import 'package:munshi/core/models/date_period.dart';
+import 'package:munshi/features/transactions/domain/entities/transaction_category.dart';
 
 class TransactionFilter {
   const TransactionFilter({

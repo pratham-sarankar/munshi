@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:icons_plus/icons_plus.dart';
 import 'package:intl/intl.dart';
-import 'package:munshi/core/extensions/currency_extensions.dart';
 import 'package:munshi/core/enums/transaction_type.dart';
-import 'package:munshi/features/transactions/domain/entities/transaction_with_category.dart';
+import 'package:munshi/core/extensions/currency_extensions.dart';
+import 'package:munshi/features/transactions/domain/entities/transaction.dart';
 
 class TransactionTile extends StatefulWidget {
   const TransactionTile({
@@ -16,9 +16,9 @@ class TransactionTile extends StatefulWidget {
     this.onCategoryTap,
   });
   final VoidCallback onTap;
-  final TransactionWithCategory transaction;
-  final Future<void> Function(TransactionWithCategory transaction)? onDelete;
-  final Future<void> Function(TransactionWithCategory transaction)? onEdit;
+  final Transaction transaction;
+  final Future<void> Function(Transaction transaction)? onDelete;
+  final Future<void> Function(Transaction transaction)? onEdit;
   final VoidCallback? onCategoryTap;
 
   @override
@@ -82,18 +82,22 @@ class _TransactionTileState extends State<TransactionTile>
           child: Container(
             padding: const EdgeInsets.all(10),
             decoration: BoxDecoration(
-              color: widget.transaction.categoryColor.withValues(alpha: 0.12),
+              color:
+                  widget.transaction.category?.color.withValues(alpha: 0.12) ??
+                  Colors.grey.withValues(alpha: 0.12),
               borderRadius: BorderRadius.circular(12),
             ),
             child: Icon(
-              widget.transaction.categoryIcon,
-              color: widget.transaction.categoryColor,
+              widget.transaction.category?.icon ?? Icons.category,
+              color: widget.transaction.category?.color ?? Colors.grey,
               size: 22,
             ),
           ),
         ),
         title: Text(
-          widget.transaction.note ?? widget.transaction.categoryName,
+          widget.transaction.note ??
+              widget.transaction.category?.name ??
+              'No Note',
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
         ),

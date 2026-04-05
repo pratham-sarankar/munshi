@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:munshi/core/database/app_database.dart';
-import 'package:munshi/features/categories/providers/category_provider.dart';
 import 'package:munshi/core/enums/transaction_type.dart';
+import 'package:munshi/features/categories/providers/category_provider.dart';
+import 'package:munshi/features/transactions/domain/entities/transaction_category.dart';
 import 'package:provider/provider.dart';
 
 class FormBuilderCategoryChips extends StatelessWidget {

@@ -1,9 +1,9 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart' show BlocListener;
-import 'package:munshi/features/transactions/domain/entities/grouped_transactions.dart';
-import 'package:munshi/features/transactions/domain/entities/transaction_filter.dart';
-import 'package:munshi/features/transactions/domain/entities/transaction_with_category.dart';
-import 'package:munshi/features/transactions/presentation/bloc/transaction_bloc.dart' show TransactionBloc;
+import 'package:munshi/features/transactions/domain/entities/transaction.dart';
+import 'package:munshi/features/transactions/presentation/bloc/transaction_bloc.dart'
+    show TransactionBloc;
+import 'package:munshi/features/transactions/presentation/transaction_filter.dart';
 
 /// Describes the overall loading status of the transaction list.
 enum TransactionStatus {
@@ -40,8 +40,8 @@ class TransactionState extends Equatable {
   /// Current loading status of the transaction list.
   final TransactionStatus status;
 
-  /// Flat list of all loaded [TransactionWithCategory] items across all pages.
-  final List<TransactionWithCategory> transactions;
+  /// Flat list of all loaded [Transaction] items across all pages.
+  final List<Transaction> transactions;
 
   /// Whether additional pages are available to load.
   final bool hasMore;
@@ -66,10 +66,10 @@ class TransactionState extends Equatable {
   ///
   /// This is a computed property derived from [transactions]; it is not stored
   /// separately and therefore not included in [props].
-  List<GroupedTransactions> get groupedTransactions {
+  List<Map<DateTime, List<Transaction>>> get groupedTransactions {
     if (transactions.isEmpty) return const [];
 
-    final groupedMap = <String, List<TransactionWithCategory>>{};
+    final groupedMap = <String, List<Transaction>>{};
     for (final transaction in transactions) {
       final d = transaction.date;
       final key =
@@ -80,10 +80,9 @@ class TransactionState extends Equatable {
     final sortedKeys = groupedMap.keys.toList()..sort((a, b) => b.compareTo(a));
     return sortedKeys
         .map(
-          (key) => GroupedTransactions(
-            date: DateTime.parse(key),
-            transactions: groupedMap[key]!,
-          ),
+          (key) => {
+            DateTime.parse(key): groupedMap[key]!,
+          },
         )
         .toList();
   }
@@ -95,7 +94,7 @@ class TransactionState extends Equatable {
   /// "set to null".
   TransactionState copyWith({
     TransactionStatus? status,
-    List<TransactionWithCategory>? transactions,
+    List<Transaction>? transactions,
     bool? hasMore,
     bool? isLoadingMore,
     TransactionFilter? currentFilter,

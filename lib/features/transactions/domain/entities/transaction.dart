@@ -1,5 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:munshi/core/enums/transaction_type.dart';
+import 'package:munshi/features/transactions/domain/entities/transaction_category.dart';
 
 part 'transaction.freezed.dart';
 
@@ -17,5 +18,6 @@ abstract class Transaction with _$Transaction {
     required TransactionType type,
     int? categoryId,
     String? note,
+    TransactionCategory? category,
   }) = _Transaction;
 }

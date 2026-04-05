@@ -3,22 +3,33 @@ import 'package:munshi/core/database/app_database.dart';
 import 'package:munshi/core/database/tables/transaction_categories.dart';
 import 'package:munshi/core/database/tables/transactions.dart';
 import 'package:munshi/core/enums/transaction_type.dart';
+import 'package:munshi/features/transactions/data/extensions/transaction_category_extensions.dart';
+import 'package:munshi/features/transactions/domain/entities/transaction_category.dart';
 
-part 'category_dao.g.dart';
+part 'category_local_datasource.g.dart';
 
+/// Local data source for managing transaction categories in the database.
+///
+/// Provides methods to perform CRUD operations on transaction categories,
+/// including retrieval by type, insertion, updates, and deletion.
 @DriftAccessor(tables: [TransactionCategories, Transactions])
-class CategoriesDao extends DatabaseAccessor<AppDatabase>
-    with _$CategoriesDaoMixin {
-  CategoriesDao(super.db);
+class CategoryLocalDataSource extends DatabaseAccessor<AppDatabase>
+    with _$CategoryLocalDataSourceMixin {
+  CategoryLocalDataSource(super.db);
 
   /// Retrieves all transaction categories from the database.
-  Future<List<TransactionCategory>> getAllCategories() =>
-      select(transactionCategories).get();
+  Future<List<TransactionCategory>> getAllCategories() async {
+    final rows = await select(transactionCategories).get();
+    return rows.map((row) => row.toEntity()).toList();
+  }
 
   /// Retrieves all transaction categories filtered by the specified [type].
-  Future<List<TransactionCategory>> getCategoriesByType(String type) => (select(
-    transactionCategories,
-  )..where((tbl) => tbl.type.equals(type))).get();
+  Future<List<TransactionCategory>> getCategoriesByType(String type) async {
+    final rows = await (select(
+      transactionCategories,
+    )..where((tbl) => tbl.type.equals(type))).get();
+    return rows.map((row) => row.toEntity()).toList();
+  }
 
   /// Retrieves all expense categories.
   Future<List<TransactionCategory>> getExpenseCategories() =>
@@ -29,17 +40,24 @@ class CategoriesDao extends DatabaseAccessor<AppDatabase>
       getCategoriesByType('income');
 
   /// Retrieves a single transaction category by its [id].
-  Future<TransactionCategory?> getCategoryById(int id) => (select(
-    transactionCategories,
-  )..where((tbl) => tbl.id.equals(id))).getSingleOrNull();
+  Future<TransactionCategory?> getCategoryById(int id) async {
+    final row = await (select(
+      transactionCategories,
+    )..where((tbl) => tbl.id.equals(id))).getSingleOrNull();
+    return row?.toEntity();
+  }
 
   /// Inserts a new transaction category into the database.
   Future<int> insertCategory(TransactionCategoriesCompanion category) =>
       into(transactionCategories).insert(category);
 
   /// Updates an existing transaction [category] in the database.
-  Future<bool> updateCategory(TransactionCategory category) =>
-      update(transactionCategories).replace(category);
+  Future<bool> updateCategory(TransactionCategory category) async {
+    final updated = await update(
+      transactionCategories,
+    ).replace(category.toRow());
+    return updated;
+  }
 
   /// Deletes a transaction category by its [id]. Cascades to delete all
   /// transactions with this category due to foreign key constraint.
@@ -57,7 +75,8 @@ class CategoriesDao extends DatabaseAccessor<AppDatabase>
     return count.read(transactions.id.count())! > 0;
   }
 
-  /// Gets the total transaction count for the category with the specified [categoryId].
+  /// Gets the total transaction count for the category with the specified
+  /// [categoryId].
   Future<int> getTransactionCountForCategory(int categoryId) async {
     final count =
         await (selectOnly(transactions)
