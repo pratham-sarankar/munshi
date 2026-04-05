@@ -8,21 +8,12 @@ import 'package:munshi/features/transactions/presentation/bloc/transaction_event
 import 'package:munshi/features/transactions/presentation/bloc/transaction_state.dart';
 import 'package:munshi/features/transactions/presentation/transaction_filter.dart';
 
-/// Manages all state for the transaction list using the BLoC pattern.
+/// BLoC for managing transaction state and operations.
 ///
-/// Responsibilities:
-/// - Paginated fetching of [TransactionWithCategory] items via
-///   [GetTransactionsPage].
-/// - Applying and clearing [TransactionFilter] instances.
-/// - Adding, updating, and deleting transactions via the respective use cases,
-///   followed by an automatic list refresh.
-/// - Exposing [TransactionState.transactionMutated] so that UI consumers
-///   (e.g. a dashboard) can react to data changes.
-///
-/// All events are documented in [TransactionEvent] and its subclasses.
+/// Handles transaction listing with pagination, filtering, and CRUD operations.
+/// Emits [TransactionState] in response to [TransactionEvent] events.
 class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
   /// Creates a [TransactionBloc] with the given use cases.
-  ///
   /// The first page of transactions is requested immediately upon construction.
   TransactionBloc({
     required GetTransactionsPage getTransactionsPage,

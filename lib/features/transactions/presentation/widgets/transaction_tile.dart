@@ -97,7 +97,7 @@ class _TransactionTileState extends State<TransactionTile>
         title: Text(
           widget.transaction.note ??
               widget.transaction.category?.name ??
-              'No Note',
+              'Uncategorized',
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
         ),

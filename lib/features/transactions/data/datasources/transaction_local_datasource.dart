@@ -77,9 +77,7 @@ class TransactionLocalDataSource extends DatabaseAccessor<AppDatabase>
     }
 
     if (types != null && types.isNotEmpty) {
-      final typeValues = types
-          .map(const TransactionTypeConverter().toSql)
-          .toList();
+      final typeValues = types.map(const TransactionTypeConverter().toSql);
       conditions.add(transactions.type.isIn(typeValues));
     }
 
