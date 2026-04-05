@@ -24,20 +24,22 @@ class CategoryLocalDataSource extends DatabaseAccessor<AppDatabase>
   }
 
   /// Retrieves all transaction categories filtered by the specified [type].
-  Future<List<TransactionCategory>> getCategoriesByType(String type) async {
+  Future<List<TransactionCategory>> getCategoriesByType(
+    TransactionType type,
+  ) async {
     final rows = await (select(
       transactionCategories,
-    )..where((tbl) => tbl.type.equals(type))).get();
+    )..where((tbl) => tbl.type.equals(type.name))).get();
     return rows.map((row) => row.toEntity()).toList();
   }
 
   /// Retrieves all expense categories.
   Future<List<TransactionCategory>> getExpenseCategories() =>
-      getCategoriesByType('expense');
+      getCategoriesByType(TransactionType.expense);
 
   /// Retrieves all income categories.
   Future<List<TransactionCategory>> getIncomeCategories() =>
-      getCategoriesByType('income');
+      getCategoriesByType(TransactionType.income);
 
   /// Retrieves a single transaction category by its [id].
   Future<TransactionCategory?> getCategoryById(int id) async {
