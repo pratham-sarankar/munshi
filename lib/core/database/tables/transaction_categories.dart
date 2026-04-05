@@ -7,6 +7,7 @@ import 'package:munshi/core/database/converters/transaction_type_converter.dart'
 ///
 /// Contains category information including name, icon, color, transaction type,
 /// and default status tracking.
+@DataClassName('TransactionCategoryRow')
 class TransactionCategories extends Table {
   /// Unique identifier for the category.
   IntColumn get id => integer().autoIncrement()();
