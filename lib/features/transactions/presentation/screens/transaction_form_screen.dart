@@ -196,7 +196,7 @@ class _TransactionFormScreenState extends State<TransactionFormScreen>
       final datetime = formData['datetime'] as DateTime;
       final description = formData['note'] as String?;
       final transaction = Transaction(
-        id: widget.transaction?.id ?? 0,
+        id: widget.transaction?.id,
         amount: amount,
         date: datetime,
         type: type,
