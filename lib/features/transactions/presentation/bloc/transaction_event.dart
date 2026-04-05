@@ -1,12 +1,8 @@
 import 'package:equatable/equatable.dart';
 import 'package:munshi/features/transactions/domain/entities/transaction.dart';
-import 'package:munshi/features/transactions/domain/value_objects/transaction_filter.dart';
-import 'package:munshi/features/transactions/presentation/bloc/transaction_bloc.dart'
-    show TransactionBloc;
-import 'package:munshi/features/transactions/presentation/bloc/transaction_state.dart'
-    show TransactionState;
+import 'package:munshi/features/transactions/presentation/transaction_filter.dart';
 
-/// Base class for all events handled by [TransactionBloc].
+/// Base class for all events handled by `TransactionBloc`.
 ///
 /// All events are immutable value objects that describe what has happened
 /// or what action the UI is requesting.
@@ -30,7 +26,7 @@ final class TransactionPageRequested extends TransactionEvent {
 /// Requests the next page of transactions for infinite scrolling.
 ///
 /// The bloc ignores this event when a load is already in progress or when
-/// there are no more pages available ([TransactionState.hasMore] is false).
+/// there are no more pages available (`TransactionState.hasMore` is false).
 final class TransactionNextPageRequested extends TransactionEvent {
   /// Creates a [TransactionNextPageRequested] event.
   const TransactionNextPageRequested();
