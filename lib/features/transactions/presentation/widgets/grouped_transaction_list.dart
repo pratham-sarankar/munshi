@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:intl/intl.dart';
+import 'package:munshi/features/transactions/domain/entities/daily_transactions.dart';
 import 'package:munshi/features/transactions/domain/entities/transaction.dart';
 import 'package:munshi/features/transactions/presentation/widgets/transaction_tile.dart';
 
@@ -19,7 +20,7 @@ class GroupedTransactionList extends StatefulWidget {
   // Accounts for leading widget (56dp) + horizontal padding (16dp)
   static const double _kDividerIndent = 72;
 
-  final List<Map<DateTime, List<Transaction>>> groupedTransactions;
+  final List<DailyTransactions> groupedTransactions;
   final void Function(Transaction) onTap;
   final Future<void> Function(Transaction transaction)? onDelete;
   final Future<void> Function(Transaction transaction)? onEdit;
@@ -107,8 +108,8 @@ class _GroupedTransactionListState extends State<GroupedTransactionList>
     var globalIndex = 0;
 
     for (final (groupIndex, group) in widget.groupedTransactions.indexed) {
-      final date = group.keys.first;
-      final transactions = group.values.first;
+      final date = group.date;
+      final transactions = group.transactions;
 
       // Add date divider
       widgets.add(_buildDateDivider(date, globalIndex));

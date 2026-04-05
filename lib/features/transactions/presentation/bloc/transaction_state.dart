@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:munshi/features/transactions/domain/entities/daily_transactions.dart';
 import 'package:munshi/features/transactions/domain/entities/transaction.dart';
 import 'package:munshi/features/transactions/domain/value_objects/transaction_filter.dart';
 
@@ -63,7 +64,7 @@ class TransactionState extends Equatable {
   ///
   /// This is a computed property derived from [transactions]; it is not stored
   /// separately and therefore not included in [props].
-  List<Map<DateTime, List<Transaction>>> get groupedTransactions {
+  List<DailyTransactions> get groupedTransactions {
     if (transactions.isEmpty) return const [];
 
     final groupedMap = <String, List<Transaction>>{};
@@ -77,9 +78,10 @@ class TransactionState extends Equatable {
     final sortedKeys = groupedMap.keys.toList()..sort((a, b) => b.compareTo(a));
     return sortedKeys
         .map(
-          (key) => {
-            DateTime.parse(key): groupedMap[key]!,
-          },
+          (key) => DailyTransactions(
+            date: DateTime.parse(key),
+            transactions: groupedMap[key]!,
+          ),
         )
         .toList();
   }
