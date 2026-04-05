@@ -1,3 +1,4 @@
+import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:munshi/features/transactions/domain/usecases/add_transaction.dart';
@@ -25,13 +26,22 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
        _updateTransaction = updateTransaction,
        _deleteTransaction = deleteTransaction,
        super(const TransactionState()) {
-    on<TransactionPageRequested>(_onPageRequested);
-    on<TransactionNextPageRequested>(_onNextPageRequested);
-    on<TransactionFilterApplied>(_onFilterApplied);
-    on<TransactionFilterCleared>(_onFilterCleared);
-    on<TransactionAdded>(_onAdded);
-    on<TransactionUpdated>(_onUpdated);
-    on<TransactionDeleted>(_onDeleted);
+    // Page/filter fetches: restartable so a newer request cancels an older one.
+    on<TransactionPageRequested>(_onPageRequested, transformer: restartable());
+    on<TransactionFilterApplied>(_onFilterApplied, transformer: restartable());
+    on<TransactionFilterCleared>(_onFilterCleared, transformer: restartable());
+
+    // Next-page: droppable so rapid scrolling events are ignored while loading.
+    on<TransactionNextPageRequested>(
+      _onNextPageRequested,
+      transformer: droppable(),
+    );
+
+    // Mutations: sequential so writes are never interleaved and each refresh
+    // follows its own committed write.
+    on<TransactionAdded>(_onAdded, transformer: sequential());
+    on<TransactionUpdated>(_onUpdated, transformer: sequential());
+    on<TransactionDeleted>(_onDeleted, transformer: sequential());
 
     // Trigger initial data load.
     add(const TransactionPageRequested());
