@@ -5,23 +5,23 @@ import 'package:icons_plus/icons_plus.dart' show Iconsax;
 import 'package:munshi/core/database/converters/color_converter.dart';
 import 'package:munshi/core/database/converters/icon_data_converter.dart';
 import 'package:munshi/core/database/converters/transaction_type_converter.dart';
-import 'package:munshi/core/database/daos/category_dao.dart';
-import 'package:munshi/core/database/daos/transaction_dao.dart';
 import 'package:munshi/core/database/tables/transaction_categories.dart';
 import 'package:munshi/core/database/tables/transactions.dart';
-import 'package:munshi/features/transactions/models/transaction_type.dart';
+import 'package:munshi/core/enums/transaction_type.dart';
+import 'package:munshi/features/transactions/data/datasources/category_local_datasource.dart';
+import 'package:munshi/features/transactions/data/datasources/transaction_local_datasource.dart';
 import 'package:path_provider/path_provider.dart';
 
 part 'app_database.g.dart';
 
 @DriftDatabase(
   tables: [Transactions, TransactionCategories],
-  daos: [TransactionsDao, CategoriesDao],
+  daos: [TransactionLocalDataSource, CategoryLocalDataSource],
 )
 class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());
 
-  AppDatabase.forTesting(super.executor);
+  AppDatabase.forTesting(super.e);
 
   @override
   int get schemaVersion => 4;
@@ -52,7 +52,7 @@ class AppDatabase extends _$AppDatabase {
   }
 
   Future<void> _seedDefaultCategories() async {
-    final categoriesDao = CategoriesDao(this);
+    final categoriesDao = CategoryLocalDataSource(this);
 
     // Seed expense categories
     final expenseCategoriesToSeed = [

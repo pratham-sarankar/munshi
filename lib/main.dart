@@ -1,14 +1,14 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:munshi/core/database/daos/transaction_dao.dart';
 import 'package:munshi/core/service_locator.dart';
 import 'package:munshi/core/theme.dart';
 import 'package:munshi/features/categories/providers/category_provider.dart';
 import 'package:munshi/features/dashboard/providers/dashboard_provider.dart';
 import 'package:munshi/features/dashboard/services/dashboard_data_service.dart';
-import 'package:munshi/features/transactions/providers/transaction_provider.dart';
+import 'package:munshi/features/transactions/presentation/bloc/transaction_bloc.dart';
 import 'package:munshi/providers/currency_provider.dart';
 import 'package:munshi/providers/period_provider.dart';
 import 'package:munshi/providers/theme_provider.dart';
@@ -21,8 +21,8 @@ import 'package:provider/provider.dart';
 /// sets up dependency injection using get_it, initializes the ThemeProvider asynchronously,
 /// and then removes the splash screen before running the app.
 ///
-/// The ThemeProvider is injected using get_it and provided to the widget tree via Provider.
-/// This guarantees the theme is loaded from persistent storage before the UI is shown, preventing flicker.
+/// Non-transaction state is provided via [Provider]/[ChangeNotifier].
+/// The transaction module is provided via [BlocProvider] using [TransactionBloc].
 void main() async {
   // Ensure Flutter engine and widget binding is initialized before any async or plugin code.
   final widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
@@ -40,29 +40,29 @@ void main() async {
   // Remove the splash screen after all dependencies are initialized.
   FlutterNativeSplash.remove();
 
-  // Inject ThemeProvider into the widget tree using Provider, then launch the app.
   runApp(
-    MultiProvider(
+    MultiBlocProvider(
       providers: [
-        ChangeNotifierProvider.value(value: locator<ThemeProvider>()),
-        ChangeNotifierProvider.value(value: locator<CurrencyProvider>()),
-        ChangeNotifierProvider.value(value: locator<PeriodProvider>()),
-        ChangeNotifierProvider(
-          create: (_) => DashboardProvider(
-            locator<DashboardDataService>(),
-            locator<PeriodProvider>(),
-            locator<CurrencyProvider>(),
-          ),
+        BlocProvider<TransactionBloc>(
+          create: (_) => locator<TransactionBloc>(),
         ),
-        ChangeNotifierProxyProvider<DashboardProvider, TransactionProvider>(
-          create: (_) => TransactionProvider(locator<TransactionsDao>()),
-          update: (_, dashboardProvider, transactionProvider) =>
-              transactionProvider!
-                ..onTransactionChanged = dashboardProvider.refresh,
-        ),
-        ChangeNotifierProvider(create: (_) => CategoryProvider()),
       ],
-      child: const Munshi(),
+      child: MultiProvider(
+        providers: [
+          ChangeNotifierProvider.value(value: locator<ThemeProvider>()),
+          ChangeNotifierProvider.value(value: locator<CurrencyProvider>()),
+          ChangeNotifierProvider.value(value: locator<PeriodProvider>()),
+          ChangeNotifierProvider(
+            create: (_) => DashboardProvider(
+              locator<DashboardDataService>(),
+              locator<PeriodProvider>(),
+              locator<CurrencyProvider>(),
+            ),
+          ),
+          ChangeNotifierProvider(create: (_) => CategoryProvider()),
+        ],
+        child: const Munshi(),
+      ),
     ),
   );
 }

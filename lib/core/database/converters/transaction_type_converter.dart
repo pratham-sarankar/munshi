@@ -1,5 +1,5 @@
 import 'package:drift/drift.dart';
-import 'package:munshi/features/transactions/models/transaction_type.dart';
+import 'package:munshi/core/enums/transaction_type.dart';
 
 class TransactionTypeConverter extends TypeConverter<TransactionType, String> {
   const TransactionTypeConverter();

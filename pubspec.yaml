@@ -40,6 +40,9 @@ dependencies:
   shared_preferences: ^2.3.2
   package_info_plus: ^9.0.0
   get_it: ^9.2.0
+  flutter_bloc: ^9.1.0
+  bloc_concurrency: ^0.3.0
+  equatable: ^2.0.7
   flutter_native_splash: ^2.4.6
   flutter_form_builder: ^10.2.0
   form_builder_validators: ^11.2.0
@@ -56,6 +59,7 @@ dependencies:
   http: ^1.5.0
   webview_flutter: ^4.10.0
   url_launcher: ^6.3.1
+  freezed_annotation: ^3.1.0
 
 dev_dependencies:
   flutter_test:
@@ -67,6 +71,7 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^6.0.0
+  freezed: ^3.2.5
   drift_dev: ^2.28.2
   build_runner: ^2.7.2
   very_good_analysis: ^10.0.0

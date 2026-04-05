@@ -1,0 +1,17 @@
+import 'package:munshi/features/transactions/domain/entities/transaction.dart';
+import 'package:munshi/features/transactions/domain/repositories/transaction_repository.dart';
+
+/// Use case that replaces an existing transaction with updated values.
+///
+/// Delegates the update operation to [TransactionRepository], keeping the
+/// presentation layer free of storage implementation details.
+class UpdateTransaction {
+  /// Creates an [UpdateTransaction] use case backed by [_repository].
+  const UpdateTransaction(this._repository);
+
+  final TransactionRepository _repository;
+
+  /// Executes the use case by replacing the matching record with [transaction].
+  Future<void> call(Transaction transaction) =>
+      _repository.updateTransaction(transaction);
+}
