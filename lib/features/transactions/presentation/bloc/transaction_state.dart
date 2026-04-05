@@ -1,7 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:flutter_bloc/flutter_bloc.dart' show BlocListener;
 import 'package:munshi/features/transactions/domain/entities/transaction.dart';
-import 'package:munshi/features/transactions/presentation/bloc/transaction_bloc.dart';
 import 'package:munshi/features/transactions/presentation/transaction_filter.dart';
 
 /// Describes the overall loading status of the transaction list.
@@ -19,7 +17,7 @@ enum TransactionStatus {
   failure,
 }
 
-/// Immutable snapshot of all state managed by [TransactionBloc].
+/// Immutable snapshot of all state managed by `TransactionBloc`.
 ///
 /// Create modified copies via [copyWith] rather than mutating fields directly.
 class TransactionState extends Equatable {
@@ -57,7 +55,7 @@ class TransactionState extends Equatable {
   /// Flips to `true` for one state emission immediately after a successful
   /// add, update, or delete mutation.
   ///
-  /// UI consumers can use a [BlocListener] to react to this flag (e.g. to
+  /// UI consumers can use a `BlocListener` to react to this flag (e.g. to
   /// trigger a dashboard refresh) and should treat it as a one-shot signal.
   final bool transactionMutated;
 
