@@ -12,10 +12,10 @@ part 'transaction.freezed.dart';
 abstract class Transaction with _$Transaction {
   /// Creates a new [Transaction] instance.
   const factory Transaction({
-    int? id,
     required double amount,
     required DateTime date,
     required TransactionType type,
+    int? id,
     int? categoryId,
     String? note,
     TransactionCategory? category,
