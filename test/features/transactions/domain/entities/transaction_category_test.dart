@@ -64,7 +64,7 @@ void main() {
     test('instances differ when createdAt differs', () {
       expect(
         tCategory,
-        isNot(equals(tCategory.copyWith(createdAt: DateTime(2025, 6, 1)))),
+        isNot(equals(tCategory.copyWith(createdAt: DateTime(2025, 6)))),
       );
     });
 

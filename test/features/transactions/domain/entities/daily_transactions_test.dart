@@ -4,7 +4,7 @@ import 'package:munshi/features/transactions/domain/entities/daily_transactions.
 import 'package:munshi/features/transactions/domain/entities/transaction.dart';
 
 void main() {
-  final date = DateTime(2026, 5, 1);
+  final date = DateTime(2026, 5);
 
   final tx1 = Transaction(
     id: 1,
@@ -48,8 +48,8 @@ void main() {
     });
 
     test('two instances with empty transaction lists are equal', () {
-      final a = DailyTransactions(date: date, transactions: []);
-      final b = DailyTransactions(date: date, transactions: []);
+      final a = DailyTransactions(date: date, transactions: const []);
+      final b = DailyTransactions(date: date, transactions: const []);
       expect(a, equals(b));
     });
   });
@@ -68,7 +68,7 @@ void main() {
 
   group('DailyTransactions fields', () {
     test('exposes date correctly', () {
-      final dt = DailyTransactions(date: date, transactions: []);
+      final dt = DailyTransactions(date: date, transactions: const []);
       expect(dt.date, equals(date));
     });
 
