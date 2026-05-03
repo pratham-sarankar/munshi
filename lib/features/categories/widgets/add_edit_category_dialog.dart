@@ -8,10 +8,17 @@ import 'package:munshi/features/categories/widgets/icon_picker_dialog.dart';
 import 'package:munshi/features/transactions/domain/entities/transaction_category.dart';
 import 'package:provider/provider.dart';
 
+/// A dialog widget for creating a new category or editing an existing one.
 class AddEditCategoryDialog extends StatefulWidget {
+  /// Creates an [AddEditCategoryDialog] for the given [type].
+  ///
+  /// Supply [category] to pre-populate fields when editing.
   const AddEditCategoryDialog({required this.type, super.key, this.category});
 
+  /// The transaction type this category belongs to.
   final TransactionType type;
+
+  /// The existing category to edit, or `null` when creating a new one.
   final TransactionCategory? category;
 
   @override

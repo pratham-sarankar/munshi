@@ -3,7 +3,9 @@ import 'package:icons_plus/icons_plus.dart';
 import 'package:munshi/core/enums/transaction_type.dart';
 import 'package:munshi/features/transactions/domain/entities/transaction_category.dart';
 
+/// A bottom sheet for selecting a transaction category.
 class CategorySelectionBottomSheet extends StatefulWidget {
+  /// Creates a [CategorySelectionBottomSheet].
   const CategorySelectionBottomSheet({
     required this.categories,
     required this.currentCategoryId,
@@ -12,9 +14,16 @@ class CategorySelectionBottomSheet extends StatefulWidget {
     super.key,
   });
 
+  /// The list of categories to choose from.
   final List<TransactionCategory> categories;
+
+  /// The ID of the currently selected category, or `null` if none.
   final int? currentCategoryId;
+
+  /// The transaction type used to filter/display categories.
   final TransactionType transactionType;
+
+  /// Called when the user selects a category.
   final void Function(TransactionCategory) onCategorySelected;
 
   @override

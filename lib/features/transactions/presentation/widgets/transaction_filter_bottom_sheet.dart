@@ -9,13 +9,19 @@ import 'package:munshi/features/transactions/domain/value_objects/transaction_fi
 import 'package:munshi/providers/currency_provider.dart';
 import 'package:provider/provider.dart';
 
+/// A bottom sheet that exposes filter controls for the transaction list.
 class TransactionFilterBottomSheet extends StatefulWidget {
+  /// Creates a [TransactionFilterBottomSheet] initialised with [initialFilter].
   const TransactionFilterBottomSheet({
     required this.initialFilter,
     required this.onApplyFilter,
     super.key,
   });
+
+  /// The filter state to display when the sheet opens.
   final TransactionFilter initialFilter;
+
+  /// Called when the user taps "Apply" with the new filter.
   final void Function(TransactionFilter) onApplyFilter;
 
   @override

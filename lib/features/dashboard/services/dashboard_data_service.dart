@@ -3,7 +3,9 @@ import 'package:munshi/features/dashboard/models/category_spending_data.dart';
 import 'package:munshi/features/transactions/data/datasources/transaction_local_datasource.dart';
 import 'package:munshi/features/transactions/domain/entities/transaction_category.dart';
 
+/// Aggregated financial summary for a single [DatePeriod].
 class PeriodSummaryData {
+  /// Creates a [PeriodSummaryData] with the given values.
   const PeriodSummaryData({
     required this.totalSpent,
     required this.totalIncome,
@@ -14,6 +16,7 @@ class PeriodSummaryData {
     required this.period,
   });
 
+  /// Creates an empty [PeriodSummaryData] with all values set to zero.
   factory PeriodSummaryData.empty(DatePeriod period) {
     return PeriodSummaryData(
       totalSpent: 0,
@@ -25,16 +28,32 @@ class PeriodSummaryData {
       period: period,
     );
   }
+
+  /// Total expense amount for the period.
   final double totalSpent;
+
+  /// Total income amount for the period.
   final double totalIncome;
+
+  /// Net balance (income minus expenses) for the period.
   final double balance;
+
+  /// Average daily spending for the period.
   final double avgDaily;
+
+  /// Number of transactions within the period.
   final int transactionCount;
+
+  /// Largest single expense within the period.
   final double biggestSpend;
+
+  /// The date period these figures belong to.
   final DatePeriod period;
 }
 
+/// Service that fetches aggregated dashboard data from the local database.
 class DashboardDataService {
+  /// Creates a [DashboardDataService] backed by [dataSource].
   DashboardDataService(this._dataSource);
   final TransactionLocalDataSource _dataSource;
 

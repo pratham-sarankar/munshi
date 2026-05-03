@@ -4,7 +4,9 @@ import 'package:munshi/features/transactions/domain/entities/transaction.dart';
 import 'package:munshi/features/transactions/domain/repositories/transaction_repository.dart';
 import 'package:munshi/features/transactions/domain/value_objects/transaction_filter.dart';
 
+/// Concrete implementation of [TransactionRepository] backed by the local SQLite database.
 class TransactionRepositoryImpl implements TransactionRepository {
+  /// Creates a [TransactionRepositoryImpl] using [_dataSource] for all database access.
   const TransactionRepositoryImpl(this._dataSource);
 
   final TransactionLocalDataSource _dataSource;

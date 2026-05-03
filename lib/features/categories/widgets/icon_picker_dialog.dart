@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:icons_plus/icons_plus.dart';
 
+/// A dialog that lets the user search and pick an [IconData] from a curated list.
 class IconPickerDialog extends StatefulWidget {
+  /// Creates an [IconPickerDialog].
+  ///
+  /// Pass [selectedIcon] to pre-select an icon.
   const IconPickerDialog({super.key, this.selectedIcon});
 
+  /// The initially selected icon, or `null` if none.
   final IconData? selectedIcon;
 
   @override

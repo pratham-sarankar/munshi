@@ -7,7 +7,10 @@ import 'package:munshi/features/categories/widgets/category_list_tile.dart';
 import 'package:munshi/features/transactions/domain/entities/transaction_category.dart';
 import 'package:provider/provider.dart';
 
+/// Screen that lists expense and income categories and allows the user to
+/// add, edit, or delete them.
 class CategoriesScreen extends StatefulWidget {
+  /// Creates a [CategoriesScreen].
   const CategoriesScreen({super.key});
 
   @override

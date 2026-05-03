@@ -5,16 +5,28 @@ import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
 
 // Enum to define different stat types
-enum DashboardStatType { transactions, biggestSpend }
+/// The type of statistic shown by a [DashboardStatsWidget].
+enum DashboardStatType {
+  /// Total number of transactions.
+  transactions,
 
+  /// The largest single expense.
+  biggestSpend,
+}
+
+/// A card that displays a single dashboard statistic (e.g., transaction count).
 class DashboardStatsWidget extends StatefulWidget {
+  /// Creates a [DashboardStatsWidget] for the given [statType].
   const DashboardStatsWidget({
     required this.statType,
     super.key,
-    this.animationDelay = const Duration(),
+    this.animationDelay = Duration.zero,
   });
 
+  /// Which statistic to display.
   final DashboardStatType statType;
+
+  /// Delay before the entry animation starts.
   final Duration animationDelay;
 
   @override

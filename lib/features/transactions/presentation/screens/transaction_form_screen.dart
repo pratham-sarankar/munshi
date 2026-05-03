@@ -8,13 +8,21 @@ import 'package:munshi/features/transactions/domain/entities/transaction.dart';
 import 'package:munshi/features/transactions/domain/entities/transaction_category.dart';
 import 'package:munshi/features/transactions/presentation/widgets/form_builder_category_chips.dart';
 
+/// A full-screen form for creating a new transaction or editing an existing one.
 class TransactionFormScreen extends StatefulWidget {
+  /// Creates a [TransactionFormScreen].
+  ///
+  /// Supply [transaction] to pre-populate the form when editing.
   const TransactionFormScreen({
     required this.onSubmit,
     super.key,
     this.transaction,
   });
+
+  /// The existing transaction to edit, or `null` when creating a new one.
   final Transaction? transaction;
+
+  /// Called with the completed [Transaction] when the form is submitted.
   final void Function(Transaction transaction) onSubmit;
 
   @override

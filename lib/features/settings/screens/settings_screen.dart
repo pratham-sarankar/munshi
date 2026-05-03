@@ -15,7 +15,9 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+/// Screen that presents all user-configurable app settings.
 class SettingsScreen extends StatefulWidget {
+  /// Creates a [SettingsScreen].
   const SettingsScreen({super.key});
 
   @override

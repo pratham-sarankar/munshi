@@ -5,7 +5,9 @@ import 'package:munshi/features/dashboard/providers/dashboard_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
 
+/// Card widget showing the income/expense summary for the selected period.
 class DashboardSummaryCard extends StatefulWidget {
+  /// Creates a [DashboardSummaryCard].
   const DashboardSummaryCard({super.key});
 
   @override

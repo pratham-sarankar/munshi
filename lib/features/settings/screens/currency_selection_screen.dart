@@ -5,7 +5,9 @@ import 'package:munshi/core/models/currency.dart';
 import 'package:munshi/providers/currency_provider.dart';
 import 'package:provider/provider.dart';
 
+/// Screen that allows the user to search and select their preferred currency.
 class CurrencySelectionScreen extends StatefulWidget {
+  /// Creates a [CurrencySelectionScreen].
   const CurrencySelectionScreen({super.key});
 
   @override

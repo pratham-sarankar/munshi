@@ -3,7 +3,9 @@ import 'package:munshi/core/database/app_database.dart';
 import 'package:munshi/features/transactions/domain/entities/transaction.dart';
 import 'package:munshi/features/transactions/domain/entities/transaction_category.dart';
 
+/// Extension to convert a [TransactionRow] (Drift row) to a domain entity.
 extension TransactionRowExtension on TransactionRow {
+  /// Converts this database row to a [Transaction] entity, optionally attaching [category].
   Transaction toEntity({TransactionCategory? category}) {
     return Transaction(
       id: id,
@@ -17,6 +19,7 @@ extension TransactionRowExtension on TransactionRow {
   }
 }
 
+/// Extension to convert a [Transaction] domain entity to an [Insertable] row.
 extension TransactionExtension on Transaction {
   /// Returns an [Insertable] for persisting this transaction.
   ///

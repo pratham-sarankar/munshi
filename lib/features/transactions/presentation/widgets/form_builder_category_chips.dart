@@ -5,15 +5,23 @@ import 'package:munshi/features/categories/providers/category_provider.dart';
 import 'package:munshi/features/transactions/domain/entities/transaction_category.dart';
 import 'package:provider/provider.dart';
 
+/// A [flutter_form_builder] field that displays categories as choice chips.
 class FormBuilderCategoryChips extends StatelessWidget {
+  /// Creates a [FormBuilderCategoryChips] field.
   const FormBuilderCategoryChips({
     required this.name,
     required this.type,
     super.key,
     this.initialValue,
   });
+
+  /// The form field name used by [flutter_form_builder].
   final String name;
+
+  /// The transaction type (expense/income) whose categories are shown.
   final TransactionType type;
+
+  /// The initially selected category, or `null` if none.
   final TransactionCategory? initialValue;
   @override
   Widget build(BuildContext context) {
