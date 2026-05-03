@@ -1,23 +1,59 @@
-import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:equatable/equatable.dart';
 import 'package:munshi/core/enums/transaction_type.dart';
 import 'package:munshi/features/transactions/domain/entities/transaction_category.dart';
-
-part 'transaction.freezed.dart';
 
 /// Represents a financial transaction entity.
 ///
 /// Contains transaction details including amount, date, type, and
 /// optional category and note.
-@freezed
-abstract class Transaction with _$Transaction {
+class Transaction extends Equatable {
   /// Creates a new [Transaction] instance.
-  const factory Transaction({
-    required double amount,
-    required DateTime date,
-    required TransactionType type,
+  const Transaction({
+    required this.amount,
+    required this.date,
+    required this.type,
+    this.id,
+    this.categoryId,
+    this.note,
+    this.category,
+  });
+
+  final double amount;
+  final DateTime date;
+  final TransactionType type;
+  final int? id;
+  final int? categoryId;
+  final String? note;
+  final TransactionCategory? category;
+
+  @override
+  List<Object?> get props => [
+    id,
+    amount,
+    date,
+    type,
+    categoryId,
+    note,
+    category,
+  ];
+
+  Transaction copyWith({
+    double? amount,
+    DateTime? date,
+    TransactionType? type,
     int? id,
     int? categoryId,
     String? note,
     TransactionCategory? category,
-  }) = _Transaction;
+  }) {
+    return Transaction(
+      amount: amount ?? this.amount,
+      date: date ?? this.date,
+      type: type ?? this.type,
+      id: id ?? this.id,
+      categoryId: categoryId ?? this.categoryId,
+      note: note ?? this.note,
+      category: category ?? this.category,
+    );
+  }
 }
