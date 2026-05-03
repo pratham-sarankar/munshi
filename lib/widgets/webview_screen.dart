@@ -3,7 +3,6 @@ import 'package:icons_plus/icons_plus.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 class WebViewScreen extends StatefulWidget {
-
   const WebViewScreen({required this.url, required this.title, super.key});
   final String url;
   final String title;

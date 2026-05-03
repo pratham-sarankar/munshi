@@ -5,16 +5,19 @@ import 'package:flutter/material.dart';
 /// This widget wraps Flutter's standard [DropdownButton] with a rounded
 /// container that provides modern styling while maintaining full functionality.
 class RoundedDropdown<T> extends StatelessWidget {
-
   /// Creates a rounded dropdown with customizable styling.
   const RoundedDropdown({
-    required this.value, required this.items, required this.onChanged, super.key,
+    required this.value,
+    required this.items,
+    required this.onChanged,
+    super.key,
     this.icon,
     this.borderRadius = 12.0,
     this.backgroundColor,
     this.borderColor,
     this.contentPadding,
   });
+
   /// The currently selected value for the dropdown.
   final T? value;
 

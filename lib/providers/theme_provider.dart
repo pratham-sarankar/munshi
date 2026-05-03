@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ThemeProvider extends ChangeNotifier {
-
   /// Creates a ThemeProvider and loads the theme synchronously from SharedPreferences.
   ThemeProvider(this.prefs) {
     _loadThemeFromPrefs();

@@ -18,12 +18,32 @@ class Transaction extends Equatable {
     this.category,
   });
 
+  /// The monetary value of this transaction.
   final double amount;
+
+  /// The date and time when this transaction occurred.
   final DateTime date;
+
+  /// Whether this transaction is an [TransactionType.income] or
+  /// [TransactionType.expense].
   final TransactionType type;
+
+  /// The unique identifier for this transaction.
+  ///
+  /// `null` for transactions that have not yet been persisted.
   final int? id;
+
+  /// The identifier of the [TransactionCategory] associated with this
+  /// transaction, or `null` if no category has been assigned.
   final int? categoryId;
+
+  /// An optional free-text note describing this transaction.
   final String? note;
+
+  /// The fully resolved [TransactionCategory] for this transaction.
+  ///
+  /// May be `null` when only [categoryId] is stored (e.g. in a list view
+  /// where categories are not eagerly loaded).
   final TransactionCategory? category;
 
   @override
@@ -37,6 +57,9 @@ class Transaction extends Equatable {
     category,
   ];
 
+  /// Returns a copy of this transaction with the given fields replaced.
+  ///
+  /// Omitted fields retain their current values.
   Transaction copyWith({
     double? amount,
     DateTime? date,

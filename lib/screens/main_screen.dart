@@ -77,9 +77,9 @@ class _MainScreenState extends State<MainScreen> {
                 builder: (context) {
                   return TransactionFormScreen(
                     onSubmit: (transaction) {
-                      context
-                          .read<TransactionBloc>()
-                          .add(TransactionAdded(transaction));
+                      context.read<TransactionBloc>().add(
+                        TransactionAdded(transaction),
+                      );
                     },
                   );
                 },
@@ -116,4 +116,3 @@ class _MainScreenState extends State<MainScreen> {
     );
   }
 }
-

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 class MaterialTheme {
-
   const MaterialTheme(this.textTheme);
   final TextTheme textTheme;
 
@@ -356,7 +355,6 @@ class MaterialTheme {
 }
 
 class ExtendedColor {
-
   const ExtendedColor({
     required this.seed,
     required this.value,

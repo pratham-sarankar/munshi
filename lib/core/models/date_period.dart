@@ -2,7 +2,6 @@ import 'package:intl/intl.dart';
 import 'package:munshi/core/models/period_type.dart';
 
 class DatePeriod {
-
   const DatePeriod({
     required this.type,
     required this.startDate,
