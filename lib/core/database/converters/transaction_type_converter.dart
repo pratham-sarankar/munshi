@@ -1,7 +1,9 @@
 import 'package:drift/drift.dart';
 import 'package:munshi/core/enums/transaction_type.dart';
 
+/// A Drift [TypeConverter] that maps [TransactionType] enum values to/from strings.
 class TransactionTypeConverter extends TypeConverter<TransactionType, String> {
+  /// Creates a const [TransactionTypeConverter].
   const TransactionTypeConverter();
 
   @override

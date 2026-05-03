@@ -9,8 +9,13 @@ import 'package:munshi/features/transactions/domain/entities/transaction_categor
 import 'package:munshi/providers/currency_provider.dart';
 import 'package:munshi/providers/period_provider.dart';
 
+/// Provides aggregated financial data for the dashboard screen.
+///
+/// Listens to [CurrencyProvider] and refreshes formatted values whenever
+/// the selected currency changes.
 class DashboardProvider extends ChangeNotifier {
   // Constructor
+  /// Creates a [DashboardProvider] and loads dashboard data for the current period.
   DashboardProvider(
     this._dashboardDataService,
     this._periodProvider,
@@ -49,23 +54,49 @@ class DashboardProvider extends ChangeNotifier {
   }
 
   // Getters
+  /// The currently selected date period.
   DatePeriod get selectedPeriod => _selectedPeriod;
+
+  /// The type of the currently selected period.
   PeriodType get currentPeriodType => _selectedPeriod.type;
+
+  /// Summary data for the selected period, or `null` while loading.
   PeriodSummaryData? get summaryData => _summaryData;
+
+  /// Category spending breakdown, or `null` while loading.
   Map<TransactionCategory?, CategorySpendingData>? get categorySpending =>
       _categorySpending;
+
+  /// Whether data is currently being fetched.
   bool get isLoading => _isLoading;
+
+  /// Error message from the last failed load, or `null` if successful.
   String? get error => _error;
 
   // Convenience getters for UI
+  /// `true` if summary data has been loaded at least once.
   bool get hasData => _summaryData != null;
+
+  /// `true` if category spending data is available and non-empty.
   bool get hasCategoryData =>
       _categorySpending != null && _categorySpending!.isNotEmpty;
+
+  /// Total amount spent in the selected period.
   double get totalSpent => _summaryData?.totalSpent ?? 0;
+
+  /// Total income received in the selected period.
   double get totalIncome => _summaryData?.totalIncome ?? 0;
+
+  /// Net balance (income minus expenses) for the selected period.
   double get balance => _summaryData?.balance ?? 0;
+
+  /// Average daily spending for the selected period.
   double get avgDaily => _summaryData?.avgDaily ?? 0;
+
+  /// Number of transactions in the selected period.
   int get transactionCount => _summaryData?.transactionCount ?? 0;
+
+  /// The single largest expense in the selected period.
   double get biggestSpend => _summaryData?.biggestSpend ?? 0;
 
   /// Check if the selected period is the current period (today/this week/this month/this year)
@@ -178,11 +209,22 @@ class DashboardProvider extends ChangeNotifier {
   }
 
   /// Get formatted values for UI display
+  /// Formatted [totalSpent] as a currency string.
   String get formattedTotalSpent => formatCurrency(totalSpent);
+
+  /// Formatted [totalIncome] as a currency string.
   String get formattedTotalIncome => formatCurrency(totalIncome);
+
+  /// Formatted [balance] as a currency string.
   String get formattedBalance => formatCurrency(balance);
+
+  /// Formatted average daily spending as a currency string.
   String get formattedAvgDaily => formatCurrency(avgDaily);
+
+  /// Formatted [biggestSpend] as a currency string.
   String get formattedBiggestSpend => formatCurrency(biggestSpend);
+
+  /// Formatted transaction count as a string.
   String get formattedTransactionCount => transactionCount.toString();
 
   /// Get formatted category spending

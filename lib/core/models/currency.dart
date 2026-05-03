@@ -1,4 +1,6 @@
+/// Represents a monetary currency with its display properties.
 class Currency {
+  /// Creates a [Currency] with the given [code], [symbol], [name], [flag] and [locale].
   const Currency({
     required this.code,
     required this.symbol,
@@ -7,6 +9,7 @@ class Currency {
     required this.locale,
   });
 
+  /// Creates a [Currency] from a string map (e.g. parsed JSON).
   factory Currency.fromMap(Map<String, String> map) {
     return Currency(
       code: map['code'] ?? '',
@@ -16,10 +19,20 @@ class Currency {
       locale: map['locale'] ?? 'en_US',
     );
   }
+
+  /// ISO 4217 currency code, e.g. `'USD'`.
   final String code;
+
+  /// Currency symbol, e.g. `'$'`.
   final String symbol;
+
+  /// Human-readable currency name, e.g. `'US Dollar'`.
   final String name;
+
+  /// Emoji flag representing the currency's primary country.
   final String flag;
+
+  /// BCP 47 locale string used for number formatting, e.g. `'en_US'`.
   final String locale;
 
   @override
@@ -32,8 +45,10 @@ class Currency {
   @override
   int get hashCode => code.hashCode;
 
+  /// Returns a formatted display string combining flag, symbol and code.
   String get displayName => '$flag $symbol ($code)';
 
+  /// Serialises this currency to a [Map].
   Map<String, dynamic> toMap() {
     return {
       'code': code,
@@ -52,6 +67,7 @@ class Currency {
 
 /// List of supported currencies
 class SupportedCurrencies {
+  /// All currencies supported by the app.
   static const List<Currency> currencies = [
     // Major currencies
     Currency(

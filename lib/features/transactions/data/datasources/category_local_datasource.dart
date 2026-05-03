@@ -15,6 +15,7 @@ part 'category_local_datasource.g.dart';
 @DriftAccessor(tables: [TransactionCategories, Transactions])
 class CategoryLocalDataSource extends DatabaseAccessor<AppDatabase>
     with _$CategoryLocalDataSourceMixin {
+  /// Creates a [CategoryLocalDataSource] attached to [attachedDatabase].
   CategoryLocalDataSource(super.attachedDatabase);
 
   /// Retrieves all transaction categories from the database.

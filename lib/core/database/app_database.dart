@@ -18,9 +18,16 @@ part 'app_database.g.dart';
   tables: [Transactions, TransactionCategories],
   daos: [TransactionLocalDataSource, CategoryLocalDataSource],
 )
+/// The main Drift database for the Munshi app.
+///
+/// Manages [Transactions] and [TransactionCategories] tables and exposes
+/// [TransactionLocalDataSource] and [CategoryLocalDataSource] DAOs.
 class AppDatabase extends _$AppDatabase {
+  /// Creates an [AppDatabase] backed by a persistent on-device SQLite file.
   AppDatabase() : super(_openConnection());
 
+  /// Creates an [AppDatabase] using the provided query executor, intended for
+  /// testing with an in-memory database.
   AppDatabase.forTesting(super.e);
 
   @override

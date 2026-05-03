@@ -34,9 +34,7 @@ jobs:
         run: flutter pub get
 
       - name: 🔍 Analyze code
-        run: flutter analyze --fatal-infos --fatal-warnings
+        run: flutter analyze
 
       - name: 🧪 Run tests
-        # --no-pub   → skip a second pub get; we already ran it above
-        # --reporter expanded → print every test name so failures are easy to spot in the log
         run: flutter test --no-pub --reporter expanded

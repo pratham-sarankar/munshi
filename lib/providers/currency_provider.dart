@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:munshi/core/models/currency.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+/// Manages the user's selected currency and persists it via [SharedPreferences].
 class CurrencyProvider extends ChangeNotifier {
   /// Creates a CurrencyProvider and loads the currency synchronously from SharedPreferences.
   CurrencyProvider(this.prefs) {
@@ -11,10 +12,13 @@ class CurrencyProvider extends ChangeNotifier {
 
   Currency _selectedCurrency = SupportedCurrencies.defaultCurrency;
 
+  /// The currently selected currency.
   Currency get selectedCurrency => _selectedCurrency;
 
+  /// The [SharedPreferences] instance used to persist the selected currency.
   final SharedPreferences prefs;
 
+  /// Changes the selected currency and persists the change.
   void setSelectedCurrency(Currency currency) {
     if (_selectedCurrency != currency) {
       _selectedCurrency = currency;
@@ -23,6 +27,7 @@ class CurrencyProvider extends ChangeNotifier {
     }
   }
 
+  /// Changes the selected currency by its ISO [currencyCode].
   void setSelectedCurrencyByCode(String currencyCode) {
     final currency = SupportedCurrencies.getCurrencyByCode(currencyCode);
     if (currency != null) {

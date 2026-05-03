@@ -1,7 +1,9 @@
 import 'package:intl/intl.dart';
 import 'package:munshi/core/models/period_type.dart';
 
+/// Represents a calendar period (day, week, month, or year) with a start/end date range.
 class DatePeriod {
+  /// Creates a [DatePeriod] with explicit [type], [startDate], [endDate] and [displayName].
   const DatePeriod({
     required this.type,
     required this.startDate,
@@ -9,6 +11,7 @@ class DatePeriod {
     required this.displayName,
   });
 
+  /// Creates a [DatePeriod] from a [PeriodType] and a reference [date].
   factory DatePeriod.fromPeriodType(PeriodType type, DateTime date) {
     switch (type) {
       case PeriodType.daily:
@@ -23,6 +26,7 @@ class DatePeriod {
   }
 
   // Factory constructors for different period types
+  /// Creates a monthly [DatePeriod] covering the entire month that contains [date].
   factory DatePeriod.monthly(DateTime date) {
     final startDate = DateTime(date.year, date.month);
     final endDate = DateTime(date.year, date.month + 1, 0, 23, 59, 59);
@@ -36,6 +40,7 @@ class DatePeriod {
     );
   }
 
+  /// Creates a weekly [DatePeriod] (Mon–Sun) for the week that contains [date].
   factory DatePeriod.weekly(DateTime date) {
     // Get Monday of the week containing the date
     final startDate = date.subtract(Duration(days: date.weekday - 1));
@@ -59,6 +64,7 @@ class DatePeriod {
     );
   }
 
+  /// Creates a daily [DatePeriod] covering the single calendar day of [date].
   factory DatePeriod.daily(DateTime date) {
     final startDate = DateTime(date.year, date.month, date.day);
     final endDate = DateTime(date.year, date.month, date.day, 23, 59, 59);
@@ -72,6 +78,7 @@ class DatePeriod {
     );
   }
 
+  /// Creates a yearly [DatePeriod] covering the full year of [date].
   factory DatePeriod.yearly(DateTime date) {
     final startDate = DateTime(date.year);
     final endDate = DateTime(date.year, 12, 31, 23, 59, 59);
@@ -84,12 +91,21 @@ class DatePeriod {
       displayName: displayName,
     );
   }
+
+  /// The granularity of this period (daily, weekly, monthly, yearly).
   final PeriodType type;
+
+  /// The inclusive start of the period.
   final DateTime startDate;
+
+  /// The inclusive end of the period.
   final DateTime endDate;
+
+  /// Human-readable label for this period (e.g. `'May 2026'`).
   final String displayName;
 
   // Navigation methods
+  /// Returns the period immediately following this one.
   DatePeriod next() {
     switch (type) {
       case PeriodType.monthly:
@@ -107,6 +123,7 @@ class DatePeriod {
     }
   }
 
+  /// Returns the period immediately preceding this one.
   DatePeriod previous() {
     switch (type) {
       case PeriodType.monthly:
@@ -125,6 +142,7 @@ class DatePeriod {
   }
 
   // Check if a date falls within this period
+  /// Returns `true` if [date] falls within this period (inclusive).
   bool contains(DateTime date) {
     return date.isAfter(startDate.subtract(const Duration(seconds: 1))) &&
         date.isBefore(endDate.add(const Duration(seconds: 1)));

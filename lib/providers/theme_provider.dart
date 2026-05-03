@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+/// Manages the app's [ThemeMode] and persists it via [SharedPreferences].
 class ThemeProvider extends ChangeNotifier {
   /// Creates a ThemeProvider and loads the theme synchronously from SharedPreferences.
   ThemeProvider(this.prefs) {
@@ -10,8 +11,10 @@ class ThemeProvider extends ChangeNotifier {
 
   ThemeMode _themeMode = ThemeMode.light;
 
+  /// The current [ThemeMode].
   ThemeMode get themeMode => _themeMode;
 
+  /// A human-readable label for the current theme mode (e.g., `'Light'`).
   String get themeModeString {
     switch (_themeMode) {
       case ThemeMode.light:
@@ -23,8 +26,10 @@ class ThemeProvider extends ChangeNotifier {
     }
   }
 
+  /// The [SharedPreferences] instance used to persist the theme.
   final SharedPreferences prefs;
 
+  /// Sets the theme mode from a string label (`'Light'`, `'Dark'`, or `'Auto'`).
   void setThemeMode(String themeString) {
     ThemeMode newThemeMode;
     switch (themeString) {

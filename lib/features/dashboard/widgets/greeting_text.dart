@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
+/// Displays a time-based greeting (e.g., "Good Morning!").
 class GreetingText extends StatelessWidget {
+  /// Creates a [GreetingText].
   const GreetingText({super.key});
 
   String _getTimeBasedGreeting() {

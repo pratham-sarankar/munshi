@@ -1,9 +1,17 @@
 import 'package:flutter/material.dart';
 
+/// Material Design 3 theme configuration for the Munshi app.
+///
+/// Provides light and dark [ColorScheme] variants and builds [ThemeData]
+/// instances for each contrast level.
 class MaterialTheme {
+  /// Creates a [MaterialTheme] with the given [textTheme].
   const MaterialTheme(this.textTheme);
+
+  /// The text theme applied globally to all variants.
   final TextTheme textTheme;
 
+  /// Returns the default light [ColorScheme].
   static ColorScheme lightScheme() {
     return const ColorScheme(
       brightness: Brightness.light,
@@ -55,10 +63,12 @@ class MaterialTheme {
     );
   }
 
+  /// Returns a [ThemeData] for the default light theme.
   ThemeData light() {
     return theme(lightScheme());
   }
 
+  /// Returns the light medium-contrast [ColorScheme].
   static ColorScheme lightMediumContrastScheme() {
     return const ColorScheme(
       brightness: Brightness.light,
@@ -110,10 +120,12 @@ class MaterialTheme {
     );
   }
 
+  /// Returns a [ThemeData] for the light medium-contrast theme.
   ThemeData lightMediumContrast() {
     return theme(lightMediumContrastScheme());
   }
 
+  /// Returns the light high-contrast [ColorScheme].
   static ColorScheme lightHighContrastScheme() {
     return const ColorScheme(
       brightness: Brightness.light,
@@ -165,10 +177,12 @@ class MaterialTheme {
     );
   }
 
+  /// Returns a [ThemeData] for the light high-contrast theme.
   ThemeData lightHighContrast() {
     return theme(lightHighContrastScheme());
   }
 
+  /// Returns the default dark [ColorScheme].
   static ColorScheme darkScheme() {
     return const ColorScheme(
       brightness: Brightness.dark,
@@ -220,10 +234,12 @@ class MaterialTheme {
     );
   }
 
+  /// Returns a [ThemeData] for the default dark theme.
   ThemeData dark() {
     return theme(darkScheme());
   }
 
+  /// Returns the dark medium-contrast [ColorScheme].
   static ColorScheme darkMediumContrastScheme() {
     return const ColorScheme(
       brightness: Brightness.dark,
@@ -275,10 +291,12 @@ class MaterialTheme {
     );
   }
 
+  /// Returns a [ThemeData] for the dark medium-contrast theme.
   ThemeData darkMediumContrast() {
     return theme(darkMediumContrastScheme());
   }
 
+  /// Returns the dark high-contrast [ColorScheme].
   static ColorScheme darkHighContrastScheme() {
     return const ColorScheme(
       brightness: Brightness.dark,
@@ -330,10 +348,12 @@ class MaterialTheme {
     );
   }
 
+  /// Returns a [ThemeData] for the dark high-contrast theme.
   ThemeData darkHighContrast() {
     return theme(darkHighContrastScheme());
   }
 
+  /// Builds a [ThemeData] from the provided [colorScheme].
   ThemeData theme(ColorScheme colorScheme) => ThemeData(
     useMaterial3: true,
     brightness: colorScheme.brightness,
@@ -351,10 +371,13 @@ class MaterialTheme {
     ),
   );
 
+  /// List of extended (custom) colors defined for this theme.
   List<ExtendedColor> get extendedColors => [];
 }
 
+/// Holds all color-scheme variants for a single custom (extended) color seed.
 class ExtendedColor {
+  /// Creates an [ExtendedColor] with all required variants.
   const ExtendedColor({
     required this.seed,
     required this.value,
@@ -365,17 +388,36 @@ class ExtendedColor {
     required this.darkHighContrast,
     required this.darkMediumContrast,
   });
+
+  /// The seed color used to generate the palette.
   final Color seed;
+
+  /// The resolved color value.
   final Color value;
+
+  /// Color family for the default light theme.
   final ColorFamily light;
+
+  /// Color family for the light high-contrast theme.
   final ColorFamily lightHighContrast;
+
+  /// Color family for the light medium-contrast theme.
   final ColorFamily lightMediumContrast;
+
+  /// Color family for the default dark theme.
   final ColorFamily dark;
+
+  /// Color family for the dark high-contrast theme.
   final ColorFamily darkHighContrast;
+
+  /// Color family for the dark medium-contrast theme.
   final ColorFamily darkMediumContrast;
 }
 
+/// A set of four tonal colors (color, onColor, colorContainer, onColorContainer)
+/// derived from a single seed for a given theme variant.
 class ColorFamily {
+  /// Creates a [ColorFamily] with the four required tonal colors.
   const ColorFamily({
     required this.color,
     required this.onColor,
@@ -383,8 +425,15 @@ class ColorFamily {
     required this.onColorContainer,
   });
 
+  /// The primary color of this family.
   final Color color;
+
+  /// The color used for content placed on top of [color].
   final Color onColor;
+
+  /// The container variant of [color].
   final Color colorContainer;
+
+  /// The color used for content placed on top of [colorContainer].
   final Color onColorContainer;
 }

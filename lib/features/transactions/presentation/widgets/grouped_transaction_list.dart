@@ -5,7 +5,9 @@ import 'package:munshi/features/transactions/domain/entities/daily_transactions.
 import 'package:munshi/features/transactions/domain/entities/transaction.dart';
 import 'package:munshi/features/transactions/presentation/widgets/transaction_tile.dart';
 
+/// A list widget that groups transactions by calendar day.
 class GroupedTransactionList extends StatefulWidget {
+  /// Creates a [GroupedTransactionList].
   const GroupedTransactionList({
     required this.groupedTransactions,
     required this.onTap,
@@ -20,12 +22,25 @@ class GroupedTransactionList extends StatefulWidget {
   // Accounts for leading widget (56dp) + horizontal padding (16dp)
   static const double _kDividerIndent = 72;
 
+  /// Transactions grouped by day to render.
   final List<DailyTransactions> groupedTransactions;
+
+  /// Called when a transaction tile is tapped.
   final void Function(Transaction) onTap;
+
+  /// Called when a transaction is deleted via the swipe action.
   final Future<void> Function(Transaction transaction)? onDelete;
+
+  /// Called when a transaction is edited via the swipe action.
   final Future<void> Function(Transaction transaction)? onEdit;
+
+  /// Called when the category chip of a transaction is tapped.
   final void Function(Transaction)? onCategoryTap;
+
+  /// Optional scroll controller for the underlying list.
   final ScrollController? controller;
+
+  /// Whether a next-page load is in progress (shows a bottom spinner).
   final bool isLoadingMore;
 
   @override

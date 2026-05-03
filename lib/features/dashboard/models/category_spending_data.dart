@@ -2,6 +2,7 @@ import 'package:munshi/features/transactions/domain/entities/transaction_categor
 
 /// Model to hold both spending amount and transaction count for a category
 class CategorySpendingData {
+  /// Creates a [CategorySpendingData] with the given values.
   const CategorySpendingData({
     required this.category,
     required this.totalAmount,
@@ -16,8 +17,14 @@ class CategorySpendingData {
       transactionCount: 0,
     );
   }
+
+  /// The category these figures belong to, or `null` for uncategorised.
   final TransactionCategory? category;
+
+  /// Total money spent in this category during the selected period.
   final double totalAmount;
+
+  /// Number of transactions in this category during the selected period.
   final int transactionCount;
 
   /// Check if this category has any spending

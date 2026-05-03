@@ -25,8 +25,8 @@ final GetIt locator = GetIt.instance;
 /// - Registers [CurrencyProvider] as a lazy singleton, initialized with the shared preferences.
 /// - Registers [PeriodProvider] as a lazy singleton, initialized with the shared preferences.
 /// - Registers [AppDatabase] as a lazy singleton for database access.
-/// - Registers [TransactionsDao] as a lazy singleton, initialized with the [AppDatabase] instance.
-/// - Registers [DashboardDataService] as a lazy singleton, initialized with the [TransactionsDao] instance.
+/// - Registers [TransactionLocalDataSource] as a lazy singleton, initialized with the [AppDatabase] instance.
+/// - Registers [DashboardDataService] as a lazy singleton, initialized with the [TransactionLocalDataSource] instance.
 /// - Registers [TransactionRepository] (backed by [TransactionRepositoryImpl]) as a lazy singleton.
 /// - Registers the four transaction use cases as lazy singletons.
 /// - Registers [TransactionBloc] as a factory so each call produces a fresh instance.

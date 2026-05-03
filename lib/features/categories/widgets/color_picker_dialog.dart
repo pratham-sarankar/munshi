@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
 
+/// A dialog that lets the user pick a color from a predefined palette.
 class ColorPickerDialog extends StatefulWidget {
+  /// Creates a [ColorPickerDialog].
+  ///
+  /// Pass [selectedColor] to pre-select a color.
   const ColorPickerDialog({super.key, this.selectedColor});
 
+  /// The initially selected color, or `null` if none.
   final Color? selectedColor;
 
   @override

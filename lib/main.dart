@@ -72,6 +72,7 @@ void main() async {
 /// Sets up Material Design 3 theming using Google Fonts and provides theme switching
 /// based on the ThemeProvider's state. The MainScreen is the home widget.
 class Munshi extends StatelessWidget {
+  /// Creates the [Munshi] root widget.
   const Munshi({super.key});
 
   @override

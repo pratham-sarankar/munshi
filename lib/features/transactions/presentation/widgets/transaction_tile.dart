@@ -6,7 +6,9 @@ import 'package:munshi/core/enums/transaction_type.dart';
 import 'package:munshi/core/extensions/currency_extensions.dart';
 import 'package:munshi/features/transactions/domain/entities/transaction.dart';
 
+/// A swipeable list tile that represents a single transaction.
 class TransactionTile extends StatefulWidget {
+  /// Creates a [TransactionTile].
   const TransactionTile({
     required this.onTap,
     required this.transaction,
@@ -15,10 +17,20 @@ class TransactionTile extends StatefulWidget {
     this.onEdit,
     this.onCategoryTap,
   });
+
+  /// Called when the tile is tapped (opens the detail sheet).
   final VoidCallback onTap;
+
+  /// The transaction to display.
   final Transaction transaction;
+
+  /// Called when the user swipes to delete.
   final Future<void> Function(Transaction transaction)? onDelete;
+
+  /// Called when the user swipes to edit.
   final Future<void> Function(Transaction transaction)? onEdit;
+
+  /// Called when the category chip is tapped.
   final VoidCallback? onCategoryTap;
 
   @override

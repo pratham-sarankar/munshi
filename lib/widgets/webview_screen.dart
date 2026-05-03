@@ -2,9 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:icons_plus/icons_plus.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
+/// A full-screen WebView wrapper widget.
 class WebViewScreen extends StatefulWidget {
+  /// Creates a [WebViewScreen] that loads [url] and shows [title] in the app bar.
   const WebViewScreen({required this.url, required this.title, super.key});
+
+  /// The URL to load in the WebView.
   final String url;
+
+  /// Title displayed in the app bar.
   final String title;
 
   @override
@@ -72,12 +78,12 @@ class _WebViewScreenState extends State<WebViewScreen> {
           if (!_hasError && !_isLoading)
             IconButton(
               icon: Icon(Iconsax.refresh_outline, color: colorScheme.onSurface),
-              onPressed: () {
+              onPressed: () async {
                 setState(() {
                   _isLoading = true;
                   _hasError = false;
                 });
-                _controller.reload();
+                await _controller.reload();
               },
             ),
         ],
@@ -149,12 +155,12 @@ class _WebViewScreenState extends State<WebViewScreen> {
             ),
             const SizedBox(height: 32),
             FilledButton.icon(
-              onPressed: () {
+              onPressed: () async {
                 setState(() {
                   _isLoading = true;
                   _hasError = false;
                 });
-                _controller.reload();
+                await _controller.reload();
               },
               icon: const Icon(Iconsax.refresh_outline),
               label: const Text('Try Again'),

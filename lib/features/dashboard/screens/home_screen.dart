@@ -7,7 +7,9 @@ import 'package:munshi/features/dashboard/widgets/greeting_text.dart';
 import 'package:munshi/features/dashboard/widgets/period_selector_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 
+/// The main dashboard screen showing the spending summary for the selected period.
 class HomeScreen extends StatelessWidget {
+  /// Creates a [HomeScreen].
   const HomeScreen({super.key});
 
   @override

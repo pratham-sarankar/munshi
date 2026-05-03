@@ -1,13 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:munshi/core/models/period_type.dart';
 
+/// A bottom sheet that lets the user switch the dashboard period type.
 class PeriodSelectorBottomSheet extends StatelessWidget {
+  /// Creates a [PeriodSelectorBottomSheet].
   const PeriodSelectorBottomSheet({
     required this.currentPeriodType,
     required this.onPeriodTypeChanged,
     super.key,
   });
+
+  /// The currently active period type.
   final PeriodType currentPeriodType;
+
+  /// Called when the user selects a new period type.
   final ValueChanged<PeriodType> onPeriodTypeChanged;
 
   @override
@@ -190,6 +196,7 @@ class PeriodSelectorBottomSheet extends StatelessWidget {
     );
   }
 
+  /// Shows this bottom sheet modally over [context].
   static Future<void> show(
     BuildContext context,
     PeriodType currentPeriodType,
