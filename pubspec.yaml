@@ -73,6 +73,7 @@ dev_dependencies:
   drift_dev: ^2.28.2
   build_runner: ^2.7.2
   very_good_analysis: ^10.0.0
+  mocktail: ^1.0.5
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
