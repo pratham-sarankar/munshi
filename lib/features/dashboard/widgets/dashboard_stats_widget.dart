@@ -9,7 +9,8 @@ enum DashboardStatType { transactions, biggestSpend }
 
 class DashboardStatsWidget extends StatefulWidget {
   const DashboardStatsWidget({
-    required this.statType, super.key,
+    required this.statType,
+    super.key,
     this.animationDelay = const Duration(),
   });
 
@@ -352,7 +353,6 @@ class _DashboardStatsWidgetState extends State<DashboardStatsWidget>
 
 // Helper class to hold stat data
 class _StatData {
-
   _StatData({
     required this.title,
     required this.value,

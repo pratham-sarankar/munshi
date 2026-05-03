@@ -3,7 +3,6 @@ import 'package:munshi/core/models/currency.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class CurrencyProvider extends ChangeNotifier {
-
   /// Creates a CurrencyProvider and loads the currency synchronously from SharedPreferences.
   CurrencyProvider(this.prefs) {
     _loadCurrencyFromPrefs();

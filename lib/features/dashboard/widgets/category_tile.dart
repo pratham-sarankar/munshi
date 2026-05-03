@@ -4,7 +4,9 @@ import 'package:munshi/features/transactions/domain/entities/transaction_categor
 
 class CategoryTile extends StatefulWidget {
   const CategoryTile({
-    required this.category, required this.onTap, super.key,
+    required this.category,
+    required this.onTap,
+    super.key,
     this.spendingAmount = 0.0,
     this.transactionCount = 0,
     this.animationDelay = const Duration(),

@@ -3,7 +3,6 @@ import 'package:munshi/core/models/period_type.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class PeriodProvider extends ChangeNotifier {
-
   /// Creates a PeriodProvider and loads the period synchronously from SharedPreferences.
   PeriodProvider(this.prefs) {
     _loadPeriodFromPrefs();
