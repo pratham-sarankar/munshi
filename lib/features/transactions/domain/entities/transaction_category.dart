@@ -17,12 +17,28 @@ class TransactionCategory extends Equatable {
     required this.createdAt,
   });
 
+  /// The unique identifier for this category.
   final int id;
+
+  /// The display name of this category (e.g. "Food", "Transport").
   final String name;
+
+  /// The icon used to visually represent this category.
   final IconData icon;
+
+  /// The colour used to visually distinguish this category.
   final Color color;
+
+  /// Whether this category applies to [TransactionType.income] or
+  /// [TransactionType.expense] transactions.
   final TransactionType type;
+
+  /// Whether this category is a built-in default provided by the app.
+  ///
+  /// Default categories cannot be deleted by the user.
   final bool isDefault;
+
+  /// The date and time when this category was created.
   final DateTime createdAt;
 
   @override
@@ -36,6 +52,9 @@ class TransactionCategory extends Equatable {
     createdAt,
   ];
 
+  /// Returns a copy of this category with the given fields replaced.
+  ///
+  /// Omitted fields retain their current values.
   TransactionCategory copyWith({
     int? id,
     String? name,
